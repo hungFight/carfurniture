@@ -1,6 +1,0 @@
-VIỆT HÓA, KÍCH HOẠT TÍNH NĂNG ẨN XE MAZDA
-- Font tiếng việt cho hệ thống Mazda connect
-- Kích hoạt và update bản đồ Mazda navigation chính hãng.
-- Kích hoạt xem Video qua usb (mp4, Avi,...)
-- Cài đặt hình nền, ảnh gia đình lên giao diện màn hình xe
-- Kích hoạt sử dụng cảm ứng khi xe di chuyển
