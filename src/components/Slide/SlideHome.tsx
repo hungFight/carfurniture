@@ -97,14 +97,14 @@ export default function SlideHome() {
           index !== 0 ? (
             <p
               key={index}
-              className={`${styles.animationSlideText} text-[10px] md:text-sm xl:text-base relative top-[-10px] ml-2 mb-1`}
+              className={`${styles.animationSlideText} text-[10px] md:text-sm xl:text-[15px] relative top-[-10px] ml-2 mb-1 bg-[aliceblue] xl:bg-inherit w-fit px-[8px] py-[2px] rounded-[5px] `}
             >
               {text}
             </p>
           ) : (
             <h3
               key={index}
-              className={`text-xs md:text-base xl:text-lg font-semibold mb-3`}
+              className={`text-xs md:text-base xl:text-lg font-semibold mb-3 bg-[#d4a8fa] xl:bg-inherit px-[10px] py-[2px] rounded-[5px] w-fit`}
             >
               {text}
             </h3>
@@ -162,18 +162,18 @@ export default function SlideHome() {
       id: 1,
       element: (
         <SwiperSlide key={1}>
-          <div className="w-full h-[450px]  flex relative">
-            <div className="w-[40%] relative">
-              <div className="absolute top-[91px] right-[50%] left-[50%] translate-x-[-50%] w-[465px]">
+          <div className="w-full h-[450px]  flex relative flex-wrap sm:flex-nowrap">
+            <div className="xl:w-[40%] w-[100%] sm:w-[60%] relative">
+              <div className="absolute right-[50%] left-[50%] top-[20%] sm:top-[91px]  sm:left-[69%] md:left-[58%] translate-x-[-50%] w-[340px] sm:w-[465px]">
                 {renderedTexts}
               </div>
             </div>
-            <div className="w-[60%] flex  justify-start overflow-hidden relative z-10">
+            <div className="sm:w-5/12 w-full xl:w-[60%]   flex justify-start overflow-hidden relative z-10">
               <div
-                className={` marker:w-full h-full absolute top-0 right-0 p-5  flex  items-center`}
+                className={` w-full sm:w-auto h-full  sm:flex-wrap  xl:flex-nowrap absolute top-0 right-0 p-5  flex  items-center`}
               >
                 <div
-                  className={`${styles.slideImageOneChild1} min-w-1/2 w-full h-[80%] mr-10 py-2 relative`}
+                  className={`${styles.slideImageOneChild1} h-full sm:h-1/2 w-4/5 min-w-1/2 xl:w-full xl:h-[80%] mr-10 py-2 relative`}
                 >
                   <Image
                     src={Images.slideTwoOne}
@@ -182,7 +182,7 @@ export default function SlideHome() {
                   />
                 </div>
                 <div
-                  className={`${styles.slideImageOneChild2} min-w-1/2 w-full h-[80%] mr-10 py-2 relative`}
+                  className={`${styles.slideImageOneChild2} h-full sm:h-1/2 w-4/5 min-w-1/2 xl:w-full xl:h-[80%] mr-10 py-2 relative`}
                 >
                   <Image
                     src={Images.slideTwoTwo}
@@ -200,15 +200,15 @@ export default function SlideHome() {
       id: 2,
       element: (
         <SwiperSlide key={2}>
-          <div className="w-full h-[450px]  flex relative">
-            <div className="w-1/2 relative">
-              <div className="absolute top-[91px] right-[50%] left-[50%] translate-x-[-50%] w-[465px]">
+          <div className="w-full h-[450px]  flex relative flex-wrap md:flex-nowrap">
+            <div className="w-full md:w-[60%] xl:w-1/2 relative">
+              <div className="absolute top-[48px] md:top-[91px] right-[50%] left-[70%] md:left-[50%] translate-x-[-50%] w-[465px]">
                 {renderedTexts}
               </div>
             </div>
-            <div className="w-1/2 flex  justify-start overflow-hidden relative z-10">
+            <div className="w-full md:w-[40%] xl:w-1/2 flex justify-center md:justify-start overflow-hidden relative z-10">
               <div
-                className={` marker:w-full h-full absolute top-0 right-[115px] p-5  flex flex-wrap items-center`}
+                className={` marker:w-full h-full absolute top-0 xl:right-[115px] p-5  flex flex-wrap items-center`}
               >
                 <div
                   className={`${styles.slideImageOneChild1} min-w-full w-full h-[95%] mr-10 py-2 relative`}
@@ -229,18 +229,18 @@ export default function SlideHome() {
       id: 3,
       element: (
         <SwiperSlide key={3}>
-          <div className="w-full h-[450px]  flex relative">
-            <div className="w-1/2 relative">
-              <div className="absolute top-[91px] right-[50%] left-[50%] translate-x-[-50%] w-[465px]">
+          <div className="w-full h-[450px]  flex relative flex-wrap md:flex-nowrap">
+            <div className="w-full md:w-[60%] xl:w-1/2 relative">
+              <div className="absolute top-[48px] md:top-[91px] right-[50%] left-[70%] md:left-[50%] translate-x-[-50%] w-[465px]">
                 {renderedTexts}
               </div>
             </div>
-            <div className="w-1/2 flex  justify-start overflow-hidden relative z-10">
+            <div className="w-full md:w-[40%] xl:w-1/2 flex justify-center md:justify-start overflow-hidden relative z-10">
               <div
-                className={` marker:w-full h-full absolute top-0 right-[115px] p-5  flex flex-wrap items-center`}
+                className={` marker:w-full h-full absolute top-0 xl:right-[115px] p-5  flex flex-wrap items-center`}
               >
                 <div
-                  className={`${styles.slideImageOneChild2} min-w-full w-full h-[95%] mr-10 py-2 relative`}
+                  className={`${styles.slideImageOneChild1} min-w-full w-full h-[95%] mr-10 py-2 relative`}
                 >
                   <Image
                     src={Images.slideFourOne}
@@ -258,15 +258,15 @@ export default function SlideHome() {
       id: 4,
       element: (
         <SwiperSlide key={4}>
-          <div className="w-full h-[450px]  flex relative">
-            <div className="w-1/2 relative">
-              <div className=" absolute top-[91px] right-[50%] left-[50%] translate-x-[-50%] w-[465px]">
+          <div className="w-full h-[450px]  flex relative flex-wrap md:flex-nowrap">
+            <div className="w-full md:w-[60%] xl:w-1/2 relative">
+              <div className="absolute top-[48px] md:top-[91px] right-[50%] left-[70%] md:left-[50%] translate-x-[-50%] w-[465px]">
                 {renderedTexts}
               </div>
             </div>
-            <div className="w-1/2 flex  justify-start overflow-hidden relative z-10">
+            <div className="w-full md:w-[40%] xl:w-1/2 flex justify-center md:justify-start overflow-hidden relative z-10">
               <div
-                className={` marker:w-full h-full absolute top-0 right-[115px] p-5  flex flex-wrap items-center`}
+                className={` marker:w-full h-full absolute top-0 xl:right-[115px] p-5  flex flex-wrap items-center`}
               >
                 <div
                   className={`${styles.slideImageOneChild1} min-w-full w-full h-[95%] mr-10 py-2 relative`}

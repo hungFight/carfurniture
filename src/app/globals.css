@@ -19,3 +19,7 @@
 * {
   box-sizing: border-box;
 }
+
+.swiper-pagination {
+  bottom: -10px !important;
+}
