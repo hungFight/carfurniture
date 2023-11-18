@@ -6,7 +6,7 @@ import React from "react";
 
 const Header = () => {
   return (
-    <div className="w-full 2xl:w-[1536px] bg-white flex justify-center h-auto sm:h-[125px] pt-4 border-b-2">
+    <div className="w-full 2xl:w-[1519px] bg-white flex justify-center h-auto sm:h-[125px] pt-4 border-b-2">
       <div className="w-[80%] max-sm:w-full h-auto flex justify-between items-center sm:h-10 relative sm:pl-[93px] flex-wrap">
         <div className="flex max-sm:pl-5">
           <div className="w-16 h-16 sm:w-20 sm:h-20 mr-2.5 sm:absolute left-0">

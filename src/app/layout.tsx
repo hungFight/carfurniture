@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/Header";
+import Footer from "@/components/Footer";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -21,6 +22,20 @@ export default function RootLayout({
         <>
           <Header />
           {children}
+          <Footer
+            googleMapURL={`https://maps.googleapis.com/maps/api/js?key=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`}
+            loadingElement={<div style={{ height: `100%` }} />}
+            containerElement={
+              <div
+                style={{
+                  height: `90vh`,
+                  margin: `auto`,
+                  border: "2px solid black",
+                }}
+              />
+            }
+            mapElement={<div style={{ height: `100%` }} />}
+          />
         </>
       </body>
     </html>
