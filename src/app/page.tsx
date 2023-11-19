@@ -737,12 +737,12 @@ export default function Home() {
             <div
               className={`w-1/2 flex flex-wrap justify-around ${styles.news}`}
             >
-              <h3 className="text-base w-full font-semibold text-center my-3">
+              <h3 className="text-base w-full font-semibold text-center my-5">
                 Tin tuc
               </h3>
               <div className="flex flex-wrap justify-around">
-                <div className="w-[200px] p-1 border shadow-[0_0_3px_#7a7a7a] hover:shadow-[0_0_10px] mb-4 cursor-pointer mr-2">
-                  <div className="w-full h-[180px] ">
+                <div className="w-[200px] xl:w-[250px] p-1 border shadow-[0_0_3px_#7a7a7a] hover:shadow-[0_0_10px] mb-4 cursor-pointer mr-2">
+                  <div className="w-full h-[180px] xl:[200px]">
                     <img
                       src="https://i.pinimg.com/originals/07/8c/71/078c71955fe352c544e395fbafddf82c.jpg"
                       alt="car"
@@ -770,9 +770,9 @@ export default function Home() {
                       View more
                     </button>
                   </div>
-                </div>
-                <div className="w-[200px] p-1 border shadow-[0_0_3px_#7a7a7a] hover:shadow-[0_0_10px] mb-4 cursor-pointer mr-2">
-                  <div className="w-full h-[180px] ">
+                </div>{" "}
+                <div className="w-[200px] xl:w-[250px] p-1 border shadow-[0_0_3px_#7a7a7a] hover:shadow-[0_0_10px] mb-4 cursor-pointer mr-2">
+                  <div className="w-full h-[180px] xl:[200px]">
                     <img
                       src="https://i.pinimg.com/originals/07/8c/71/078c71955fe352c544e395fbafddf82c.jpg"
                       alt="car"
@@ -800,9 +800,159 @@ export default function Home() {
                       View more
                     </button>
                   </div>
-                </div>
-                <div className="w-[200px] p-1 border shadow-[0_0_3px_#7a7a7a] hover:shadow-[0_0_10px] mb-4 cursor-pointer mr-2">
-                  <div className="w-full h-[180px] ">
+                </div>{" "}
+                <div className="w-[200px] xl:w-[250px] p-1 border shadow-[0_0_3px_#7a7a7a] hover:shadow-[0_0_10px] mb-4 cursor-pointer mr-2">
+                  <div className="w-full h-[180px] xl:[200px]">
+                    <img
+                      src="https://i.pinimg.com/originals/07/8c/71/078c71955fe352c544e395fbafddf82c.jpg"
+                      alt="car"
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  <div className={`mt-1 ${styles.containerProductTag}`}>
+                    <h3 className={`font-bold text-sm  ${styles.nameTag}`}>
+                      Super Car HD Wallpaper in 2023
+                    </h3>
+                    <h3 className="font-semibold text-[13px] mt-2">
+                      Đó chính xác là gì?
+                    </h3>
+                    <p className={`text-[13px] ${styles.desTag}`}>
+                      <strong className="text-[crimson]">*</strong>
+                      Lamborghini Urus 2023 có đầy đủ những phẩm chất ưu việt
+                      của một chiếc siêu xe hàng đầu. Nhưng nhiều người vẫn cho
+                      rằng các mẫu siêu SUV không phải là thế mạnh của
+                      Lamborghini và Urus 2023 sẽ bị lép vế trước những mẫu xe
+                      gầm thấp đã làm nên tên tuổi của thương hiệu
+                    </p>
+                  </div>
+                  <div className="my-2 flex items-center justify-center relative">
+                    <button className="text-sm shadow-[0_0_2px_#4a8cbf] border-[#4a8cbf] border-[1px] p-1 pr-3 rounded-md">
+                      View more
+                    </button>
+                  </div>
+                </div>{" "}
+                <div className="w-[200px] xl:w-[250px] p-1 border shadow-[0_0_3px_#7a7a7a] hover:shadow-[0_0_10px] mb-4 cursor-pointer mr-2">
+                  <div className="w-full h-[180px] xl:[200px]">
+                    <img
+                      src="https://i.pinimg.com/originals/07/8c/71/078c71955fe352c544e395fbafddf82c.jpg"
+                      alt="car"
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  <div className={`mt-1 ${styles.containerProductTag}`}>
+                    <h3 className={`font-bold text-sm  ${styles.nameTag}`}>
+                      Super Car HD Wallpaper in 2023
+                    </h3>
+                    <h3 className="font-semibold text-[13px] mt-2">
+                      Đó chính xác là gì?
+                    </h3>
+                    <p className={`text-[13px] ${styles.desTag}`}>
+                      <strong className="text-[crimson]">*</strong>
+                      Lamborghini Urus 2023 có đầy đủ những phẩm chất ưu việt
+                      của một chiếc siêu xe hàng đầu. Nhưng nhiều người vẫn cho
+                      rằng các mẫu siêu SUV không phải là thế mạnh của
+                      Lamborghini và Urus 2023 sẽ bị lép vế trước những mẫu xe
+                      gầm thấp đã làm nên tên tuổi của thương hiệu
+                    </p>
+                  </div>
+                  <div className="my-2 flex items-center justify-center relative">
+                    <button className="text-sm shadow-[0_0_2px_#4a8cbf] border-[#4a8cbf] border-[1px] p-1 pr-3 rounded-md">
+                      View more
+                    </button>
+                  </div>
+                </div>{" "}
+                <div className="w-[200px] xl:w-[250px] p-1 border shadow-[0_0_3px_#7a7a7a] hover:shadow-[0_0_10px] mb-4 cursor-pointer mr-2">
+                  <div className="w-full h-[180px] xl:[200px]">
+                    <img
+                      src="https://i.pinimg.com/originals/07/8c/71/078c71955fe352c544e395fbafddf82c.jpg"
+                      alt="car"
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  <div className={`mt-1 ${styles.containerProductTag}`}>
+                    <h3 className={`font-bold text-sm  ${styles.nameTag}`}>
+                      Super Car HD Wallpaper in 2023
+                    </h3>
+                    <h3 className="font-semibold text-[13px] mt-2">
+                      Đó chính xác là gì?
+                    </h3>
+                    <p className={`text-[13px] ${styles.desTag}`}>
+                      <strong className="text-[crimson]">*</strong>
+                      Lamborghini Urus 2023 có đầy đủ những phẩm chất ưu việt
+                      của một chiếc siêu xe hàng đầu. Nhưng nhiều người vẫn cho
+                      rằng các mẫu siêu SUV không phải là thế mạnh của
+                      Lamborghini và Urus 2023 sẽ bị lép vế trước những mẫu xe
+                      gầm thấp đã làm nên tên tuổi của thương hiệu
+                    </p>
+                  </div>
+                  <div className="my-2 flex items-center justify-center relative">
+                    <button className="text-sm shadow-[0_0_2px_#4a8cbf] border-[#4a8cbf] border-[1px] p-1 pr-3 rounded-md">
+                      View more
+                    </button>
+                  </div>
+                </div>{" "}
+                <div className="w-[200px] xl:w-[250px] p-1 border shadow-[0_0_3px_#7a7a7a] hover:shadow-[0_0_10px] mb-4 cursor-pointer mr-2">
+                  <div className="w-full h-[180px] xl:[200px]">
+                    <img
+                      src="https://i.pinimg.com/originals/07/8c/71/078c71955fe352c544e395fbafddf82c.jpg"
+                      alt="car"
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  <div className={`mt-1 ${styles.containerProductTag}`}>
+                    <h3 className={`font-bold text-sm  ${styles.nameTag}`}>
+                      Super Car HD Wallpaper in 2023
+                    </h3>
+                    <h3 className="font-semibold text-[13px] mt-2">
+                      Đó chính xác là gì?
+                    </h3>
+                    <p className={`text-[13px] ${styles.desTag}`}>
+                      <strong className="text-[crimson]">*</strong>
+                      Lamborghini Urus 2023 có đầy đủ những phẩm chất ưu việt
+                      của một chiếc siêu xe hàng đầu. Nhưng nhiều người vẫn cho
+                      rằng các mẫu siêu SUV không phải là thế mạnh của
+                      Lamborghini và Urus 2023 sẽ bị lép vế trước những mẫu xe
+                      gầm thấp đã làm nên tên tuổi của thương hiệu
+                    </p>
+                  </div>
+                  <div className="my-2 flex items-center justify-center relative">
+                    <button className="text-sm shadow-[0_0_2px_#4a8cbf] border-[#4a8cbf] border-[1px] p-1 pr-3 rounded-md">
+                      View more
+                    </button>
+                  </div>
+                </div>{" "}
+                <div className="w-[200px] xl:w-[250px] p-1 border shadow-[0_0_3px_#7a7a7a] hover:shadow-[0_0_10px] mb-4 cursor-pointer mr-2">
+                  <div className="w-full h-[180px] xl:[200px]">
+                    <img
+                      src="https://i.pinimg.com/originals/07/8c/71/078c71955fe352c544e395fbafddf82c.jpg"
+                      alt="car"
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  <div className={`mt-1 ${styles.containerProductTag}`}>
+                    <h3 className={`font-bold text-sm  ${styles.nameTag}`}>
+                      Super Car HD Wallpaper in 2023
+                    </h3>
+                    <h3 className="font-semibold text-[13px] mt-2">
+                      Đó chính xác là gì?
+                    </h3>
+                    <p className={`text-[13px] ${styles.desTag}`}>
+                      <strong className="text-[crimson]">*</strong>
+                      Lamborghini Urus 2023 có đầy đủ những phẩm chất ưu việt
+                      của một chiếc siêu xe hàng đầu. Nhưng nhiều người vẫn cho
+                      rằng các mẫu siêu SUV không phải là thế mạnh của
+                      Lamborghini và Urus 2023 sẽ bị lép vế trước những mẫu xe
+                      gầm thấp đã làm nên tên tuổi của thương hiệu
+                    </p>
+                  </div>
+                  <div className="my-2 flex items-center justify-center relative">
+                    <button className="text-sm shadow-[0_0_2px_#4a8cbf] border-[#4a8cbf] border-[1px] p-1 pr-3 rounded-md">
+                      View more
+                    </button>
+                  </div>
+                </div>{" "}
+                <div className="w-[200px] xl:w-[250px] p-1 border shadow-[0_0_3px_#7a7a7a] hover:shadow-[0_0_10px] mb-4 cursor-pointer mr-2">
+                  <div className="w-full h-[180px] xl:[200px]">
                     <img
                       src="https://i.pinimg.com/originals/07/8c/71/078c71955fe352c544e395fbafddf82c.jpg"
                       alt="car"
@@ -832,16 +982,16 @@ export default function Home() {
                   </div>
                 </div>
               </div>
-            </div>
+            </div>{" "}
             <div
               className={`w-1/2 flex flex-wrap justify-around ${styles.news}`}
             >
-              <h3 className="text-base w-full font-semibold text-center my-3">
-                Tin tuc
+              <h3 className="text-base w-full font-semibold text-center my-5">
+                Huong dan
               </h3>
               <div className="flex flex-wrap justify-around">
-                <div className="w-[200px] p-1 border shadow-[0_0_3px_#7a7a7a] hover:shadow-[0_0_10px] mb-4 cursor-pointer mr-2">
-                  <div className="w-full h-[180px] ">
+                <div className="w-[200px] xl:w-[250px] p-1 border shadow-[0_0_3px_#7a7a7a] hover:shadow-[0_0_10px] mb-4 cursor-pointer mr-2">
+                  <div className="w-full h-[180px] xl:[200px]">
                     <img
                       src="https://i.pinimg.com/originals/07/8c/71/078c71955fe352c544e395fbafddf82c.jpg"
                       alt="car"
@@ -869,9 +1019,9 @@ export default function Home() {
                       View more
                     </button>
                   </div>
-                </div>
-                <div className="w-[200px] p-1 border shadow-[0_0_3px_#7a7a7a] hover:shadow-[0_0_10px] mb-4 cursor-pointer mr-2">
-                  <div className="w-full h-[180px] ">
+                </div>{" "}
+                <div className="w-[200px] xl:w-[250px] p-1 border shadow-[0_0_3px_#7a7a7a] hover:shadow-[0_0_10px] mb-4 cursor-pointer mr-2">
+                  <div className="w-full h-[180px] xl:[200px]">
                     <img
                       src="https://i.pinimg.com/originals/07/8c/71/078c71955fe352c544e395fbafddf82c.jpg"
                       alt="car"
@@ -899,9 +1049,159 @@ export default function Home() {
                       View more
                     </button>
                   </div>
-                </div>
-                <div className="w-[200px] p-1 border shadow-[0_0_3px_#7a7a7a] hover:shadow-[0_0_10px] mb-4 cursor-pointer mr-2">
-                  <div className="w-full h-[180px] ">
+                </div>{" "}
+                <div className="w-[200px] xl:w-[250px] p-1 border shadow-[0_0_3px_#7a7a7a] hover:shadow-[0_0_10px] mb-4 cursor-pointer mr-2">
+                  <div className="w-full h-[180px] xl:[200px]">
+                    <img
+                      src="https://i.pinimg.com/originals/07/8c/71/078c71955fe352c544e395fbafddf82c.jpg"
+                      alt="car"
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  <div className={`mt-1 ${styles.containerProductTag}`}>
+                    <h3 className={`font-bold text-sm  ${styles.nameTag}`}>
+                      Super Car HD Wallpaper in 2023
+                    </h3>
+                    <h3 className="font-semibold text-[13px] mt-2">
+                      Đó chính xác là gì?
+                    </h3>
+                    <p className={`text-[13px] ${styles.desTag}`}>
+                      <strong className="text-[crimson]">*</strong>
+                      Lamborghini Urus 2023 có đầy đủ những phẩm chất ưu việt
+                      của một chiếc siêu xe hàng đầu. Nhưng nhiều người vẫn cho
+                      rằng các mẫu siêu SUV không phải là thế mạnh của
+                      Lamborghini và Urus 2023 sẽ bị lép vế trước những mẫu xe
+                      gầm thấp đã làm nên tên tuổi của thương hiệu
+                    </p>
+                  </div>
+                  <div className="my-2 flex items-center justify-center relative">
+                    <button className="text-sm shadow-[0_0_2px_#4a8cbf] border-[#4a8cbf] border-[1px] p-1 pr-3 rounded-md">
+                      View more
+                    </button>
+                  </div>
+                </div>{" "}
+                <div className="w-[200px] xl:w-[250px] p-1 border shadow-[0_0_3px_#7a7a7a] hover:shadow-[0_0_10px] mb-4 cursor-pointer mr-2">
+                  <div className="w-full h-[180px] xl:[200px]">
+                    <img
+                      src="https://i.pinimg.com/originals/07/8c/71/078c71955fe352c544e395fbafddf82c.jpg"
+                      alt="car"
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  <div className={`mt-1 ${styles.containerProductTag}`}>
+                    <h3 className={`font-bold text-sm  ${styles.nameTag}`}>
+                      Super Car HD Wallpaper in 2023
+                    </h3>
+                    <h3 className="font-semibold text-[13px] mt-2">
+                      Đó chính xác là gì?
+                    </h3>
+                    <p className={`text-[13px] ${styles.desTag}`}>
+                      <strong className="text-[crimson]">*</strong>
+                      Lamborghini Urus 2023 có đầy đủ những phẩm chất ưu việt
+                      của một chiếc siêu xe hàng đầu. Nhưng nhiều người vẫn cho
+                      rằng các mẫu siêu SUV không phải là thế mạnh của
+                      Lamborghini và Urus 2023 sẽ bị lép vế trước những mẫu xe
+                      gầm thấp đã làm nên tên tuổi của thương hiệu
+                    </p>
+                  </div>
+                  <div className="my-2 flex items-center justify-center relative">
+                    <button className="text-sm shadow-[0_0_2px_#4a8cbf] border-[#4a8cbf] border-[1px] p-1 pr-3 rounded-md">
+                      View more
+                    </button>
+                  </div>
+                </div>{" "}
+                <div className="w-[200px] xl:w-[250px] p-1 border shadow-[0_0_3px_#7a7a7a] hover:shadow-[0_0_10px] mb-4 cursor-pointer mr-2">
+                  <div className="w-full h-[180px] xl:[200px]">
+                    <img
+                      src="https://i.pinimg.com/originals/07/8c/71/078c71955fe352c544e395fbafddf82c.jpg"
+                      alt="car"
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  <div className={`mt-1 ${styles.containerProductTag}`}>
+                    <h3 className={`font-bold text-sm  ${styles.nameTag}`}>
+                      Super Car HD Wallpaper in 2023
+                    </h3>
+                    <h3 className="font-semibold text-[13px] mt-2">
+                      Đó chính xác là gì?
+                    </h3>
+                    <p className={`text-[13px] ${styles.desTag}`}>
+                      <strong className="text-[crimson]">*</strong>
+                      Lamborghini Urus 2023 có đầy đủ những phẩm chất ưu việt
+                      của một chiếc siêu xe hàng đầu. Nhưng nhiều người vẫn cho
+                      rằng các mẫu siêu SUV không phải là thế mạnh của
+                      Lamborghini và Urus 2023 sẽ bị lép vế trước những mẫu xe
+                      gầm thấp đã làm nên tên tuổi của thương hiệu
+                    </p>
+                  </div>
+                  <div className="my-2 flex items-center justify-center relative">
+                    <button className="text-sm shadow-[0_0_2px_#4a8cbf] border-[#4a8cbf] border-[1px] p-1 pr-3 rounded-md">
+                      View more
+                    </button>
+                  </div>
+                </div>{" "}
+                <div className="w-[200px] xl:w-[250px] p-1 border shadow-[0_0_3px_#7a7a7a] hover:shadow-[0_0_10px] mb-4 cursor-pointer mr-2">
+                  <div className="w-full h-[180px] xl:[200px]">
+                    <img
+                      src="https://i.pinimg.com/originals/07/8c/71/078c71955fe352c544e395fbafddf82c.jpg"
+                      alt="car"
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  <div className={`mt-1 ${styles.containerProductTag}`}>
+                    <h3 className={`font-bold text-sm  ${styles.nameTag}`}>
+                      Super Car HD Wallpaper in 2023
+                    </h3>
+                    <h3 className="font-semibold text-[13px] mt-2">
+                      Đó chính xác là gì?
+                    </h3>
+                    <p className={`text-[13px] ${styles.desTag}`}>
+                      <strong className="text-[crimson]">*</strong>
+                      Lamborghini Urus 2023 có đầy đủ những phẩm chất ưu việt
+                      của một chiếc siêu xe hàng đầu. Nhưng nhiều người vẫn cho
+                      rằng các mẫu siêu SUV không phải là thế mạnh của
+                      Lamborghini và Urus 2023 sẽ bị lép vế trước những mẫu xe
+                      gầm thấp đã làm nên tên tuổi của thương hiệu
+                    </p>
+                  </div>
+                  <div className="my-2 flex items-center justify-center relative">
+                    <button className="text-sm shadow-[0_0_2px_#4a8cbf] border-[#4a8cbf] border-[1px] p-1 pr-3 rounded-md">
+                      View more
+                    </button>
+                  </div>
+                </div>{" "}
+                <div className="w-[200px] xl:w-[250px] p-1 border shadow-[0_0_3px_#7a7a7a] hover:shadow-[0_0_10px] mb-4 cursor-pointer mr-2">
+                  <div className="w-full h-[180px] xl:[200px]">
+                    <img
+                      src="https://i.pinimg.com/originals/07/8c/71/078c71955fe352c544e395fbafddf82c.jpg"
+                      alt="car"
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  <div className={`mt-1 ${styles.containerProductTag}`}>
+                    <h3 className={`font-bold text-sm  ${styles.nameTag}`}>
+                      Super Car HD Wallpaper in 2023
+                    </h3>
+                    <h3 className="font-semibold text-[13px] mt-2">
+                      Đó chính xác là gì?
+                    </h3>
+                    <p className={`text-[13px] ${styles.desTag}`}>
+                      <strong className="text-[crimson]">*</strong>
+                      Lamborghini Urus 2023 có đầy đủ những phẩm chất ưu việt
+                      của một chiếc siêu xe hàng đầu. Nhưng nhiều người vẫn cho
+                      rằng các mẫu siêu SUV không phải là thế mạnh của
+                      Lamborghini và Urus 2023 sẽ bị lép vế trước những mẫu xe
+                      gầm thấp đã làm nên tên tuổi của thương hiệu
+                    </p>
+                  </div>
+                  <div className="my-2 flex items-center justify-center relative">
+                    <button className="text-sm shadow-[0_0_2px_#4a8cbf] border-[#4a8cbf] border-[1px] p-1 pr-3 rounded-md">
+                      View more
+                    </button>
+                  </div>
+                </div>{" "}
+                <div className="w-[200px] xl:w-[250px] p-1 border shadow-[0_0_3px_#7a7a7a] hover:shadow-[0_0_10px] mb-4 cursor-pointer mr-2">
+                  <div className="w-full h-[180px] xl:[200px]">
                     <img
                       src="https://i.pinimg.com/originals/07/8c/71/078c71955fe352c544e395fbafddf82c.jpg"
                       alt="car"

@@ -9,15 +9,16 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@react-google-maps/api": "^2.19.2",
     "@react-icons/all-files": "^4.1.0",
-    "create-next-app": "^14.0.2",
+    "create-next-app": "^14.0.3",
     "next": "13.5.6",
     "react": "^18",
     "react-dom": "^18",
+    "react-google-maps": "^9.4.5",
     "react-icons": "^4.12.0",
     "sass": "^1.69.5",
-    "swiper": "^11.0.4",
-    "react-google-maps": "9.4.5"
+    "swiper": "^11.0.4"
   },
   "devDependencies": {
     "@types/node": "^20",

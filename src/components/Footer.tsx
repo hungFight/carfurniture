@@ -1,22 +1,12 @@
-"use client";
-import React, { useEffect, useState } from "react";
-import {
-  withScriptjs,
-  withGoogleMap,
-  GoogleMap,
-  Marker,
-} from "react-google-maps";
+import React from "react";
+import Map from "./Map";
 
 const Footer = () => {
   return (
-    <div>
-      map
-      <GoogleMap
-        defaultZoom={8}
-        defaultCenter={{ lat: -34.397, lng: 150.644 }}
-      ></GoogleMap>
+    <div className="w-full h-[400px] bg-black flex items-center justify-center">
+      <Map />
     </div>
   );
 };
 
-export default withScriptjs(withGoogleMap(Footer));
+export default Footer;
