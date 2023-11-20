@@ -1,0 +1,10 @@
+@media (min-width: 768px) {
+  .description {
+    -webkit-line-clamp: 4 !important;
+  }
+}
+@media (min-width: 1280px) {
+  .description {
+    -webkit-line-clamp: 6 !important;
+  }
+}

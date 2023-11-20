@@ -13,6 +13,7 @@ import { SiShopee } from "react-icons/si";
 import { Pagination, Navigation } from "swiper/modules";
 import SlideHome from "@/components/Slide/SlideHome";
 import Image from "next/image";
+import InputSearch from "@/components/Items/InputSearch";
 export default function Home() {
   return (
     <div className="w-full 2xl:w-[1519px]">
@@ -106,19 +107,7 @@ export default function Home() {
                 <p className="text-sm font-normal">( Redmi note 8 pro )</p>
               </h3>
               <div>
-                <div className="flex relative w-fit">
-                  <input
-                    type="text"
-                    placeholder="Search"
-                    className="outline-[#41af6b] shadow-[0_0_2px_#4a8cbf] border-[#4a8cbf] border-[1px] p-1 pr-3 rounded-md"
-                  />
-                  <div className="text-[20px] flex items-center justify-center p-1 absolute right-1 top-[2px]">
-                    <CiSearch />
-                  </div>
-                  <div className="text-[14px] shadow-[0_0_2px_#4a8cbf] border-[#4a8cbf] border-[1px] rounded-md cursor-pointer flex items-center justify-center p-1 absolute right-[-70px] top-[2px]">
-                    Tìm kiếm
-                  </div>
-                </div>
+                <InputSearch />
               </div>
             </div>
             <div className="w-full flex flex-wrap mt-8 px-1 justify-around">
@@ -423,19 +412,7 @@ export default function Home() {
                 <p className="text-sm font-normal">( Redmi note 8 pro )</p>
               </h3>
               <div>
-                <div className="flex relative w-fit">
-                  <input
-                    type="text"
-                    placeholder="Search"
-                    className="outline-[#41af6b] shadow-[0_0_2px_#4a8cbf] border-[#4a8cbf] border-[1px] p-1 pr-3 rounded-md"
-                  />
-                  <div className="text-[20px] flex items-center justify-center p-1 absolute right-1 top-[2px]">
-                    <CiSearch />
-                  </div>
-                  <div className="text-[14px] shadow-[0_0_2px_#4a8cbf] border-[#4a8cbf] border-[1px] rounded-md cursor-pointer flex items-center justify-center p-1 absolute right-[-70px] top-[2px]">
-                    Tìm kiếm
-                  </div>
-                </div>
+                <InputSearch />
               </div>
             </div>
             <div className="w-full flex flex-wrap mt-8 px-1 justify-around">

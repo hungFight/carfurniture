@@ -46,8 +46,8 @@ const Map = () => {
   //   <></>
   // );
   return (
-    <div className="flex text-white relative right-[76px] w-fit">
-      <div className="w-[400px] h-[200px] bg-white mr-3 ">
+    <div className="flex  text-white md:relative right-[76px] justify-center w-fit">
+      <div className="w-[200px] h-[100px] sm:w-[300px] sm:h-[200px] md:w-[400px] md:h-[200px] bg-white mr-3 ">
         <iframe
           src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3725.0443016137747!2d105.81429!3d20.9908612!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3135ac93b436c251%3A0x4090fcaf119992b1!2zMzQ5IFAuIFbFqSBUw7RuZyBQaGFuLCBLaMawxqFuZyDEkMOsbmgsIFRoYW5oIFh1w6JuLCBIw6AgTuG7mWk!5e0!3m2!1svi!2s!4v1700400017540!5m2!1svi!2s"
           width="100%"

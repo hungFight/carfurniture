@@ -20,7 +20,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <>
+        <div className="w-full 2xl:w-[1519px]">
           <Header />
           {children}
           <Footer />
@@ -28,14 +28,14 @@ export default function RootLayout({
             href="tel:0974034981"
             className="fixed bottom-5 left-2 flex items-center"
           >
-            <div className="w-[50px] h-[50px] rounded-full bg-[#5BB006] flex items-center justify-center z-10">
+            <div className="w-[50px] h-[50px] rounded-full bg-[#5BB006] flex items-center justify-center z-10 text-white">
               <FaPhone />
             </div>
             <h3 className="text-[15px]  bg-[#0099e6] rounded-[20px] font-semibold py-1 px-[11px] pl-[34px] relative right-[29px] text-white">
               0974034981
             </h3>
           </a>
-        </>
+        </div>
       </body>
     </html>
   );
