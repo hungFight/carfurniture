@@ -2,7 +2,7 @@ import Link from "next/link";
 import React from "react";
 
 const Listing: React.FC<{
-  data: string[];
+  data?: string[];
   choice: string;
   onClick: (vl: string) => void;
   default: string;
@@ -19,10 +19,10 @@ const Listing: React.FC<{
           Danh muc tin tức
         </p>
         {data.map((r) => (
-          <div key={r} className="w-full border-b border-[#303131]">
+          <div key={r} className="w-full border-b border-[#303131]  mb-3">
             <Link
               href={`/${defaultR}/${r}`}
-              className={`w-full  text-sm md:text-base mb-3 cursor-pointer  ${
+              className={`w-full  text-sm md:text-base cursor-pointer  ${
                 choice === r ? "text-[#0087ff]" : ""
               }`}
               onClick={() => onClick(r)}
