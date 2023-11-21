@@ -5,14 +5,15 @@ import Routing from "@/components/Items/Routing";
 import Image from "next/image";
 import styles from "./styleNews.module.scss";
 import { useState } from "react";
-import { useSearchParams } from "next/navigation";
-export default function New() {
-  const searchParams = useSearchParams();
+const RoutListing = () => {
+  const [routs, setRouts] = useState([
+    "Tin tức",
+    window.location.pathname.split("news/")[1]
+      ? window.location.pathname.split("news/")[1]
+      : "Mazda",
+  ]);
+  console.log(window.location.pathname.split("news/"), "rout");
 
-  const search = searchParams.get("search");
-  console.log(search, "search");
-
-  const [routs, setRouts] = useState(["Tin tức", "Mazda"]);
   const [load, setLoad] = useState(false);
   const handleRount = (vl: string) => {
     if (routs[1]) {
@@ -38,4 +39,6 @@ export default function New() {
       </div>
     </div>
   );
-}
+};
+
+export default RoutListing;

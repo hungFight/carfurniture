@@ -9,7 +9,9 @@ const Routing: React.FC<{ routs?: string[] }> = ({ routs }) => {
       {routs?.map((r) => (
         <div key={r} className="w-fit flex  items-center justify-center">
           <p className="mx-5">/</p>
-          <p className="whitespace-nowrap">{r}</p>
+          <p className="whitespace-nowrap text-sm md:text-base cursor-pointer">
+            {r}
+          </p>
         </div>
       ))}
     </div>

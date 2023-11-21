@@ -1,12 +1,12 @@
 import React from "react";
 import { CiSearch } from "react-icons/ci";
 
-const InputSearch = () => {
+const InputSearch: React.FC<{ placeholder?: string }> = ({ placeholder }) => {
   return (
     <div className="flex relative w-fit">
       <input
         type="text"
-        placeholder="Search"
+        placeholder={placeholder ?? "Search"}
         className="outline-[#41af6b] mr-1 shadow-[0_0_2px_#4a8cbf] border-[#4a8cbf] border-[1px] p-1 pr-3 rounded-md"
       />
       <div className="text-[20px] flex items-center justify-center p-1 absolute right-1 top-[2px]">
