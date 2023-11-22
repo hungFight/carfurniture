@@ -1,12 +1,7 @@
-"use client";
-import InputSearch from "@/components/Items/InputSearch";
-import Listing from "@/components/Items/Listing";
-import Routing from "@/components/Items/Routing";
-import Image from "next/image";
-import styles from "./styleNews.module.scss";
-import { useState } from "react";
-import { useSearchParams } from "next/navigation";
-export default function New() {
+import React from "react";
+import styles from "../news/styleNews.module.scss";
+
+const page = () => {
   return (
     <div className="w-full p-3">
       <div className="w-full flex justify-between mb-4">
@@ -83,4 +78,6 @@ export default function New() {
       </div>
     </div>
   );
-}
+};
+
+export default page;

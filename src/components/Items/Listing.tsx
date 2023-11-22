@@ -5,12 +5,14 @@ const Listing: React.FC<{
   data?: string[];
   choice: string;
   onClick: (vl: string) => void;
-  default: string;
+  default?: string;
+  Tag?: any;
 }> = ({
   data = ["Mazda", "lamborghini"],
   choice,
   onClick,
   default: defaultR,
+  Tag = "Link",
 }) => {
   return (
     <div className="w-full">
@@ -20,7 +22,7 @@ const Listing: React.FC<{
         </p>
         {data.map((r) => (
           <div key={r} className="w-full border-b border-[#303131]  mb-3">
-            <Link
+            <Tag
               href={`/${defaultR}/${r}`}
               className={`w-full  text-sm md:text-base cursor-pointer  ${
                 choice === r ? "text-[#0087ff]" : ""
@@ -28,7 +30,7 @@ const Listing: React.FC<{
               onClick={() => onClick(r)}
             >
               {r}
-            </Link>
+            </Tag>
           </div>
         ))}
       </div>

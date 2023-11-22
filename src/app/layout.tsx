@@ -4,6 +4,7 @@ import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { FaPhone } from "react-icons/fa6";
+import Link from "next/link";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -26,7 +27,7 @@ export default function RootLayout({
           <Footer />
           <a
             href="tel:0974034981"
-            className="fixed bottom-5 left-2 flex items-center"
+            className="fixed bottom-5 left-2 flex items-center cursor-pointer"
           >
             <div className="w-[50px] h-[50px] rounded-full bg-[#5BB006] flex items-center justify-center z-10 text-white">
               <FaPhone />
@@ -35,6 +36,14 @@ export default function RootLayout({
               0974034981
             </h3>
           </a>
+          <Link
+            href="/admin"
+            className="fixed bottom-5 right-2 flex items-center  cursor-pointer"
+          >
+            <h3 className="text-[15px] text-center bg-[#0099e6] rounded-[20px] font-semibold py-1 px-[11px]  text-white">
+              Admin
+            </h3>
+          </Link>
         </div>
       </body>
     </html>

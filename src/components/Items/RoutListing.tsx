@@ -8,7 +8,7 @@ import { useState } from "react";
 const RoutListing: React.FC<{
   currentPath: string;
   title: string;
-  defaultR: string;
+  defaultR?: string;
 }> = ({ currentPath, title, defaultR }) => {
   const [routs, setRouts] = useState([
     title,
@@ -29,7 +29,7 @@ const RoutListing: React.FC<{
     setLoad(!load);
   };
   return (
-    <div className=" pl-5 ">
+    <div className=" px-5 w-full md:w-[400px]">
       <div className="w-full my-3 mb-4">
         <Routing routs={routs} />
       </div>

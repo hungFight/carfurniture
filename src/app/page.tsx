@@ -2,18 +2,12 @@
 import styles from "./styleHomePage.module.scss";
 import React, { useEffect, useRef, useState } from "react";
 // Import Swiper React components
-import { Swiper, SwiperSlide } from "swiper/react";
-import { CiSearch } from "react-icons/ci";
-// Import Swiper styles
-import "swiper/css";
-import "swiper/css/pagination";
-import "swiper/css/navigation";
-import { SiShopee } from "react-icons/si";
-// import required modules
-import { Pagination, Navigation } from "swiper/modules";
+
 import SlideHome from "@/components/Slide/SlideHome";
 import Image from "next/image";
 import InputSearch from "@/components/Items/InputSearch";
+import SlideCategory from "@/components/Slide/SlideCategory";
+import { SiShopee } from "react-icons/si";
 export default function Home() {
   return (
     <div className="w-full 2xl:w-[1519px]">
@@ -41,64 +35,7 @@ export default function Home() {
             <h3 className="w-full pl-1 font-semibold text-base xl:text-lg">
               Danh sách sản phẩm
             </h3>
-            <div
-              className={`w-full flex  px-1 py-2 relative ${styles.pagination}`}
-            >
-              <div className="w-full bg-[aliceblue] ">
-                <Swiper
-                  slidesPerView={3}
-                  pagination={{
-                    dynamicBullets: true,
-                  }}
-                  breakpoints={{
-                    0: {
-                      slidesPerView: 3,
-                      spaceBetween: 10,
-                    },
-                    500: {
-                      slidesPerView: 4,
-                      spaceBetween: 20,
-                    },
-                    800: {
-                      slidesPerView: 5,
-                      spaceBetween: 30,
-                    },
-                    1200: {
-                      slidesPerView: 6,
-                      spaceBetween: 40,
-                    },
-                  }}
-                  modules={[Pagination]}
-                  className={`${styles.mySwiper} `}
-                >
-                  <SwiperSlide>
-                    <h3 className="text-xs text-[#004cff]  md:text-sm xl:text-base">
-                      Redmi note 8 pro
-                    </h3>
-                  </SwiperSlide>{" "}
-                  <SwiperSlide>
-                    <h3 className="text-xs md:text-sm xl:text-base">
-                      Redmi note 8 pro
-                    </h3>
-                  </SwiperSlide>{" "}
-                  <SwiperSlide>
-                    <h3 className="text-xs md:text-sm xl:text-base">
-                      Redmi note 8 pro
-                    </h3>
-                  </SwiperSlide>
-                  <SwiperSlide>
-                    <h3 className="text-xs md:text-sm xl:text-base">
-                      Redmi note 8 pro
-                    </h3>
-                  </SwiperSlide>
-                  <SwiperSlide>
-                    <h3 className="text-xs md:text-sm xl:text-base">
-                      Redmi note 8 pro
-                    </h3>
-                  </SwiperSlide>
-                </Swiper>
-              </div>
-            </div>
+            <SlideCategory />
           </div>
           <div>
             <div className="pl-1">

@@ -65,7 +65,7 @@ const Header = () => {
             Danh sách sản phẩm
           </Link>
           <Link
-            href="/guide"
+            href="/guides"
             className="header_home  text-[#3a3b3b] text-sm sm:text-base mx-4 max-sm:my-1 w-max whitespace-pre-wrap font-medium cursor-pointer hover:text-[#42aaea]"
             onClick={(e: any) => {
               const hear = document.querySelectorAll(".header_home");
