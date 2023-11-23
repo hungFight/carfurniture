@@ -6,8 +6,10 @@ import styles from "../styleHomePage.module.scss";
 import { SiShopee } from "react-icons/si";
 import Routing from "@/components/Items/Routing";
 import Listing from "@/components/Items/Listing";
-
+import { IoIosAddCircle } from "react-icons/io";
+import AddProductModel from "@/components/AddProductModel";
 const page = () => {
+  const [add, setAdd] = useState<string>("");
   const [routs, setRouts] = useState(["Quản trị", "admin"]);
   const [load, setLoad] = useState(false);
   const handleRount = (vl: string) => {
@@ -24,7 +26,7 @@ const page = () => {
       <div className="w-full px-5 py-2">
         <SlideCategory />
       </div>
-      <div className="flex ">
+      <div className="flex flex-wrap md:flex-nowrap">
         <div className=" px-5 w-full md:w-[400px]">
           <div className="w-full my-3 mb-4">
             <Routing routs={routs} />
@@ -33,6 +35,12 @@ const page = () => {
             <div className="w-full md:w-[350px]  mb-5 md:border-r mr-2">
               <div className="w-full">
                 <Listing onClick={handleRount} choice={routs[1]} Tag="div" />
+              </div>
+              <div className="w-full flex items-center cursor-pointer ">
+                <div className="flex mr-3 text-[20px]">
+                  <IoIosAddCircle />
+                </div>
+                <p className="text-sm">Them danh muc</p>
               </div>
             </div>
             <h3 className="w-full md:hidden text-center border-b">
@@ -231,6 +239,10 @@ const page = () => {
           </div>
         </div>
       </div>
+      <div>
+        <p>Thêm sản phẩm</p>
+      </div>
+      <AddProductModel />
     </div>
   );
 };
