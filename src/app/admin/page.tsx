@@ -8,9 +8,12 @@ import Routing from "@/components/Items/Routing";
 import Listing from "@/components/Items/Listing";
 import { IoIosAddCircle } from "react-icons/io";
 import AddProductModel from "@/components/AddProductModel";
+import FormAboutUs from "@/components/FormAboutUs";
 const page = () => {
   const [add, setAdd] = useState<string>("");
-  const [routs, setRouts] = useState(["Quản trị", "admin"]);
+  const [aboutUs, setAboutUs] = useState<boolean>(false);
+  const [category, setCategory] = useState<number>(1);
+  const [routs, setRouts] = useState(["Quản trị"]);
   const [load, setLoad] = useState(false);
   const handleRount = (vl: string) => {
     if (routs.length >= 2) {
@@ -21,10 +24,17 @@ const page = () => {
     }
     setLoad(!load);
   };
+  const chooseCate = (id: number) => {
+    setCategory(id);
+  };
+  const dataCate = [
+    { id: 1, name: "San pham" },
+    { id: 2, name: "Tin tức" },
+  ];
   return (
-    <div className="flex flex-wrap">
+    <div className="flex flex-wrap ">
       <div className="w-full px-5 py-2">
-        <SlideCategory />
+        <SlideCategory data={dataCate} onClick={chooseCate} />
       </div>
       <div className="flex flex-wrap md:flex-nowrap">
         <div className=" px-5 w-full md:w-[400px]">
@@ -34,7 +44,15 @@ const page = () => {
           <div className="w-full flex mb-15 flex-wrap md:flex-nowrap">
             <div className="w-full md:w-[350px]  mb-5 md:border-r mr-2">
               <div className="w-full">
-                <Listing onClick={handleRount} choice={routs[1]} Tag="div" />
+                <Listing
+                  onClick={handleRount}
+                  menu={dataCate
+                    .filter((d) => d.id === category)[0]
+                    .name.toLowerCase()}
+                  choice={routs[1]}
+                  Tag="div"
+                  default="Tất cả"
+                />
               </div>
               <div className="w-full flex items-center cursor-pointer ">
                 <div className="flex mr-3 text-[20px]">
@@ -48,8 +66,20 @@ const page = () => {
             </h3>
           </div>
         </div>
-        <div className="flex flex-wrap justify-around border-l border-t border-b-slate-900 p-5">
-          <div className="w-[200px] md:w-[250px] p-1 border shadow-[0_0_3px_#7a7a7a] hover:shadow-[0_0_10px] mb-4 cursor-pointer">
+        <div className="flex flex-wrap justify-around border-l border-t border-b-slate-900 p-5 relative">
+          {routs[1] && (
+            <div
+              className="absolute top-1 right-2 z-5 px-3 py-2 rounded-[5px] bg-[#1e7ccd] cursor-pointer text-white"
+              onClick={() => {
+                setAdd(routs[1]);
+                setLoad(!load);
+              }}
+            >
+              {category === 1 && <p>Thêm sản phẩm</p>}
+              {category === 2 && <p>Thêm tin tức</p>}
+            </div>
+          )}
+          <div className="w-[200px] md:w-[250px] p-1 border shadow-[0_0_3px_#7a7a7a] hover:shadow-[0_0_10px] mb-4 cursor-pointer mx-1">
             <div className="w-full h-[200px] md:h-[230px]">
               <img
                 src="https://i.pinimg.com/originals/07/8c/71/078c71955fe352c544e395fbafddf82c.jpg"
@@ -96,7 +126,7 @@ const page = () => {
               </a>
             </div>
           </div>
-          <div className="w-[200px] md:w-[250px] p-1 border shadow-[0_0_3px_#7a7a7a] hover:shadow-[0_0_10px] mb-4 cursor-pointer">
+          <div className="w-[200px] md:w-[250px] p-1 border shadow-[0_0_3px_#7a7a7a] hover:shadow-[0_0_10px] mb-4 cursor-pointer mx-1">
             <div className="w-full h-[200px] md:h-[230px]">
               <img
                 src="https://i.pinimg.com/originals/07/8c/71/078c71955fe352c544e395fbafddf82c.jpg"
@@ -143,7 +173,7 @@ const page = () => {
               </a>
             </div>
           </div>
-          <div className="w-[200px] md:w-[250px] p-1 border shadow-[0_0_3px_#7a7a7a] hover:shadow-[0_0_10px] mb-4 cursor-pointer">
+          <div className="w-[200px] md:w-[250px] p-1 border shadow-[0_0_3px_#7a7a7a] hover:shadow-[0_0_10px] mb-4 cursor-pointer mx-1">
             <div className="w-full h-[200px] md:h-[230px]">
               <img
                 src="https://i.pinimg.com/originals/07/8c/71/078c71955fe352c544e395fbafddf82c.jpg"
@@ -190,7 +220,7 @@ const page = () => {
               </a>
             </div>
           </div>
-          <div className="w-[200px] md:w-[250px] p-1 border shadow-[0_0_3px_#7a7a7a] hover:shadow-[0_0_10px] mb-4 cursor-pointer">
+          <div className="w-[200px] md:w-[250px] p-1 border shadow-[0_0_3px_#7a7a7a] hover:shadow-[0_0_10px] mb-4 cursor-pointer mx-1">
             <div className="w-full h-[200px] md:h-[230px]">
               <img
                 src="https://i.pinimg.com/originals/07/8c/71/078c71955fe352c544e395fbafddf82c.jpg"
@@ -239,10 +269,17 @@ const page = () => {
           </div>
         </div>
       </div>
-      <div>
-        <p>Thêm sản phẩm</p>
+
+      {add && <AddProductModel title={routs[1]} onClick={() => setAdd("")} />}
+      {aboutUs && (
+        <FormAboutUs title="About us" onClick={() => setAboutUs(false)} />
+      )}
+      <div
+        className="w-fit fixed bg-[#0099e6] bottom-[80px] z-10 left-[52px] rounded-[5px] cursor-pointer font-medium px-3 py-1 text-white"
+        onClick={() => setAboutUs(true)}
+      >
+        About us
       </div>
-      <AddProductModel />
     </div>
   );
 };

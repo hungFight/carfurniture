@@ -7,18 +7,20 @@ const Listing: React.FC<{
   onClick: (vl: string) => void;
   default?: string;
   Tag?: any;
+  menu?: string;
 }> = ({
   data = ["Mazda", "lamborghini"],
   choice,
   onClick,
   default: defaultR,
-  Tag = "Link",
+  Tag = Link,
+  menu,
 }) => {
   return (
     <div className="w-full">
       <div className="w-[50%] md:w-[80%]">
         <p className="p-2 mb-10 font-medium rounded-[30px] whitespace-nowrap text-base border border-black text-center">
-          Danh muc tin tức
+          Danh muc {menu}
         </p>
         {data.map((r) => (
           <div key={r} className="w-full border-b border-[#303131]  mb-3">

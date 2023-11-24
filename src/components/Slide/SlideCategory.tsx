@@ -10,7 +10,10 @@ import "swiper/css/navigation";
 import { SiShopee } from "react-icons/si";
 // import required modules
 import { Pagination, Navigation } from "swiper/modules";
-const SlideSwiper: React.FC<{ data?: string[] }> = ({ data }) => {
+const SlideSwiper: React.FC<{
+  data?: { id: number; name: string }[];
+  onClick: (v: number) => void;
+}> = ({ data, onClick }) => {
   return (
     <div className={`w-full flex  px-1 py-2 relative ${styles.pagination}`}>
       <div className="w-full bg-[aliceblue] ">
@@ -40,31 +43,16 @@ const SlideSwiper: React.FC<{ data?: string[] }> = ({ data }) => {
           modules={[Pagination]}
           className={`${styles.mySwiper} `}
         >
-          <SwiperSlide>
-            <h3 className="text-xs text-[#004cff]  md:text-sm xl:text-base">
-              Redmi note 8 pro
-            </h3>
-          </SwiperSlide>{" "}
-          <SwiperSlide>
-            <h3 className="text-xs md:text-sm xl:text-base">
-              Redmi note 8 pro
-            </h3>
-          </SwiperSlide>{" "}
-          <SwiperSlide>
-            <h3 className="text-xs md:text-sm xl:text-base">
-              Redmi note 8 pro
-            </h3>
-          </SwiperSlide>
-          <SwiperSlide>
-            <h3 className="text-xs md:text-sm xl:text-base">
-              Redmi note 8 pro
-            </h3>
-          </SwiperSlide>
-          <SwiperSlide>
-            <h3 className="text-xs md:text-sm xl:text-base">
-              Redmi note 8 pro
-            </h3>
-          </SwiperSlide>
+          {data?.map((d) => (
+            <SwiperSlide key={d.id}>
+              <h3
+                className="text-xs   md:text-sm xl:text-base cursor-pointer"
+                onClick={() => onClick(d.id)}
+              >
+                {d.name}
+              </h3>
+            </SwiperSlide>
+          ))}
         </Swiper>
       </div>
     </div>

@@ -13,7 +13,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="flex flex-wrap md:flex-nowrap">
+    <div className="flex flex-wrap ">
       <RoutListing currentPath="products" title="Sản phẩm" defaultR="" />
       {children}
     </div>

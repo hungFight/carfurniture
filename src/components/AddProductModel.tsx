@@ -1,19 +1,28 @@
 "use client";
 import React, { useState } from "react";
 import { IoCloseCircleOutline } from "react-icons/io5";
-const AddProductModel: React.FC = () => {
+const AddProductModel: React.FC<{ title: string; onClick: () => void }> = ({
+  title,
+  onClick,
+}) => {
   const [componentDisabled, setComponentDisabled] = useState<boolean>(true);
   const handleUploadFIle = (e: React.ChangeEvent<HTMLInputElement>) => {};
   return (
     <>
-      <div className="w-full h-full top-0 left-0 z-9 fixed bg-[#1f1f1fde]"></div>
+      <div
+        className="w-full h-full top-0 left-0 z-9 fixed bg-[#1f1f1fde] z-50"
+        onClick={onClick}
+      ></div>
       <form
         encType="multipart/form-data"
-        className="w-full h-full p-5 sm:w-[640px] flex justify-center flex-wrap overflow-overlay z-10 fixed top-1/2 right-1/2 left-1/2 translate-x-[-50%] translate-y-[-50%] bg-white"
+        className="w-full h-full p-5 z-50 sm:w-[640px] flex justify-center flex-wrap overflow-overlay z-10 fixed top-1/2 right-1/2 left-1/2 translate-x-[-50%] translate-y-[-50%] bg-white"
       >
         <h3 className="w-full p-3 text-center relative">
-          San pham...
-          <div className="absolute top-3 left-2 text-[30px] cursor-pointer">
+          {title}
+          <div
+            className="absolute top-3 left-2 text-[30px] cursor-pointer"
+            onClick={onClick}
+          >
             <IoCloseCircleOutline />
           </div>
         </h3>

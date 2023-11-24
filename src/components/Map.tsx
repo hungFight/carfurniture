@@ -3,7 +3,7 @@ import React, { useState, useCallback } from "react";
 import { GoogleMap, useJsApiLoader, Marker } from "@react-google-maps/api";
 import { MdLocationOn } from "react-icons/md";
 import { FaPhone } from "react-icons/fa6";
-import { AiOutlineMail } from "react-icons/ai";
+import { AiOutlineMail } from "react-icons/ai";import { PiMessengerLogoLight } from "react-icons/pi";
 const containerStyle = {
   width: "400px",
   height: "400px",
@@ -89,6 +89,18 @@ const Map = () => {
             className="font-light mx-2"
           >
             nguyentronghung05072003@gmail.com
+          </a>
+        </h3>
+        <h3 className="font-semibold mb-[8px] text-[12px] w-fit flex opacity-[0.7]">
+          <div className="flex items-center mr-2">
+            <PiMessengerLogoLight />
+          </div>
+          Messenger:{" "}
+          <a
+            href="#"
+            className="font-light mx-2"
+          >
+            url
           </a>
         </h3>
       </div>

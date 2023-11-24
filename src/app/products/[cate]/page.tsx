@@ -3,6 +3,7 @@ import React from "react";
 import styles from "../../styleHomePage.module.scss";
 import { SiShopee } from "react-icons/si";
 import dynamic from "next/dynamic";
+import Link from "next/link";
 
 const page = (props: { params: { cate: string } }) => {
   console.log(props, "props");
@@ -13,7 +14,10 @@ const page = (props: { params: { cate: string } }) => {
         <InputSearch placeholder={props.params.cate} />
       </div>
       <div className="w-full flex flex-wrap justify-around">
-        <div className="w-[200px] md:w-[250px] p-1 border shadow-[0_0_3px_#7a7a7a] hover:shadow-[0_0_10px] mb-4 cursor-pointer">
+        <Link
+          href="/lamborghini/detailed"
+          className="w-[200px] md:w-[250px] p-1 border shadow-[0_0_3px_#7a7a7a] hover:shadow-[0_0_10px] mb-4 cursor-pointer"
+        >
           <div className="w-full h-[200px] md:h-[230px]">
             <img
               src="https://i.pinimg.com/originals/07/8c/71/078c71955fe352c544e395fbafddf82c.jpg"
@@ -23,7 +27,7 @@ const page = (props: { params: { cate: string } }) => {
           </div>
           <div className={`mt-1 ${styles.containerProductTag}`}>
             <h3 className={`font-bold text-sm md:text-base ${styles.nameTag}`}>
-              Super Car HD Wallpaper in 2023
+              Super Car HD Wallpaper in 2023s
             </h3>
             <div className="w-full mt-1 md:mt-2 flex items-center border-b border-solid">
               <p className="text-[13px] md:text-[14px] font-medium text-[crimson]">
@@ -57,7 +61,7 @@ const page = (props: { params: { cate: string } }) => {
               <SiShopee />
             </a>
           </div>
-        </div>{" "}
+        </Link>{" "}
         <div className="w-[200px] md:w-[250px] p-1 border shadow-[0_0_3px_#7a7a7a] hover:shadow-[0_0_10px] mb-4 cursor-pointer">
           <div className="w-full h-[200px] md:h-[230px]">
             <img
