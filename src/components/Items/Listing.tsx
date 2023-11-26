@@ -16,6 +16,7 @@ const Listing: React.FC<{
   Tag = Link,
   menu,
 }) => {
+  
   return (
     <div className="w-full">
       <div className="w-[50%] md:w-[80%]">

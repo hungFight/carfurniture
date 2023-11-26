@@ -13,7 +13,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="flex flex-wrap ">
+    <div className="flex flex-wrap min-[1200px]:ml-[280px]">
       <RoutListing currentPath="products" title="Sản phẩm" defaultR="" />
       {children}
     </div>
