@@ -9,7 +9,7 @@ const page = (props: { params: { cate: string } }) => {
   console.log(props, "props");
 
   return (
-    <div className="w-full md:w-[60%] p-3">
+    <div className="w-full min-[1200px]:w-[60%] p-3">
       <div className="w-full mb-4">
         <InputSearch placeholder={props.params.cate} />
       </div>

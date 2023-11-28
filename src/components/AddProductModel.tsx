@@ -1,12 +1,42 @@
 "use client";
-import React, { useState } from "react";
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css";
 import { IoCloseCircleOutline } from "react-icons/io5";
+import { useState } from "react";
+import styles from "./styleComponent.module.scss";
 const AddProductModel: React.FC<{ title: string; onClick: () => void }> = ({
   title,
   onClick,
 }) => {
+  const [value, setValue] = useState("");
+  console.log(value);
+
   const [componentDisabled, setComponentDisabled] = useState<boolean>(true);
   const handleUploadFIle = (e: React.ChangeEvent<HTMLInputElement>) => {};
+  const modules = {
+    toolbar: [
+      [{ header: [1, 2, 3, false] }],
+      ["bold", "italic", "underline", "strike", "blockquote"],
+      [{ list: "ordered" }, { list: "bullet" }],
+      ["link", "image", , "video"],
+      ["clean"],
+      [{ size: ["small", false, "large", "huge"] }],
+    ],
+  };
+
+  const formats = [
+    "header",
+    "bold",
+    "italic",
+    "underline",
+    "strike",
+    "blockquote",
+    "list",
+    "bullet",
+    "link",
+    "image",
+    "video",
+  ];
   return (
     <>
       <div
@@ -15,7 +45,7 @@ const AddProductModel: React.FC<{ title: string; onClick: () => void }> = ({
       ></div>
       <form
         encType="multipart/form-data"
-        className="w-full h-full p-5 z-50 sm:w-[640px] flex justify-center flex-wrap overflow-overlay z-10 fixed top-1/2 right-1/2 left-1/2 translate-x-[-50%] translate-y-[-50%] bg-white"
+        className="w-full h-full p-5 overflow-auto z-50 sm:w-[640px] flex justify-center flex-wrap  fixed top-1/2 right-1/2 left-1/2 translate-x-[-50%] translate-y-[-50%] bg-white"
       >
         <h3 className="w-full p-3 text-center relative">
           {title}
@@ -26,7 +56,7 @@ const AddProductModel: React.FC<{ title: string; onClick: () => void }> = ({
             <IoCloseCircleOutline />
           </div>
         </h3>
-        <div className="w-full flex items-center">
+        <div className="w-full my-2 flex items-center">
           <label className="text-base mr-3" htmlFor="productFile">
             Tải ảnh sản phẩm lên:
           </label>
@@ -39,7 +69,7 @@ const AddProductModel: React.FC<{ title: string; onClick: () => void }> = ({
             onChange={(e) => handleUploadFIle(e)}
           />
         </div>
-        <div className="w-full flex items-center">
+        <div className="w-full my-2 flex items-center">
           <label className="text-base mr-3" htmlFor="productName">
             Tên sản phẩm:
           </label>
@@ -51,7 +81,7 @@ const AddProductModel: React.FC<{ title: string; onClick: () => void }> = ({
             placeholder="Tên sản phẩm"
           />
         </div>{" "}
-        <div className="w-full flex items-center">
+        <div className="w-full my-2 flex items-center">
           <label className="text-base mr-3" htmlFor="productPrice">
             Giá sản phẩm:
           </label>
@@ -63,7 +93,7 @@ const AddProductModel: React.FC<{ title: string; onClick: () => void }> = ({
             placeholder="Giá sản phẩm"
           />
         </div>{" "}
-        <div className="w-full flex items-center">
+        <div className="w-full my-2 flex items-center">
           <label className="text-base mr-3" htmlFor="productDiscount">
             Giá gốc sản phẩm:
           </label>
@@ -75,7 +105,7 @@ const AddProductModel: React.FC<{ title: string; onClick: () => void }> = ({
             className="outline-[#41af6b] mr-1 shadow-[0_0_2px_#4a8cbf] border-[#4a8cbf] border-[1px] p-1 pr-3 rounded-md"
           />
         </div>{" "}
-        <div className="w-full flex items-center">
+        <div className="w-full my-2 flex items-center">
           <label className="text-base mr-3" htmlFor="productSDT">
             Số điện thoại:
           </label>
@@ -87,7 +117,7 @@ const AddProductModel: React.FC<{ title: string; onClick: () => void }> = ({
             placeholder="Số điện thoại"
           />
         </div>{" "}
-        <div className="w-full flex items-center">
+        <div className="w-full my-2 flex items-center">
           <label className="text-base mr-3" htmlFor="productMess">
             Link messenger:
           </label>
@@ -99,7 +129,7 @@ const AddProductModel: React.FC<{ title: string; onClick: () => void }> = ({
             placeholder="Link messenger"
           />
         </div>{" "}
-        <div className="w-full flex items-center">
+        <div className="w-full my-2 flex items-center">
           <label className="text-base mr-3" htmlFor="productShop">
             Link shop:
           </label>
@@ -111,55 +141,21 @@ const AddProductModel: React.FC<{ title: string; onClick: () => void }> = ({
             placeholder="Link shop"
           />
         </div>{" "}
-        <div className="w-full flex items-center">
-          <label className="text-base mr-3" htmlFor="productDes">
-            Mô tả:
-          </label>
-          <input
-            required
-            className="outline-[#41af6b] mr-1 shadow-[0_0_2px_#4a8cbf] border-[#4a8cbf] border-[1px] p-1 pr-3 rounded-md"
-            id="productDes"
-            type="text"
-            placeholder="Mô tả"
+        <div className="w-full my-2 flex items-center  flex-wrap">
+          <h3 className="text-base mr-3 w-full">Mô tả:</h3>
+          <ReactQuill
+            className="w-full"
+            theme="snow"
+            value={value}
+            onChange={setValue}
+            modules={modules}
+            formats={formats}
           />
         </div>{" "}
-        <div className="w-full flex items-center">
-          <label className="text-base mr-3" htmlFor="productVideo">
-            Id video của YouTuBe:
-          </label>
-          <input
-            id="productVideo"
-            type="text"
-            placeholder="Id video của YouTuBe"
-            className="outline-[#41af6b] mr-1 shadow-[0_0_2px_#4a8cbf] border-[#4a8cbf] border-[1px] p-1 pr-3 rounded-md"
-          />
-        </div>
-        <div className="w-full flex items-center">
-          <label className="text-base mr-3" htmlFor="productFile">
-            Tải ảnh mô tả:
-          </label>
-          <input
-            required
-            className="outline-[#41af6b] mr-1 shadow-[0_0_2px_#4a8cbf] border-[#4a8cbf] border-[1px] p-1 pr-3 rounded-md"
-            id="productFile"
-            type="file"
-            name="file"
-          />
-        </div>
-        <div className="w-full flex p-3 justify-around">
-          <button
-            type="button"
-            className=" text-sm h-fit rounded-[5px] border-[#4a8cbf] border-[1px] px-3 py-1 cursor-pointer"
-          >
-            Xem trước
-          </button>{" "}
-          <button
-            type="submit"
-            className=" text-sm h-fit rounded-[5px] border-[#4a8cbf] border-[1px] px-3 py-1 cursor-pointer"
-          >
-            Thêm
-          </button>
-        </div>
+        <div
+          dangerouslySetInnerHTML={{ __html: value }}
+          className={`w-full mb-5 ${styles.dangerouslySet}`}
+        ></div>
       </form>
     </>
   );
