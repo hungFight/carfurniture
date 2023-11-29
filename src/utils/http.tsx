@@ -4,7 +4,7 @@ class Http {
   instance: AxiosInstance;
   constructor() {
     this.instance = axios.create({
-      baseURL: process.env.URL_SERVER,
+      baseURL: "http://localhost:5217/api/",
       headers: {
         "Content-Type": "application/json",
         Accept: "application/json",
@@ -12,4 +12,4 @@ class Http {
     });
   }
 }
-export default new Http();
+export default new Http().instance;

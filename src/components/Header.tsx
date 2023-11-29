@@ -23,11 +23,13 @@ const Header = () => {
                 href="/"
                 className="header_home w-full text-[#3a3b3b]  text-sm sm:text-base mx-4 max-sm:my-1 whitespace-pre-wrap font-medium cursor-pointer hover:text-[#42aaea]"
                 onClick={(e: any) => {
-                  const hear = document.querySelectorAll(".header_home");
-                  Array.from(hear).map((h: any) => {
-                    h.style.color = "#3a3b3b";
-                  });
-                  e.target.style.color = "#42aaea";
+                  if (document) {
+                    const hear = document?.querySelectorAll(".header_home");
+                    Array.from(hear).map((h: any) => {
+                      h.style.color = "#3a3b3b";
+                    });
+                    e.target.style.color = "#42aaea";
+                  }
                 }}
               >
                 Trang chủ
@@ -36,11 +38,13 @@ const Header = () => {
                 href="/news"
                 className="header_home w-full text-[#3a3b3b]  text-sm sm:text-base mx-4 max-sm:my-1 whitespace-pre-wrap font-medium cursor-pointer hover:text-[#42aaea]"
                 onClick={(e: any) => {
-                  const hear = document.querySelectorAll(".header_home");
-                  Array.from(hear).map((h: any) => {
-                    h.style.color = "#3a3b3b";
-                  });
-                  e.target.style.color = "#42aaea";
+                  if (document) {
+                    const hear = document?.querySelectorAll(".header_home");
+                    Array.from(hear).map((h: any) => {
+                      h.style.color = "#3a3b3b";
+                    });
+                    e.target.style.color = "#42aaea";
+                  }
                 }}
               >
                 Tin tức
@@ -49,11 +53,13 @@ const Header = () => {
                 href="/products"
                 className="header_home w-full text-[#3a3b3b]  text-sm sm:text-base mx-4 max-sm:my-1 whitespace-pre-wrap font-medium cursor-pointer hover:text-[#42aaea]"
                 onClick={(e: any) => {
-                  const hear = document.querySelectorAll(".header_home");
-                  Array.from(hear).map((h: any) => {
-                    h.style.color = "#3a3b3b";
-                  });
-                  e.target.style.color = "#42aaea";
+                  if (document) {
+                    const hear = document?.querySelectorAll(".header_home");
+                    Array.from(hear).map((h: any) => {
+                      h.style.color = "#3a3b3b";
+                    });
+                    e.target.style.color = "#42aaea";
+                  }
                 }}
               >
                 Danh sách sản phẩm
@@ -62,11 +68,13 @@ const Header = () => {
                 href="/guides"
                 className="header_home w-full  text-[#3a3b3b] text-sm sm:text-base mx-4 max-sm:my-1 whitespace-pre-wrap font-medium cursor-pointer hover:text-[#42aaea]"
                 onClick={(e: any) => {
-                  const hear = document.querySelectorAll(".header_home");
-                  Array.from(hear).map((h: any) => {
-                    h.style.color = "#3a3b3b";
-                  });
-                  e.target.style.color = "#42aaea";
+                  if (document) {
+                    const hear = document?.querySelectorAll(".header_home");
+                    Array.from(hear).map((h: any) => {
+                      h.style.color = "#3a3b3b";
+                    });
+                    e.target.style.color = "#42aaea";
+                  }
                 }}
               >
                 Hưỡng dẫn
@@ -103,11 +111,13 @@ const Header = () => {
             href="/"
             className="header_home text-[#3a3b3b]  text-sm sm:text-base mx-4 max-sm:my-1 w-max whitespace-pre-wrap font-medium cursor-pointer hover:text-[#42aaea]"
             onClick={(e: any) => {
-              const hear = document.querySelectorAll(".header_home");
-              Array.from(hear).map((h: any) => {
-                h.style.color = "#3a3b3b";
-              });
-              e.target.style.color = "#42aaea";
+              if (document) {
+                const hear = document?.querySelectorAll(".header_home");
+                Array.from(hear).map((h: any) => {
+                  h.style.color = "#3a3b3b";
+                });
+                e.target.style.color = "#42aaea";
+              }
             }}
           >
             Trang chủ
@@ -116,11 +126,13 @@ const Header = () => {
             href="/news"
             className="header_home text-[#3a3b3b]  text-sm sm:text-base mx-4 max-sm:my-1 w-max whitespace-pre-wrap font-medium cursor-pointer hover:text-[#42aaea]"
             onClick={(e: any) => {
-              const hear = document.querySelectorAll(".header_home");
-              Array.from(hear).map((h: any) => {
-                h.style.color = "#3a3b3b";
-              });
-              e.target.style.color = "#42aaea";
+              if (document) {
+                const hear = document?.querySelectorAll(".header_home");
+                Array.from(hear).map((h: any) => {
+                  h.style.color = "#3a3b3b";
+                });
+                e.target.style.color = "#42aaea";
+              }
             }}
           >
             Tin tức
@@ -129,11 +141,13 @@ const Header = () => {
             href="/products"
             className="header_home text-[#3a3b3b]  text-sm sm:text-base mx-4 max-sm:my-1 w-max whitespace-pre-wrap font-medium cursor-pointer hover:text-[#42aaea]"
             onClick={(e: any) => {
-              const hear = document.querySelectorAll(".header_home");
-              Array.from(hear).map((h: any) => {
-                h.style.color = "#3a3b3b";
-              });
-              e.target.style.color = "#42aaea";
+              if (document) {
+                const hear = document?.querySelectorAll(".header_home");
+                Array.from(hear).map((h: any) => {
+                  h.style.color = "#3a3b3b";
+                });
+                e.target.style.color = "#42aaea";
+              }
             }}
           >
             Danh sách sản phẩm
@@ -142,11 +156,13 @@ const Header = () => {
             href="/guides"
             className="header_home  text-[#3a3b3b] text-sm sm:text-base mx-4 max-sm:my-1 w-max whitespace-pre-wrap font-medium cursor-pointer hover:text-[#42aaea]"
             onClick={(e: any) => {
-              const hear = document.querySelectorAll(".header_home");
-              Array.from(hear).map((h: any) => {
-                h.style.color = "#3a3b3b";
-              });
-              e.target.style.color = "#42aaea";
+              if (document) {
+                const hear = document?.querySelectorAll(".header_home");
+                Array.from(hear).map((h: any) => {
+                  h.style.color = "#3a3b3b";
+                });
+                e.target.style.color = "#42aaea";
+              }
             }}
           >
             Hưỡng dẫn

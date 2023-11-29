@@ -13,7 +13,8 @@ import { Pagination, Navigation } from "swiper/modules";
 const SlideSwiper: React.FC<{
   data?: { id: number; name: string }[];
   onClick: (v: number) => void;
-}> = ({ data, onClick }) => {
+  active: number;
+}> = ({ data, onClick, active }) => {
   return (
     <div className={`w-full flex  px-1 py-2 relative ${styles.pagination}`}>
       <div className="w-full bg-[aliceblue] ">
@@ -46,7 +47,9 @@ const SlideSwiper: React.FC<{
           {data?.map((d) => (
             <SwiperSlide key={d.id}>
               <h3
-                className="text-xs   md:text-sm xl:text-base cursor-pointer"
+                className={`text-xs   md:text-sm xl:text-base cursor-pointer ${
+                  active === d.id ? "text-blue-500" : ""
+                }`}
                 onClick={() => onClick(d.id)}
               >
                 {d.name}

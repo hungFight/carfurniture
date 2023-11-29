@@ -1,7 +1,7 @@
 "use client";
 import RoutListing from "@/components/Items/RoutListing";
 import SlideCategory from "@/components/Slide/SlideCategory";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styles from "../styleHomePage.module.scss";
 import { SiShopee } from "react-icons/si";
 import Routing from "@/components/Items/Routing";
@@ -9,10 +9,25 @@ import Listing from "@/components/Items/Listing";
 import { IoIosAddCircle } from "react-icons/io";
 import AddProductModel from "@/components/AddProductModel";
 import FormAboutUs from "@/components/FormAboutUs";
+import http from "@/utils/http";
 const page = () => {
+  const [dataCate, setDataCate] = useState<
+    {
+      id: number;
+      name: string;
+    }[]
+  >([]);
+  const fet = async () => {
+    const res = await http.get<typeof dataCate>("CategoryType/GetAll");
+    console.log(res, "data");
+    setDataCate(res.data);
+  };
+  useEffect(() => {
+    fet();
+  }, []);
   const [add, setAdd] = useState<string>("");
   const [aboutUs, setAboutUs] = useState<boolean>(false);
-  const [category, setCategory] = useState<number>(1);
+  const [category, setCategory] = useState<number>(2);
   const [routs, setRouts] = useState(["Quản trị"]);
   const [load, setLoad] = useState(false);
   const handleRount = (vl: string) => {
@@ -27,44 +42,45 @@ const page = () => {
   const chooseCate = (id: number) => {
     setCategory(id);
   };
-  const dataCate = [
-    { id: 1, name: "San pham" },
-    { id: 2, name: "Tin tức" },
-  ];
+
   return (
     <div className="flex flex-wrap ">
       <div className="w-full px-5 py-2">
-        <SlideCategory data={dataCate} onClick={chooseCate} />
+        <SlideCategory data={dataCate} onClick={chooseCate} active={category} />
       </div>
       <div className="flex flex-wrap md:flex-nowrap">
         <div className=" px-5 w-full md:w-[400px]">
           <div className="w-full my-3 mb-4">
             <Routing routs={routs} />
           </div>
-          <div className="w-full flex mb-15 flex-wrap md:flex-nowrap">
-            <div className="w-full md:w-[350px]  mb-5 md:border-r mr-2">
-              <div className="w-full">
-                <Listing
-                  onClick={handleRount}
-                  menu={dataCate
-                    .filter((d) => d.id === category)[0]
-                    .name.toLowerCase()}
-                  choice={routs[1]}
-                  Tag="div"
-                  default="Tất cả"
-                />
-              </div>
-              <div className="w-full flex items-center cursor-pointer ">
-                <div className="flex mr-3 text-[20px]">
-                  <IoIosAddCircle />
+          {category !== 3 && (
+            <div className="w-full flex mb-15 flex-wrap md:flex-nowrap">
+              <div className="w-full md:w-[350px]  mb-5 md:border-r mr-2">
+                <div className="w-full">
+                  <Listing
+                    onClick={handleRount}
+                    menu={
+                      dataCate
+                        .filter((d) => d.id === category)[0]
+                        ?.name.toLowerCase() ?? ""
+                    }
+                    choice={routs[1]}
+                    Tag="div"
+                    default="Tất cả"
+                  />
                 </div>
-                <p className="text-sm">Them danh muc</p>
+                <div className="w-full flex items-center cursor-pointer ">
+                  <div className="flex mr-3 text-[20px]">
+                    <IoIosAddCircle />
+                  </div>
+                  <p className="text-sm">Them danh muc</p>
+                </div>
               </div>
+              <h3 className="w-full md:hidden text-center border-b">
+                {routs[1]}
+              </h3>
             </div>
-            <h3 className="w-full md:hidden text-center border-b">
-              {routs[1]}
-            </h3>
-          </div>
+          )}
         </div>
         <div className="flex flex-wrap justify-around border-l border-t border-b-slate-900 p-5 relative">
           {routs[1] && (
@@ -75,11 +91,11 @@ const page = () => {
                 setLoad(!load);
               }}
             >
-              {category === 1 && <p>Thêm sản phẩm</p>}
-              {category === 2 && <p>Thêm tin tức</p>}
+              {category === 2 && <p>Thêm sản phẩm</p>}
+              {category === 3 && <p>Thêm tin tức</p>}
             </div>
           )}
-          {category === 1 ? (
+          {category === 2 ? (
             <>
               {" "}
               <div className="w-[200px] md:w-[250px] p-1 border shadow-[0_0_3px_#7a7a7a] hover:shadow-[0_0_10px] mb-4 cursor-pointer mx-1">
@@ -271,7 +287,7 @@ const page = () => {
                 </div>
               </div>
             </>
-          ) : (
+          ) : category === 3 ? (
             <>
               {" "}
               <div className="w-full flex justify-between mb-4">
@@ -356,19 +372,22 @@ const page = () => {
                 </div>
               </div>
             </>
+          ) : (
+            <></>
           )}
         </div>
       </div>
 
-      {add &&
-        (category === 1 ? (
-          <AddProductModel title={routs[1]} onClick={() => setAdd("")} />
-        ) : (
-          <AddProductModel title={routs[1]} onClick={() => setAdd("")} />
-        ))}
-      {aboutUs && (
-        <FormAboutUs title="About us" onClick={() => setAboutUs(false)} />
+      {add && category === 2 ? (
+        <AddProductModel title={routs[1]} onClick={() => setAdd("")} />
+      ) : add && category === 3 ? (
+        <AddProductModel title={routs[1]} onClick={() => setAdd("")} />
+      ) : category === 4 ? (
+        <FormAboutUs title="About us" />
+      ) : (
+        <></>
       )}
+
       <div
         className="w-fit fixed bg-[#0099e6] bottom-[80px] z-10 left-[52px] rounded-[5px] cursor-pointer font-medium px-3 py-1 text-white"
         onClick={() => setAboutUs(true)}
