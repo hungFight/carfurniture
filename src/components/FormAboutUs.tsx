@@ -52,7 +52,7 @@ const FormAboutUs: React.FC<{ title: string }> = ({ title }) => {
                 setData({ ...data, name: e.target.value });
               }
             }}
-            value={data?.name}
+            value={data?.name ?? ''}
             placeholder="Tên công ty"
           />
         </div>
@@ -65,7 +65,7 @@ const FormAboutUs: React.FC<{ title: string }> = ({ title }) => {
             className="outline-[#41af6b] mr-1 shadow-[0_0_2px_#4a8cbf] border-[#4a8cbf] border-[1px] p-1 pr-3 rounded-md"
             id="address"
             type="text"
-            value={data?.address}
+            value={data?.address ?? ''}
             onChange={(e) => {
               if (data) {
                 setData({ ...data, address: e.target.value });
@@ -83,7 +83,7 @@ const FormAboutUs: React.FC<{ title: string }> = ({ title }) => {
             className="outline-[#41af6b] mr-1 shadow-[0_0_2px_#4a8cbf] border-[#4a8cbf] border-[1px] p-1 pr-3 rounded-md"
             id="sdt"
             type="text"
-            value={data?.phone}
+            value={data?.phone ?? ''}
             onChange={(e) => {
               if (data) {
                 setData({ ...data, phone: e.target.value });
@@ -101,7 +101,7 @@ const FormAboutUs: React.FC<{ title: string }> = ({ title }) => {
             required
             type="text"
             placeholder="Email"
-            value={data?.email}
+            value={data?.email ?? ''}
             onChange={(e) => {
               if (data) {
                 setData({ ...data, email: e.target.value });
@@ -119,7 +119,7 @@ const FormAboutUs: React.FC<{ title: string }> = ({ title }) => {
             className="outline-[#41af6b] mr-1 shadow-[0_0_2px_#4a8cbf] border-[#4a8cbf] border-[1px] p-1 pr-3 rounded-md"
             id="Messenger"
             type="text"
-            value={data?.url_Mess}
+            value={data?.url_Mess ?? ''}
             onChange={(e) => {
               if (data) {
                 setData({ ...data, url_Mess: e.target.value });

@@ -4,10 +4,26 @@ import styles from "../../styleHomePage.module.scss";
 import { SiShopee } from "react-icons/si";
 import dynamic from "next/dynamic";
 import Link from "next/link";
+import http from "@/utils/http";
+const getProduct = async () => {
+  const res = await http.post("Product/GetPaginationProduct", {
+    pageIndex: 1,
+    pageSize: 3,
+    search_CategoryName: "Mazda",
+  });
+  return res.data.data;
+};
 
-const page = (props: { params: { cate: string } }) => {
-  console.log(props, "props");
-
+const page = async (props: { params: { cate: string } }) => {
+  const data: {
+    name: string;
+    price: number;
+    price_After: number;
+    description: string;
+    urlShoppe: string;
+    urlImage: { image: string };
+  } = await getProduct();
+  console.log(data, "props data");
   return (
     <div className="w-full min-[1200px]:w-[60%] p-3">
       <div className="w-full mb-4">

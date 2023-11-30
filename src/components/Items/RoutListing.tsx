@@ -10,7 +10,8 @@ const RoutListing: React.FC<{
   currentPath: string;
   title: string;
   defaultR?: string;
-}> = ({ currentPath, title, defaultR }) => {
+  cate?: string[];
+}> = ({ currentPath, title, defaultR, cate }) => {
   const pathname = usePathname();
   const [routs, setRouts] = useState([
     title,
@@ -54,6 +55,7 @@ const RoutListing: React.FC<{
               <Listing
                 onClick={handleRount}
                 choice={routs[1]}
+                data={cate}
                 default={currentPath}
               />
             </div>
