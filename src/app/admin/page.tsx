@@ -10,6 +10,7 @@ import { IoIosAddCircle } from "react-icons/io";
 import AddProductModel from "@/components/AddProductModel";
 import FormAboutUs from "@/components/FormAboutUs";
 import http from "@/utils/http";
+import Link from "next/link";
 const page = () => {
   const [dataCate, setDataCate] = useState<
     {
@@ -17,19 +18,73 @@ const page = () => {
       name: string;
     }[]
   >([]);
+  const [dataList, setDataList] = useState<
+    { categoryName: string; categoryId: number }[]
+  >([]);
+  const [dataProducts, setDataProducts] = useState<
+    {
+      id: number;
+      name: string;
+      price: number;
+      price_After: number;
+      description: string;
+      urlShoppe: string;
+      urlImage: { image: string; path: string }[];
+    }[]
+  >([]);
+  const [add, setAdd] = useState<string>("");
+  const [aboutUs, setAboutUs] = useState<boolean>(false);
+  const [category, setCategory] = useState<number>(2);
+  const [cate, setCate] = useState<{
+    categoryId: number;
+    categoryName: string;
+  }>({
+    categoryId: 0,
+    categoryName: "",
+  });
+  const [routs, setRouts] = useState(["Quản trị"]);
+  const [load, setLoad] = useState(false);
   const fet = async () => {
     const res = await http.get<typeof dataCate>("CategoryType/GetAll");
-    console.log(res, "data");
+
     setDataCate(res.data);
   };
   useEffect(() => {
     fet();
   }, []);
-  const [add, setAdd] = useState<string>("");
-  const [aboutUs, setAboutUs] = useState<boolean>(false);
-  const [category, setCategory] = useState<number>(2);
-  const [routs, setRouts] = useState(["Quản trị"]);
-  const [load, setLoad] = useState(false);
+  useEffect(() => {
+    if (dataCate.length) {
+      const fetS = async () => {
+        const which = dataCate.filter((c) => c.id === category)[0].name;
+        const resCate = await http.get<
+          { categoryName: string; categoryId: number }[]
+        >(`Category/GetAll/${which}`);
+        if (category === 2) {
+          const res = await http.post("Product/GetPaginationProduct", {
+            pageIndex: 1,
+            pageSize: 3,
+            search_CategoryName: resCate.data[0].categoryName,
+          });
+          console.log(resCate, "categoryId");
+
+          setCate({
+            categoryId: resCate.data[0].categoryId,
+            categoryName: resCate.data[0].categoryName,
+          });
+          setDataProducts(res.data.data);
+          if (routs.length >= 2) {
+            routs[1] = resCate.data[0].categoryName;
+            setRouts(routs.filter((r, index) => index !== 2));
+          } else {
+            setRouts((pre) => [...pre, resCate.data[0].categoryName]);
+          }
+        }
+        setDataList(resCate.data);
+      };
+      fetS();
+    }
+  }, [dataCate, category]);
+
   const handleRount = (vl: string) => {
     if (routs.length >= 2) {
       routs[1] = vl;
@@ -53,34 +108,33 @@ const page = () => {
           <div className="w-full my-3 mb-4">
             <Routing routs={routs} />
           </div>
-          {category !== 3 && (
-            <div className="w-full flex mb-15 flex-wrap md:flex-nowrap">
-              <div className="w-full md:w-[350px]  mb-5 md:border-r mr-2">
-                <div className="w-full">
-                  <Listing
-                    onClick={handleRount}
-                    menu={
-                      dataCate
-                        .filter((d) => d.id === category)[0]
-                        ?.name.toLowerCase() ?? ""
-                    }
-                    choice={routs[1]}
-                    Tag="div"
-                    default="Tất cả"
-                  />
-                </div>
-                <div className="w-full flex items-center cursor-pointer ">
-                  <div className="flex mr-3 text-[20px]">
-                    <IoIosAddCircle />
-                  </div>
-                  <p className="text-sm">Them danh muc</p>
-                </div>
+          <div className="w-full flex mb-15 flex-wrap md:flex-nowrap">
+            <div className="w-full md:w-[350px]  mb-5 md:border-r mr-2">
+              <div className="w-full">
+                <Listing
+                  onClick={handleRount}
+                  data={dataList.map((l) => l.categoryName)}
+                  menu={
+                    dataCate
+                      .filter((d) => d.id === category)[0]
+                      ?.name.toLowerCase() ?? ""
+                  }
+                  choice={routs[1]}
+                  Tag="div"
+                  default={dataList[0]?.categoryName}
+                />
               </div>
-              <h3 className="w-full md:hidden text-center border-b">
-                {routs[1]}
-              </h3>
+              <div className="w-full flex items-center cursor-pointer ">
+                <div className="flex mr-3 text-[20px]">
+                  <IoIosAddCircle />
+                </div>
+                <p className="text-sm">Them danh muc</p>
+              </div>
             </div>
-          )}
+            <h3 className="w-full md:hidden text-center border-b">
+              {routs[1]}
+            </h3>
+          </div>
         </div>
         <div className="flex flex-wrap justify-around border-l border-t border-b-slate-900 p-5 relative">
           {routs[1] && (
@@ -97,7 +151,59 @@ const page = () => {
           )}
           {category === 2 ? (
             <>
-              {" "}
+              {dataProducts.map((p) => (
+                <Link
+                  key={p.id}
+                  href={`${category === 2 ? "products" : ""}/${routs[1]}/${
+                    p.id
+                  }`}
+                  className="w-[200px] md:w-[250px] p-1 border shadow-[0_0_3px_#7a7a7a] hover:shadow-[0_0_10px] mb-4 cursor-pointer"
+                >
+                  <div className="w-full h-[200px] md:h-[230px]">
+                    <img
+                      src={p.urlImage[0].image}
+                      alt={p.urlImage[0].path}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  <div className={`mt-1 ${styles.containerProductTag}`}>
+                    <h3
+                      className={`font-bold text-sm md:text-base ${styles.nameTag}`}
+                    >
+                      {p.name}
+                    </h3>
+                    <div className="w-full mt-1 md:mt-2 flex items-center border-b border-solid">
+                      <p className="text-[13px] md:text-[14px] font-medium text-[crimson]">
+                        {p.price}đ
+                      </p>
+                      {p.price_After && (
+                        <p className="text-[10px] md:text-[11px] mt-[5px] ml-2 line-through">
+                          {p.price_After}đ
+                        </p>
+                      )}
+                    </div>
+                    <p
+                      className={`text-[13px] md:text-[14px] mt-2 md:mt-3 ${styles.desTag}`}
+                    >
+                      {" "}
+                      <strong className="text-[crimson]">*</strong>
+                      {p.description}
+                    </p>
+                  </div>
+                  <div className="my-2 flex items-center justify-center relative">
+                    <button className="text-sm shadow-[0_0_2px_#4a8cbf] border-[#4a8cbf] border-[1px] p-1 pr-3 rounded-md">
+                      View more
+                    </button>
+                    <a
+                      href={p.urlShoppe}
+                      className="absolute top-[5px] right-[10px] md:right-[40px]"
+                      style={{ color: "crimson !important" }}
+                    >
+                      <SiShopee />
+                    </a>
+                  </div>
+                </Link>
+              ))}
               <div className="w-[200px] md:w-[250px] p-1 border shadow-[0_0_3px_#7a7a7a] hover:shadow-[0_0_10px] mb-4 cursor-pointer mx-1">
                 <div className="w-full h-[200px] md:h-[230px]">
                   <img
@@ -377,17 +483,25 @@ const page = () => {
           )}
         </div>
       </div>
-
       {add && category === 2 ? (
-        <AddProductModel title={routs[1]} onClick={() => setAdd("")} />
+        <AddProductModel
+          title={routs[1]}
+          onClick={() => setAdd("")}
+          cateId={cate.categoryId}
+          cateName={cate.categoryName}
+        />
       ) : add && category === 3 ? (
-        <AddProductModel title={routs[1]} onClick={() => setAdd("")} />
-      ) : category === 4 ? (
-        <FormAboutUs title="About us" />
+        <AddProductModel
+          title={routs[1]}
+          onClick={() => setAdd("")}
+          cateId={cate.categoryId}
+          cateName={cate.categoryName}
+        />
       ) : (
         <></>
       )}
-
+      {/* : category === 4 ? (
+      <FormAboutUs title="About us" />) */}
       <div
         className="w-fit fixed bg-[#0099e6] bottom-[80px] z-10 left-[52px] rounded-[5px] cursor-pointer font-medium px-3 py-1 text-white"
         onClick={() => setAboutUs(true)}

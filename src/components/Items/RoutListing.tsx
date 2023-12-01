@@ -23,15 +23,15 @@ const RoutListing: React.FC<{
   useEffect(() => {
     if (!window.location.pathname.split(`${currentPath}/`)[1])
       setRouts((pre) => pre.filter((r, index) => index !== 1));
-    if (pathname.includes("detailed")) {
+    if (pathname.split(routs[1] ?? "")[1]) {
       if (window.location.pathname.split(`/`)[3]) {
         routs[1] = window.location.pathname.split(`/`)[2];
-        routs[2] = window.location.pathname.split(`/`)[3];
+        routs[2] = decodeURIComponent(window.location.pathname.split(`/`)[3]);
         setRouts(routs);
         setLoad(!load);
       }
     }
-    console.log("vooo", pathname.includes("detailed"));
+    console.log("vooo", pathname.split(routs[1] ?? ""));
   }, [pathname]);
   const [load, setLoad] = useState(false);
   const handleRount = (vl: string) => {
