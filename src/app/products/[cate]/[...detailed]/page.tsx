@@ -37,8 +37,8 @@ const page = async (props: { params: { detailed: string[] | string } }) => {
             <div className="min-[1000px]:flex">
               <div className="w-full h-[300px] min-[600px]:w-[500px]  ">
                 <img
-                  src={data.urlImage[0].image}
-                  alt={data.urlImage[0].path}
+                  src={data.urlImage[0]?.image}
+                  alt={data.urlImage[0]?.path}
                   className="w-full h-full object-cover"
                 />
               </div>

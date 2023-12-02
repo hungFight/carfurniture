@@ -35,13 +35,14 @@ const page = async (props: { params: { cate: string } }) => {
           {data.map((p) => (
             <Link
               key={p.id}
-              href={`${props.params.cate}/${p.name}/${p.id}`}
+              href="/[slug]"
+              as={`${props.params.cate}/${p.name}/${p.id}`}
               className="w-[200px] md:w-[250px] p-1 border shadow-[0_0_3px_#7a7a7a] hover:shadow-[0_0_10px] mb-4 cursor-pointer"
             >
               <div className="w-full h-[200px] md:h-[230px]">
                 <img
-                  src={p.urlImage[0].image}
-                  alt={p.urlImage[0].path}
+                  src={p.urlImage[0]?.image}
+                  alt={p.urlImage[0]?.path}
                   className="w-full h-full object-cover"
                 />
               </div>

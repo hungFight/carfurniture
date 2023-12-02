@@ -11,6 +11,7 @@ import AddProductModel from "@/components/AddProductModel";
 import FormAboutUs from "@/components/FormAboutUs";
 import http from "@/utils/http";
 import Link from "next/link";
+import AddNewsModel from "@/components/AddNewsModel";
 const page = () => {
   const [dataCate, setDataCate] = useState<
     {
@@ -33,8 +34,9 @@ const page = () => {
     }[]
   >([]);
   const [add, setAdd] = useState<string>("");
+  const [addCate, setAddCate] = useState<boolean>(false);
   const [aboutUs, setAboutUs] = useState<boolean>(false);
-  const [category, setCategory] = useState<number>(2);
+  const [categoryType, setCategory] = useState<number>(2);
   const [cate, setCate] = useState<{
     categoryId: number;
     categoryName: string;
@@ -43,48 +45,58 @@ const page = () => {
     categoryName: "",
   });
   const [routs, setRouts] = useState(["Quản trị"]);
+  const [nameRout, setNameRout] = useState("");
   const [load, setLoad] = useState(false);
   const fet = async () => {
     const res = await http.get<typeof dataCate>("CategoryType/GetAll");
 
     setDataCate(res.data);
   };
+  const fetS = async () => {
+    const which = dataCate.filter((c) => c.id === categoryType)[0].name;
+    const resCate = await http.get<
+      { categoryName: string; categoryId: number }[]
+    >(`Category/GetAll/${which}`);
+    if (categoryType === 2 && resCate.data.length) {
+      const res = await http.post("Product/GetPaginationProduct", {
+        pageIndex: 1,
+        pageSize: 3,
+        search_CategoryName: resCate.data[0]?.categoryName,
+      });
+
+      setDataProducts(res.data.data);
+    }
+    setNameRout(resCate.data[0]?.categoryName ?? "");
+
+    setCate({
+      categoryId: resCate.data[0]?.categoryId,
+      categoryName: resCate.data[0]?.categoryName ?? "",
+    });
+    setDataList(resCate.data);
+  };
   useEffect(() => {
     fet();
   }, []);
   useEffect(() => {
     if (dataCate.length) {
-      const fetS = async () => {
-        const which = dataCate.filter((c) => c.id === category)[0].name;
-        const resCate = await http.get<
-          { categoryName: string; categoryId: number }[]
-        >(`Category/GetAll/${which}`);
-        if (category === 2) {
-          const res = await http.post("Product/GetPaginationProduct", {
-            pageIndex: 1,
-            pageSize: 3,
-            search_CategoryName: resCate.data[0].categoryName,
-          });
-          console.log(resCate, "categoryId");
+      //default
 
-          setCate({
-            categoryId: resCate.data[0].categoryId,
-            categoryName: resCate.data[0].categoryName,
-          });
-          setDataProducts(res.data.data);
-          if (routs.length >= 2) {
-            routs[1] = resCate.data[0].categoryName;
-            setRouts(routs.filter((r, index) => index !== 2));
-          } else {
-            setRouts((pre) => [...pre, resCate.data[0].categoryName]);
-          }
-        }
-        setDataList(resCate.data);
-      };
       fetS();
     }
-  }, [dataCate, category]);
+  }, [dataCate, categoryType]);
+  console.log(routs, "categoryId");
+  useEffect(() => {
+    if (routs.length >= 2) {
+      console.log("categoryId 11");
+      // routing of page category
+      routs[1] = nameRout;
+      setRouts(routs.filter((r, index) => index !== 2));
+    } else {
+      console.log("categoryId 22");
 
+      if (nameRout) setRouts((pre) => [...pre, nameRout]);
+    }
+  }, [nameRout]);
   const handleRount = (vl: string) => {
     if (routs.length >= 2) {
       routs[1] = vl;
@@ -96,12 +108,29 @@ const page = () => {
   };
   const chooseCate = (id: number) => {
     setCategory(id);
+    setAddCate(false);
+  };
+  const [nameCate, setNameCate] = useState("");
+  const handleAddCate = async () => {
+    if (nameCate) {
+      const res = await http.post<typeof dataCate>("Category/Create", {
+        Name: nameCate,
+        categoryTypeId: categoryType,
+      });
+      setAddCate(false);
+      setNameCate("");
+      if (res.data) fetS();
+    }
   };
 
   return (
     <div className="flex flex-wrap ">
       <div className="w-full px-5 py-2">
-        <SlideCategory data={dataCate} onClick={chooseCate} active={category} />
+        <SlideCategory
+          data={dataCate}
+          onClick={chooseCate}
+          active={categoryType}
+        />
       </div>
       <div className="flex flex-wrap md:flex-nowrap">
         <div className=" px-5 w-full md:w-[400px]">
@@ -116,7 +145,7 @@ const page = () => {
                   data={dataList.map((l) => l.categoryName)}
                   menu={
                     dataCate
-                      .filter((d) => d.id === category)[0]
+                      .filter((d) => d.id === categoryType)[0]
                       ?.name.toLowerCase() ?? ""
                   }
                   choice={routs[1]}
@@ -124,11 +153,31 @@ const page = () => {
                   default={dataList[0]?.categoryName}
                 />
               </div>
-              <div className="w-full flex items-center cursor-pointer ">
+              <div
+                className="w-full flex items-center cursor-pointer "
+                onClick={() => setAddCate(true)}
+              >
                 <div className="flex mr-3 text-[20px]">
                   <IoIosAddCircle />
                 </div>
-                <p className="text-sm">Them danh muc</p>
+                {addCate ? (
+                  <>
+                    <input
+                      required
+                      type="text"
+                      onChange={(e) => setNameCate(e.target.value)}
+                      className="outline-[#41af6b] mr-1 shadow-[0_0_2px_#4a8cbf] border-[#4a8cbf] border-[1px] p-1 pr-3 rounded-md"
+                    />
+                    <button
+                      onClick={handleAddCate}
+                      className="hover:text-[#4a8cbf] shadow-[0_0_2px_#4a8cbf text-sm"
+                    >
+                      Thêm
+                    </button>
+                  </>
+                ) : (
+                  <p className="text-sm">Them danh muc</p>
+                )}
               </div>
             </div>
             <h3 className="w-full md:hidden text-center border-b">
@@ -145,24 +194,24 @@ const page = () => {
                 setLoad(!load);
               }}
             >
-              {category === 2 && <p>Thêm sản phẩm</p>}
-              {category === 3 && <p>Thêm tin tức</p>}
+              {categoryType === 2 && <p>Thêm sản phẩm</p>}
+              {categoryType === 3 && <p>Thêm tin tức</p>}
             </div>
           )}
-          {category === 2 ? (
+          {categoryType === 2 ? (
             <>
               {dataProducts.map((p) => (
                 <Link
                   key={p.id}
-                  href={`${category === 2 ? "products" : ""}/${routs[1]}/${
+                  href={`${categoryType === 2 ? "products" : ""}/${routs[1]}/${
                     p.id
                   }`}
                   className="w-[200px] md:w-[250px] p-1 border shadow-[0_0_3px_#7a7a7a] hover:shadow-[0_0_10px] mb-4 cursor-pointer"
                 >
                   <div className="w-full h-[200px] md:h-[230px]">
                     <img
-                      src={p.urlImage[0].image}
-                      alt={p.urlImage[0].path}
+                      src={p.urlImage[0]?.image}
+                      alt={p.urlImage[0]?.path}
                       className="w-full h-full object-cover"
                     />
                   </div>
@@ -204,196 +253,8 @@ const page = () => {
                   </div>
                 </Link>
               ))}
-              <div className="w-[200px] md:w-[250px] p-1 border shadow-[0_0_3px_#7a7a7a] hover:shadow-[0_0_10px] mb-4 cursor-pointer mx-1">
-                <div className="w-full h-[200px] md:h-[230px]">
-                  <img
-                    src="https://i.pinimg.com/originals/07/8c/71/078c71955fe352c544e395fbafddf82c.jpg"
-                    alt="car"
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-                <div className={`mt-1 ${styles.containerProductTag}`}>
-                  <h3
-                    className={`font-bold text-sm md:text-base ${styles.nameTag}`}
-                  >
-                    Super Car HD Wallpaper in 2023
-                  </h3>
-                  <div className="w-full mt-1 md:mt-2 flex items-center border-b border-solid">
-                    <p className="text-[13px] md:text-[14px] font-medium text-[crimson]">
-                      100.000.000đ
-                    </p>
-                    <p className="text-[10px] md:text-[11px] mt-[5px] ml-2 line-through">
-                      102.000.000đ
-                    </p>
-                  </div>
-                  <p
-                    className={`text-[13px] md:text-[14px] mt-2 md:mt-3 ${styles.desTag}`}
-                  >
-                    {" "}
-                    <strong className="text-[crimson]">*</strong>
-                    Lamborghini Urus 2023 có đầy đủ những phẩm chất ưu việt của
-                    một chiếc siêu xe hàng đầu. Nhưng nhiều người vẫn cho rằng
-                    các mẫu siêu SUV không phải là thế mạnh của Lamborghini và
-                    Urus 2023 sẽ bị lép vế trước những mẫu xe gầm thấp đã làm
-                    nên tên tuổi của thương hiệu
-                  </p>
-                </div>
-                <div className="my-2 flex items-center justify-center relative">
-                  <button className="text-sm shadow-[0_0_2px_#4a8cbf] border-[#4a8cbf] border-[1px] p-1 pr-3 rounded-md">
-                    View more
-                  </button>
-                  <a
-                    href="#"
-                    className="absolute top-[5px] right-[10px] md:right-[40px]"
-                    style={{ color: "crimson !important" }}
-                  >
-                    <SiShopee />
-                  </a>
-                </div>
-              </div>
-              <div className="w-[200px] md:w-[250px] p-1 border shadow-[0_0_3px_#7a7a7a] hover:shadow-[0_0_10px] mb-4 cursor-pointer mx-1">
-                <div className="w-full h-[200px] md:h-[230px]">
-                  <img
-                    src="https://i.pinimg.com/originals/07/8c/71/078c71955fe352c544e395fbafddf82c.jpg"
-                    alt="car"
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-                <div className={`mt-1 ${styles.containerProductTag}`}>
-                  <h3
-                    className={`font-bold text-sm md:text-base ${styles.nameTag}`}
-                  >
-                    Super Car HD Wallpaper in 2023
-                  </h3>
-                  <div className="w-full mt-1 md:mt-2 flex items-center border-b border-solid">
-                    <p className="text-[13px] md:text-[14px] font-medium text-[crimson]">
-                      100.000.000đ
-                    </p>
-                    <p className="text-[10px] md:text-[11px] mt-[5px] ml-2 line-through">
-                      102.000.000đ
-                    </p>
-                  </div>
-                  <p
-                    className={`text-[13px] md:text-[14px] mt-2 md:mt-3 ${styles.desTag}`}
-                  >
-                    {" "}
-                    <strong className="text-[crimson]">*</strong>
-                    Lamborghini Urus 2023 có đầy đủ những phẩm chất ưu việt của
-                    một chiếc siêu xe hàng đầu. Nhưng nhiều người vẫn cho rằng
-                    các mẫu siêu SUV không phải là thế mạnh của Lamborghini và
-                    Urus 2023 sẽ bị lép vế trước những mẫu xe gầm thấp đã làm
-                    nên tên tuổi của thương hiệu
-                  </p>
-                </div>
-                <div className="my-2 flex items-center justify-center relative">
-                  <button className="text-sm shadow-[0_0_2px_#4a8cbf] border-[#4a8cbf] border-[1px] p-1 pr-3 rounded-md">
-                    View more
-                  </button>
-                  <a
-                    href="#"
-                    className="absolute top-[5px] right-[10px] md:right-[40px]"
-                    style={{ color: "crimson !important" }}
-                  >
-                    <SiShopee />
-                  </a>
-                </div>
-              </div>
-              <div className="w-[200px] md:w-[250px] p-1 border shadow-[0_0_3px_#7a7a7a] hover:shadow-[0_0_10px] mb-4 cursor-pointer mx-1">
-                <div className="w-full h-[200px] md:h-[230px]">
-                  <img
-                    src="https://i.pinimg.com/originals/07/8c/71/078c71955fe352c544e395fbafddf82c.jpg"
-                    alt="car"
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-                <div className={`mt-1 ${styles.containerProductTag}`}>
-                  <h3
-                    className={`font-bold text-sm md:text-base ${styles.nameTag}`}
-                  >
-                    Super Car HD Wallpaper in 2023
-                  </h3>
-                  <div className="w-full mt-1 md:mt-2 flex items-center border-b border-solid">
-                    <p className="text-[13px] md:text-[14px] font-medium text-[crimson]">
-                      100.000.000đ
-                    </p>
-                    <p className="text-[10px] md:text-[11px] mt-[5px] ml-2 line-through">
-                      102.000.000đ
-                    </p>
-                  </div>
-                  <p
-                    className={`text-[13px] md:text-[14px] mt-2 md:mt-3 ${styles.desTag}`}
-                  >
-                    {" "}
-                    <strong className="text-[crimson]">*</strong>
-                    Lamborghini Urus 2023 có đầy đủ những phẩm chất ưu việt của
-                    một chiếc siêu xe hàng đầu. Nhưng nhiều người vẫn cho rằng
-                    các mẫu siêu SUV không phải là thế mạnh của Lamborghini và
-                    Urus 2023 sẽ bị lép vế trước những mẫu xe gầm thấp đã làm
-                    nên tên tuổi của thương hiệu
-                  </p>
-                </div>
-                <div className="my-2 flex items-center justify-center relative">
-                  <button className="text-sm shadow-[0_0_2px_#4a8cbf] border-[#4a8cbf] border-[1px] p-1 pr-3 rounded-md">
-                    View more
-                  </button>
-                  <a
-                    href="#"
-                    className="absolute top-[5px] right-[10px] md:right-[40px]"
-                    style={{ color: "crimson !important" }}
-                  >
-                    <SiShopee />
-                  </a>
-                </div>
-              </div>
-              <div className="w-[200px] md:w-[250px] p-1 border shadow-[0_0_3px_#7a7a7a] hover:shadow-[0_0_10px] mb-4 cursor-pointer mx-1">
-                <div className="w-full h-[200px] md:h-[230px]">
-                  <img
-                    src="https://i.pinimg.com/originals/07/8c/71/078c71955fe352c544e395fbafddf82c.jpg"
-                    alt="car"
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-                <div className={`mt-1 ${styles.containerProductTag}`}>
-                  <h3
-                    className={`font-bold text-sm md:text-base ${styles.nameTag}`}
-                  >
-                    Super Car HD Wallpaper in 2023
-                  </h3>
-                  <div className="w-full mt-1 md:mt-2 flex items-center border-b border-solid">
-                    <p className="text-[13px] md:text-[14px] font-medium text-[crimson]">
-                      100.000.000đ
-                    </p>
-                    <p className="text-[10px] md:text-[11px] mt-[5px] ml-2 line-through">
-                      102.000.000đ
-                    </p>
-                  </div>
-                  <p
-                    className={`text-[13px] md:text-[14px] mt-2 md:mt-3 ${styles.desTag}`}
-                  >
-                    {" "}
-                    <strong className="text-[crimson]">*</strong>
-                    Lamborghini Urus 2023 có đầy đủ những phẩm chất ưu việt của
-                    một chiếc siêu xe hàng đầu. Nhưng nhiều người vẫn cho rằng
-                    các mẫu siêu SUV không phải là thế mạnh của Lamborghini và
-                    Urus 2023 sẽ bị lép vế trước những mẫu xe gầm thấp đã làm
-                    nên tên tuổi của thương hiệu
-                  </p>
-                </div>
-                <div className="my-2 flex items-center justify-center relative">
-                  <button className="text-sm shadow-[0_0_2px_#4a8cbf] border-[#4a8cbf] border-[1px] p-1 pr-3 rounded-md">
-                    View more
-                  </button>
-                  <a
-                    href="#"
-                    className="absolute top-[5px] right-[10px] md:right-[40px]"
-                    style={{ color: "crimson !important" }}
-                  >
-                    <SiShopee />
-                  </a>
-                </div>
-              </div>
             </>
-          ) : category === 3 ? (
+          ) : categoryType === 3 ? (
             <>
               {" "}
               <div className="w-full flex justify-between mb-4">
@@ -483,15 +344,15 @@ const page = () => {
           )}
         </div>
       </div>
-      {add && category === 2 ? (
+      {add && categoryType === 2 ? (
         <AddProductModel
           title={routs[1]}
           onClick={() => setAdd("")}
           cateId={cate.categoryId}
           cateName={cate.categoryName}
         />
-      ) : add && category === 3 ? (
-        <AddProductModel
+      ) : add && categoryType === 3 ? (
+        <AddNewsModel
           title={routs[1]}
           onClick={() => setAdd("")}
           cateId={cate.categoryId}

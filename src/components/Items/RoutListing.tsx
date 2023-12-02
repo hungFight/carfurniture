@@ -7,11 +7,12 @@ import styles from "./styleNews.module.scss";
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 const RoutListing: React.FC<{
+  dataList?: string[];
   currentPath: string;
   title: string;
   defaultR?: string;
   cate?: string[];
-}> = ({ currentPath, title, defaultR, cate }) => {
+}> = ({ currentPath, title, defaultR, cate, dataList }) => {
   const pathname = usePathname();
   const [routs, setRouts] = useState([
     title,
@@ -23,13 +24,26 @@ const RoutListing: React.FC<{
   useEffect(() => {
     if (!window.location.pathname.split(`${currentPath}/`)[1])
       setRouts((pre) => pre.filter((r, index) => index !== 1));
+    console.log(
+      "vooooo",
+      window.location.pathname.split(`/`)[3],
+      window.location.pathname.split(`/`)
+    );
     if (pathname.split(routs[1] ?? "")[1]) {
       if (window.location.pathname.split(`/`)[3]) {
+        console.log("vooooo 333");
+
         routs[1] = window.location.pathname.split(`/`)[2];
         routs[2] = decodeURIComponent(window.location.pathname.split(`/`)[3]);
         setRouts(routs);
-        setLoad(!load);
       }
+
+      setLoad(!load);
+    } else {
+      console.log("vooooo 11c");
+      routs[1] = window.location.pathname.split(`/`)[2];
+      setRouts(routs.filter((r, index) => index !== 2));
+      setLoad(!load);
     }
     console.log("vooo", pathname.split(routs[1] ?? ""));
   }, [pathname]);
@@ -55,7 +69,7 @@ const RoutListing: React.FC<{
               <Listing
                 onClick={handleRount}
                 choice={routs[1]}
-                data={cate}
+                data={cate ?? []}
                 default={currentPath}
               />
             </div>

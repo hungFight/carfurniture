@@ -1,6 +1,7 @@
 import InputSearch from "@/components/Items/InputSearch";
 import React from "react";
 import styles from "../styleNews.module.scss";
+import Link from "next/link";
 
 const page = (props: { params: { cate: string } }) => {
   console.log(props, "props");
@@ -11,7 +12,10 @@ const page = (props: { params: { cate: string } }) => {
         <InputSearch placeholder={props.params.cate} />
       </div>
       <div className="w-full">
-        <div className="w-full flex justify-between mb-4">
+        <Link
+          href={`${props.params.cate}/adw/1`}
+          className="w-full flex justify-between mb-4"
+        >
           <div className="min-w-[190px] h-[50px] md:min-w-[250px] md:h-[140px] xl:min-w-[350px] xl:h-[210px] mr-3 md:mr-5">
             <img src="https://pasal.edu.vn/upload_images/images/2020/03/05/dfgdf.jpg" />
           </div>
@@ -34,7 +38,7 @@ const page = (props: { params: { cate: string } }) => {
               khiển không thể nào quan sát được điểm mù thông qua...
             </p>
           </div>
-        </div>{" "}
+        </Link>{" "}
         <div className="w-full flex justify-between mb-4">
           <div className="min-w-[190px] h-[50px] md:min-w-[250px] md:h-[140px] xl:min-w-[350px] xl:h-[210px] mr-3 md:mr-5">
             <img src="https://pasal.edu.vn/upload_images/images/2020/03/05/dfgdf.jpg" />

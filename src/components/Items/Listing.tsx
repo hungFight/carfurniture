@@ -8,14 +8,7 @@ const Listing: React.FC<{
   default?: string;
   Tag?: any;
   menu?: string;
-}> = ({
-  data = ["Mazda", "lamborghini"],
-  choice,
-  onClick,
-  default: defaultR,
-  Tag = Link,
-  menu,
-}) => {
+}> = ({ data, choice, onClick, default: defaultR, Tag = Link, menu }) => {
   const [onTap, setOnTap] = useState<boolean>(false);
   return (
     <div className="w-full">
@@ -33,10 +26,11 @@ const Listing: React.FC<{
               className="absolute w-full bg-white top-[44px] left-0 rounded-[5px] px-1 py-5 shadow-[0_0_4px_#909090] z-20 "
               onClick={(e) => e.stopPropagation()}
             >
-              {data.map((r) => (
+              {data?.map((r) => (
                 <div key={r} className="w-full  mb-3">
                   <Tag
-                    href={`/${defaultR}/${r}`}
+                    href={`/[slug]`}
+                    as={`/${defaultR}/${r}`}
                     className={`w-full  text-sm md:text-base cursor-pointer  ${
                       choice === r ? "text-[#0087ff]" : ""
                     }`}
@@ -51,10 +45,11 @@ const Listing: React.FC<{
         </div>
 
         <div className="hidden min-[768px]:block">
-          {data.map((r) => (
+          {data?.map((r) => (
             <div key={r} className="w-full border-b border-[#303131]  mb-3">
               <Tag
-                href={`/${defaultR}/${r}`}
+                href={`/[slug]`}
+                as={`/${defaultR}/${r}`}
                 className={`w-full  text-sm md:text-base cursor-pointer  ${
                   choice === r ? "text-[#0087ff]" : ""
                 }`}
