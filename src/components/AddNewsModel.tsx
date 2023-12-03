@@ -1,11 +1,11 @@
 "use client";
 import React from "react";
+import styles from "./styleComponent.module.scss";
 
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import { IoCloseCircleOutline } from "react-icons/io5";
 import { useState } from "react";
-import styles from "../app/news/styleNews.module.scss";
 import { PiMessengerLogoLight } from "react-icons/pi";
 import { CiPhone } from "react-icons/ci";
 import { SiShopee } from "react-icons/si";
@@ -19,7 +19,7 @@ const AddNewsModel: React.FC<{
   const [value, setValue] = useState<string>("");
   const [pre, setPre] = useState<boolean>(false);
 
-  const [product, setProduct] = useState<{
+  const [news, setNews] = useState<{
     Name: string;
     Content: string;
     categoryId: number;
@@ -31,25 +31,25 @@ const AddNewsModel: React.FC<{
     FormCollection: null,
   });
   const [image, setImage] = useState<string>("");
-  console.log(product);
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
     const formData = new FormData();
-    product.Content = value;
-    formData.append("Name", product.Name);
-    formData.append("Content", product.Content);
-    formData.append("categoryId", String(product.categoryId));
-    formData.append("file", product.FormCollection);
-    const res = await http.post("Product/Create", formData);
+    news.Content = value;
+    formData.append("Name", news.Name);
+    formData.append("Content", news.Content);
+    formData.append("categoryId", String(news.categoryId));
+    formData.append("FormCollection", news.FormCollection);
+    const res = await http.post("Blog/Create", formData);
   };
   const handleUploadFIle = (e: any) => {
     const file = e.target.files[0];
     if (file) {
       setImage(URL.createObjectURL(file));
-      setProduct({ ...product, FormCollection: file });
+      setNews({ ...news, FormCollection: file });
     }
   };
+
   const modules = {
     toolbar: [
       [{ header: [1, 2, 3, false] }],
@@ -74,6 +74,8 @@ const AddNewsModel: React.FC<{
     "image",
     "video",
   ];
+  console.log(value, "news");
+
   return (
     <>
       <div
@@ -85,6 +87,15 @@ const AddNewsModel: React.FC<{
         encType="multipart/form-data"
         className="w-full h-full p-5 overflow-auto z-50 sm:w-[640px] flex justify-center flex-wrap  fixed top-1/2 right-1/2 left-1/2 translate-x-[-50%] translate-y-[-50%] bg-white"
       >
+        <h3 className="w-full p-3 text-center relative">
+          {title}
+          <div
+            className="absolute top-3 left-2 text-[30px] cursor-pointer"
+            onClick={onClick}
+          >
+            <IoCloseCircleOutline />
+          </div>
+        </h3>
         <div className="w-full my-2 flex items-center flex-wrap">
           <label className="text-base mr-3" htmlFor="productFile">
             Tải ảnh sản phẩm lên:
@@ -103,15 +114,6 @@ const AddNewsModel: React.FC<{
             </div>
           )}
         </div>
-        <h3 className="w-full p-3 text-center relative">
-          {title}
-          <div
-            className="absolute top-3 left-2 text-[30px] cursor-pointer"
-            onClick={onClick}
-          >
-            <IoCloseCircleOutline />
-          </div>
-        </h3>
         <div className="w-full my-2 flex items-center">
           <label className="text-base mr-3" htmlFor="productName">
             Tiêu đề:
@@ -121,7 +123,7 @@ const AddNewsModel: React.FC<{
             className="outline-[#41af6b] mr-1 shadow-[0_0_2px_#4a8cbf] border-[#4a8cbf] border-[1px] p-1 pr-3 rounded-md"
             id="productName"
             type="text"
-            onChange={(e) => setProduct({ ...product, Name: e.target.value })}
+            onChange={(e) => setNews({ ...news, Name: e.target.value })}
             placeholder="Tiêu đề"
           />
         </div>{" "}
@@ -156,24 +158,32 @@ const AddNewsModel: React.FC<{
       </form>
       {pre && (
         <div
-          className="w-full h-full fixed top-0 left-0 bg-white z-[999] overflow-auto"
+          className="w-full h-full fixed top-0 left-0 bg-white z-[999] flex justify-center"
           onClick={() => setPre(false)}
         >
-          <div className="w-full h-full flex justify-between mb-4">
-            <div className="w-[90%] h-[90%]">
-              <h3 className="text-base md:text-[17px] font-bold">
-                {product.Name}
-              </h3>
-              <p className="text-sm ">date time</p>
-              <div
-                className={`w-[80%] text-sm md:text-base  mt-3  ${styles.description}`}
-                style={{
-                  display: "-webkit-box",
-                  WebkitLineClamp: 3,
-                  WebkitBoxOrient: "vertical",
-                }}
-                dangerouslySetInnerHTML={{ __html: value }}
-              ></div>
+          <div className="w-full h-full flex justify-between mb-4 overflow-auto md:w-[80%] mt-5">
+            <div className="w-full h-full">
+              <div className="w-fill h-[260px] min-[600px]:w-[600px] min-[600px]:h-[300px]">
+                <img
+                  src="https://pasal.edu.vn/upload_images/images/2020/03/05/dfgdf.jpg"
+                  className="w-full h-full object-cover"
+                />
+              </div>
+              <div className="w-full h-full p-2">
+                <h3 className="text-base md:text-[17px] font-bold">
+                  {news.Name}
+                </h3>
+                <p className="text-sm ">date time</p>
+                <div
+                  className={`w-full text-sm md:text-base  mt-3  ${styles.dangerouslySet}`}
+                  // style={{
+                  //   display: "-webkit-box",
+                  //   WebkitLineClamp: 3,
+                  //   WebkitBoxOrient: "vertical",
+                  // }}
+                  dangerouslySetInnerHTML={{ __html: value }}
+                ></div>
+              </div>
             </div>
           </div>
         </div>

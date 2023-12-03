@@ -1,5 +1,4 @@
 "use client";
-import RoutListing from "@/components/Items/RoutListing";
 import SlideCategory from "@/components/Slide/SlideCategory";
 import React, { useEffect, useState } from "react";
 import styles from "../styleHomePage.module.scss";
@@ -7,12 +6,28 @@ import { SiShopee } from "react-icons/si";
 import Routing from "@/components/Items/Routing";
 import Listing from "@/components/Items/Listing";
 import { IoIosAddCircle } from "react-icons/io";
-import AddProductModel from "@/components/AddProductModel";
-import FormAboutUs from "@/components/FormAboutUs";
 import http from "@/utils/http";
+import numeral from "numeral";
 import Link from "next/link";
-import AddNewsModel from "@/components/AddNewsModel";
+import dynamic from "next/dynamic";
+import PreviousAdmin from "@/components/PreviousAdmin";
+const RoutListing = dynamic(() => import("@/components/Items/RoutListing"));
+const AddNewsModel = dynamic(() => import("@/components/AddNewsModel"));
+const AddProductModel = dynamic(() => import("@/components/AddProductModel"));
+
 const page = () => {
+  const [product, setProduct] = useState<{
+    Id: number;
+    Name: string;
+    Price: string;
+    Discount: string;
+    Description: string;
+    UrlShoppe: string;
+    categoryId: number;
+    categoryName: string;
+    path: string;
+    FormCollection: any;
+  }>(); // update
   const [dataCate, setDataCate] = useState<
     {
       id: number;
@@ -34,6 +49,8 @@ const page = () => {
     }[]
   >([]);
   const [add, setAdd] = useState<string>("");
+  const [pre, setPre] = useState<boolean>(false);
+
   const [addCate, setAddCate] = useState<boolean>(false);
   const [aboutUs, setAboutUs] = useState<boolean>(false);
   const [categoryType, setCategory] = useState<number>(2);
@@ -44,6 +61,7 @@ const page = () => {
     categoryId: 0,
     categoryName: "",
   });
+  const [loading, setLoading] = useState("");
   const [routs, setRouts] = useState(["Quản trị"]);
   const [nameRout, setNameRout] = useState("");
   const [load, setLoad] = useState(false);
@@ -132,7 +150,7 @@ const page = () => {
           active={categoryType}
         />
       </div>
-      <div className="flex flex-wrap md:flex-nowrap">
+      <div className="w-full flex flex-wrap md:flex-nowrap">
         <div className=" px-5 w-full md:w-[400px]">
           <div className="w-full my-3 mb-4">
             <Routing routs={routs} />
@@ -185,10 +203,10 @@ const page = () => {
             </h3>
           </div>
         </div>
-        <div className="flex flex-wrap justify-around border-l border-t border-b-slate-900 p-5 relative">
+        <div className="flex w-full md:w-[70%] flex-wrap justify-center border-l border-t border-b-slate-900 p-5 relative">
           {routs[1] && (
             <div
-              className="absolute top-1 right-2 z-5 px-3 py-2 rounded-[5px] bg-[#1e7ccd] cursor-pointer text-white"
+              className="absolute top-1 right-2 z-20 px-3 py-2 rounded-[5px] bg-[#1e7ccd] cursor-pointer text-white"
               onClick={() => {
                 setAdd(routs[1]);
                 setLoad(!load);
@@ -201,14 +219,48 @@ const page = () => {
           {categoryType === 2 ? (
             <>
               {dataProducts.map((p) => (
-                <Link
+                <div
                   key={p.id}
-                  href={`${categoryType === 2 ? "products" : ""}/${routs[1]}/${
-                    p.id
-                  }`}
-                  className="w-[200px] md:w-[250px] p-1 border shadow-[0_0_3px_#7a7a7a] hover:shadow-[0_0_10px] mb-4 cursor-pointer"
+                  className=" relative w-[250px] p-1 border shadow-[0_0_3px_#7a7a7a] hover:shadow-[0_0_10px] mb-4 mx-3 cursor-pointer"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setPre(true);
+                    setProduct({
+                      Id: p.id,
+                      Name: p.name,
+                      Price: String(p.price),
+                      Description: p.description,
+                      Discount: String(p.price_After),
+                      categoryId: cate.categoryId,
+                      categoryName: cate.categoryName,
+                      FormCollection: p.urlImage[0]?.image,
+                      path: p.urlImage[0]?.path,
+                      UrlShoppe: p.urlShoppe,
+                    });
+                  }}
                 >
-                  <div className="w-full h-[200px] md:h-[230px]">
+                  <div
+                    className="absolute right-1 cursor-pointer top-0 text-sm w-auto px-3 py-1  bg-white z-10 shadow-[0_0_2px_#999999]"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setProduct({
+                        Id: p.id,
+                        Name: p.name,
+                        Price: String(p.price),
+                        Description: p.description,
+                        Discount: String(p.price_After),
+                        categoryId: cate.categoryId,
+                        categoryName: cate.categoryName,
+                        FormCollection: p.urlImage[0]?.image,
+                        path: p.urlImage[0]?.path,
+                        UrlShoppe: p.urlShoppe,
+                      });
+                      setAdd(routs[1]);
+                    }}
+                  >
+                    Update
+                  </div>
+                  <div className="w-full h-[240px]">
                     <img
                       src={p.urlImage[0]?.image}
                       alt={p.urlImage[0]?.path}
@@ -223,35 +275,54 @@ const page = () => {
                     </h3>
                     <div className="w-full mt-1 md:mt-2 flex items-center border-b border-solid">
                       <p className="text-[13px] md:text-[14px] font-medium text-[crimson]">
-                        {p.price}đ
+                        {p.price.toLocaleString("en-US").replace(/,/g, ".")}đ
                       </p>
                       {p.price_After && (
                         <p className="text-[10px] md:text-[11px] mt-[5px] ml-2 line-through">
-                          {p.price_After}đ
+                          {p.price_After
+                            .toLocaleString("en-US")
+                            .replace(/,/g, ".")}
+                          đ
                         </p>
                       )}
                     </div>
-                    <p
+                    <div
                       className={`text-[13px] md:text-[14px] mt-2 md:mt-3 ${styles.desTag}`}
-                    >
-                      {" "}
-                      <strong className="text-[crimson]">*</strong>
-                      {p.description}
-                    </p>
+                      dangerouslySetInnerHTML={{ __html: p.description }}
+                    ></div>
                   </div>
                   <div className="my-2 flex items-center justify-center relative">
+                    <p
+                      className="absolute text-sm text-[crimson] top-[5px] left-[10px] "
+                      style={{ color: "crimson !important" }}
+                      onClick={async (e) => {
+                        e.stopPropagation();
+                        const isD = window.confirm("Bạn có muốn xoá không?");
+                        if (isD) {
+                          setLoading(String(p.id));
+                          const del = await http.delete(
+                            `Product/Delete/${p.id}`
+                          );
+                          fetS();
+                          setLoading("");
+                        }
+                      }}
+                    >
+                      {loading === String(p.id) ? "deleting..." : "delete"}
+                    </p>
                     <button className="text-sm shadow-[0_0_2px_#4a8cbf] border-[#4a8cbf] border-[1px] p-1 pr-3 rounded-md">
                       View more
                     </button>
                     <a
                       href={p.urlShoppe}
-                      className="absolute top-[5px] right-[10px] md:right-[40px]"
+                      target="_blank"
+                      className="absolute top-[5px] text-[crimson] right-[30px] "
                       style={{ color: "crimson !important" }}
                     >
                       <SiShopee />
                     </a>
                   </div>
-                </Link>
+                </div>
               ))}
             </>
           ) : categoryType === 3 ? (
@@ -346,7 +417,9 @@ const page = () => {
       </div>
       {add && categoryType === 2 ? (
         <AddProductModel
+          upCate={product}
           title={routs[1]}
+          fet={fetS}
           onClick={() => setAdd("")}
           cateId={cate.categoryId}
           cateName={cate.categoryName}
@@ -369,6 +442,7 @@ const page = () => {
       >
         About us
       </div>
+      {product && pre && <PreviousAdmin setPre={setPre} product={product} />}
     </div>
   );
 };

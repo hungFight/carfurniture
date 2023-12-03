@@ -13,8 +13,21 @@ const AddProductModel: React.FC<{
   onClick: () => void;
   cateId: number;
   cateName: string;
-}> = ({ title, onClick, cateId, cateName }) => {
-  const [value, setValue] = useState<string>("");
+  fet: () => Promise<void>;
+  upCate?: {
+    Id: number;
+    Name: string;
+    Price: string;
+    Discount: string;
+    Description: string;
+    UrlShoppe: string;
+    categoryId: number;
+    categoryName: string;
+    path: string;
+    FormCollection: any;
+  };
+}> = ({ title, onClick, cateId, cateName, fet, upCate }) => {
+  const [value, setValue] = useState<string>(upCate?.Description ?? "");
   const [pre, setPre] = useState<boolean>(false);
 
   const [product, setProduct] = useState<{
@@ -27,19 +40,17 @@ const AddProductModel: React.FC<{
     categoryName: string;
     FormCollection: any;
   }>({
-    Name: "",
-    Price: "",
-    Discount: "",
+    Name: upCate?.Name ?? "",
+    Price: upCate?.Price ?? "",
+    Discount: upCate && upCate?.Discount !== "null" ? upCate.Discount : "",
     Description: "",
-    UrlShoppe: "",
-    categoryId: cateId,
-    categoryName: cateName,
+    UrlShoppe: upCate?.UrlShoppe ?? "",
+    categoryId: upCate?.categoryId ?? cateId,
+    categoryName: upCate?.categoryName ?? cateName,
     FormCollection: null,
   });
-  const [image, setImage] = useState<string>("");
+  const [image, setImage] = useState<string>(upCate?.FormCollection ?? "");
   console.log(product);
-
-  const [componentDisabled, setComponentDisabled] = useState<boolean>(true);
   const handleUploadFIle = (e: any) => {
     const file = e.target.files[0];
     if (file) {
@@ -49,19 +60,27 @@ const AddProductModel: React.FC<{
   };
   const handleSubmit = async (e: any) => {
     e.preventDefault();
-    console.log(product.FormCollection, "product");
+    console.log(product, "product", product.FormCollection);
 
     const formData = new FormData();
     product.Description = value;
     formData.append("Name", product.Name);
     formData.append("Price", product.Price);
-    formData.append("Discount", product.Discount);
     formData.append("Description", product.Description);
     formData.append("UrlShoppe", product.UrlShoppe);
     formData.append("categoryId", String(product.categoryId));
     formData.append("categoryName", cateName);
-    formData.append("file", product.FormCollection);
-    const res = await http.post("Product/Create", formData);
+    formData.append("FormCollection", product.FormCollection);
+    if (!upCate) {
+      formData.append("Discount", product.Discount);
+      const res = await http.post("Product/Create", formData);
+    } else {
+      formData.append("Price_After", product.Discount);
+      formData.append("Paths", upCate.path);
+      formData.append("Id", String(upCate.Id));
+      const res = await http.put("Product/Update", formData);
+    }
+    fet();
   };
   const modules = {
     toolbar: [
@@ -112,7 +131,7 @@ const AddProductModel: React.FC<{
             Tải ảnh sản phẩm lên:
           </label>
           <input
-            required
+            required={upCate ? false : true}
             className="outline-[#41af6b] mr-1 shadow-[0_0_2px_#4a8cbf] border-[#4a8cbf] border-[1px] p-1 pr-3 rounded-md"
             id="productFile"
             type="file"
@@ -130,6 +149,7 @@ const AddProductModel: React.FC<{
             Tên sản phẩm:
           </label>
           <input
+            value={product.Name}
             required
             className="outline-[#41af6b] mr-1 shadow-[0_0_2px_#4a8cbf] border-[#4a8cbf] border-[1px] p-1 pr-3 rounded-md"
             id="productName"
@@ -143,6 +163,7 @@ const AddProductModel: React.FC<{
             Giá sản phẩm:
           </label>
           <input
+            value={product.Price}
             required
             className="outline-[#41af6b] mr-1 shadow-[0_0_2px_#4a8cbf] border-[#4a8cbf] border-[1px] p-1 pr-3 rounded-md"
             id="productPrice"
@@ -157,8 +178,8 @@ const AddProductModel: React.FC<{
           </label>
           <input
             id="productDiscount"
-            required
             type="text"
+            value={product.Discount}
             onChange={(e) =>
               setProduct({ ...product, Discount: e.target.value })
             }
@@ -174,6 +195,7 @@ const AddProductModel: React.FC<{
             required
             className="outline-[#41af6b] mr-1 shadow-[0_0_2px_#4a8cbf] border-[#4a8cbf] border-[1px] p-1 pr-3 rounded-md"
             id="productShop"
+            value={product.UrlShoppe}
             type="text"
             placeholder="Link shop"
             onChange={(e) =>

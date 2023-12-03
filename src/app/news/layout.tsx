@@ -3,8 +3,10 @@ import { Inter } from "next/font/google";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { FaPhone } from "react-icons/fa6";
-import RoutListing from "@/components/Items/RoutListing";
 import http from "@/utils/http";
+import dynamic from "next/dynamic";
+const RoutListing = dynamic(() => import("@/components/Items/RoutListing"));
+
 const getData = async () => {
   const res = await http.get("Category/GetAll/Tin tức");
   return res.data;
