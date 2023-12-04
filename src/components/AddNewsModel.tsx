@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useRef } from "react";
 import styles from "./styleComponent.module.scss";
 
 import ReactQuill from "react-quill";
@@ -15,39 +15,95 @@ const AddNewsModel: React.FC<{
   onClick: () => void;
   cateId: number;
   cateName: string;
-}> = ({ title, onClick, cateId, cateName }) => {
-  const [value, setValue] = useState<string>("");
+  newsUp:
+    | {
+        id: number;
+        name: string;
+        create_Date: string;
+        content: string;
+        urlImage: {
+          image: string;
+          path: string;
+        }[];
+      }
+    | undefined;
+  fet(name: string): Promise<void>;
+  setNewsUp: React.Dispatch<
+    React.SetStateAction<
+      | {
+          id: number;
+          name: string;
+          create_Date: string;
+          content: string;
+          urlImage: {
+            image: string;
+            path: string;
+          }[];
+        }
+      | undefined
+    >
+  >;
+}> = ({ title, onClick, cateId, cateName, newsUp, fet, setNewsUp }) => {
+  const [value, setValue] = useState<string>(newsUp?.content ?? "");
   const [pre, setPre] = useState<boolean>(false);
-
+  const [loading, setLoading] = useState<boolean>(false);
+  const checkRef = useRef<boolean>(false);
   const [news, setNews] = useState<{
     Name: string;
     Content: string;
     categoryId: number;
     FormCollection: any;
   }>({
-    Name: "",
-    Content: "",
+    Name: newsUp?.name ?? "",
+    Content: newsUp?.content ?? "",
     categoryId: cateId,
     FormCollection: null,
   });
-  const [image, setImage] = useState<string>("");
+  const [image, setImage] = useState<string>(newsUp?.urlImage[0]?.image ?? "");
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
+    setLoading(true);
     const formData = new FormData();
     news.Content = value;
+    formData.append("categoryName", cateName);
+    formData.append("CategoryId", String(cateId));
     formData.append("Name", news.Name);
     formData.append("Content", news.Content);
-    formData.append("categoryId", String(news.categoryId));
-    formData.append("FormCollection", news.FormCollection);
-    const res = await http.post("Blog/Create", formData);
-  };
-  const handleUploadFIle = (e: any) => {
-    const file = e.target.files[0];
-    if (file) {
-      setImage(URL.createObjectURL(file));
-      setNews({ ...news, FormCollection: file });
+    if (cateName && cateId && news.Name && news.Content) {
+      if (newsUp) {
+        // update
+        formData.append("Id", String(newsUp.id));
+
+        formData.append("FormCollection", news.FormCollection);
+        if (checkRef.current)
+          formData.append("Paths", newsUp.urlImage[0]?.path);
+        if (newsUp.id && news.Content) {
+          const res = await http.put("Blog/Update", formData);
+        }
+      } else {
+        //add
+        formData.append("FormCollection", news.FormCollection);
+        formData.append("Name", news.Name);
+        formData.append("Content", news.Content);
+        if (news.FormCollection) {
+          const res = await http.post("Blog/Create", formData);
+        }
+      }
+      await fet(cateName);
+      checkRef.current = false;
+      setNewsUp(undefined);
+      onClick();
     }
+
+    setLoading(false);
+  };
+  // upload file
+  const handleUploadFIle = (e: any) => {
+    const files = e.target.files[0];
+    checkRef.current = true;
+    setImage(URL.createObjectURL(files));
+    setNews({ ...news, FormCollection: files });
   };
 
   const modules = {
@@ -74,7 +130,7 @@ const AddNewsModel: React.FC<{
     "image",
     "video",
   ];
-  console.log(value, "news");
+  console.log(news, "news");
 
   return (
     <>
@@ -101,7 +157,6 @@ const AddNewsModel: React.FC<{
             Tải ảnh sản phẩm lên:
           </label>
           <input
-            required
             className="outline-[#41af6b] mr-1 shadow-[0_0_2px_#4a8cbf] border-[#4a8cbf] border-[1px] p-1 pr-3 rounded-md"
             id="productFile"
             type="file"
@@ -123,6 +178,7 @@ const AddNewsModel: React.FC<{
             className="outline-[#41af6b] mr-1 shadow-[0_0_2px_#4a8cbf] border-[#4a8cbf] border-[1px] p-1 pr-3 rounded-md"
             id="productName"
             type="text"
+            value={news.Name}
             onChange={(e) => setNews({ ...news, Name: e.target.value })}
             placeholder="Tiêu đề"
           />
@@ -152,7 +208,7 @@ const AddNewsModel: React.FC<{
             className="text-sm px-3 py-1 hover:text-[#0074da] cursor-pointer"
             type="submit"
           >
-            Submit
+            Submit{loading ? " is in processing..." : ""}
           </button>
         </div>
       </form>
@@ -164,10 +220,7 @@ const AddNewsModel: React.FC<{
           <div className="w-full h-full flex justify-between mb-4 overflow-auto md:w-[80%] mt-5">
             <div className="w-full h-full">
               <div className="w-fill h-[260px] min-[600px]:w-[600px] min-[600px]:h-[300px]">
-                <img
-                  src="https://pasal.edu.vn/upload_images/images/2020/03/05/dfgdf.jpg"
-                  className="w-full h-full object-cover"
-                />
+                <img src={image} className="w-full h-full" />
               </div>
               <div className="w-full h-full p-2">
                 <h3 className="text-base md:text-[17px] font-bold">

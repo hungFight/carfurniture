@@ -8,7 +8,7 @@ import { useState } from "react";
 import { useSearchParams } from "next/navigation";
 export default function New() {
   return (
-    <div className="w-full p-3 flex items-center justify-center">
+    <div className="w-full md:w-1/2 p-3 flex items-center justify-center">
       Vui lòng chọn danh mục bện cạnh
     </div>
   );

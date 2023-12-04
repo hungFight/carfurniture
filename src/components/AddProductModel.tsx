@@ -2,7 +2,7 @@
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import { IoCloseCircleOutline } from "react-icons/io5";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import styles from "./styleComponent.module.scss";
 import { PiMessengerLogoLight } from "react-icons/pi";
 import { CiPhone } from "react-icons/ci";
@@ -13,7 +13,8 @@ const AddProductModel: React.FC<{
   onClick: () => void;
   cateId: number;
   cateName: string;
-  fet: () => Promise<void>;
+  fet(name: string): Promise<void>;
+
   upCate?: {
     Id: number;
     Name: string;
@@ -25,11 +26,37 @@ const AddProductModel: React.FC<{
     categoryName: string;
     path: string;
     FormCollection: any;
+    urlImage: {
+      image: string;
+      path: string;
+    }[];
   };
-}> = ({ title, onClick, cateId, cateName, fet, upCate }) => {
+  setUpCate: React.Dispatch<
+    React.SetStateAction<
+      | {
+          Id: number;
+          Name: string;
+          Price: string;
+          Discount: string;
+          Description: string;
+          UrlShoppe: string;
+          categoryId: number;
+          categoryName: string;
+          path: string;
+          FormCollection: any;
+          urlImage: {
+            image: string;
+            path: string;
+          }[];
+        }
+      | undefined
+    >
+  >;
+}> = ({ title, onClick, cateId, cateName, fet, upCate, setUpCate }) => {
   const [value, setValue] = useState<string>(upCate?.Description ?? "");
+  const [loading, setLoading] = useState<boolean>(false);
   const [pre, setPre] = useState<boolean>(false);
-
+  const checkRef = useRef<boolean>(false);
   const [product, setProduct] = useState<{
     Name: string;
     Price: string;
@@ -49,19 +76,27 @@ const AddProductModel: React.FC<{
     categoryName: upCate?.categoryName ?? cateName,
     FormCollection: null,
   });
-  const [image, setImage] = useState<string>(upCate?.FormCollection ?? "");
+  const [image, setImage] = useState<string[]>(
+    upCate?.urlImage.map((f) => f.image) ?? []
+  );
   console.log(product);
   const handleUploadFIle = (e: any) => {
-    const file = e.target.files[0];
-    if (file) {
-      setImage(URL.createObjectURL(file));
-      setProduct({ ...product, FormCollection: file });
+    const files = e.target.files;
+    console.log(files, "files");
+    const fils = [];
+    for (let i = 0; i < files.length; i++) {
+      fils.push(files[i]);
+    }
+    if (fils.length) {
+      checkRef.current = true;
+      setImage(fils.map((f: any) => URL.createObjectURL(f)));
+      setProduct({ ...product, FormCollection: fils });
     }
   };
   const handleSubmit = async (e: any) => {
     e.preventDefault();
     console.log(product, "product", product.FormCollection);
-
+    setLoading(true);
     const formData = new FormData();
     product.Description = value;
     formData.append("Name", product.Name);
@@ -70,17 +105,27 @@ const AddProductModel: React.FC<{
     formData.append("UrlShoppe", product.UrlShoppe);
     formData.append("categoryId", String(product.categoryId));
     formData.append("categoryName", cateName);
-    formData.append("FormCollection", product.FormCollection);
+    product.FormCollection?.map((f: any) => {
+      formData.append("FormCollection", f);
+    });
     if (!upCate) {
       formData.append("Discount", product.Discount);
       const res = await http.post("Product/Create", formData);
     } else {
       formData.append("Price_After", product.Discount);
-      formData.append("Paths", upCate.path);
+      if (checkRef.current) {
+        upCate.urlImage.map((f) => {
+          formData.append("Paths", f.path);
+        });
+      }
       formData.append("Id", String(upCate.Id));
       const res = await http.put("Product/Update", formData);
+      checkRef.current = false;
     }
-    fet();
+    await fet(cateName);
+    setUpCate(undefined);
+    onClick();
+    setLoading(false);
   };
   const modules = {
     toolbar: [
@@ -136,11 +181,14 @@ const AddProductModel: React.FC<{
             id="productFile"
             type="file"
             name="file"
+            multiple
             onChange={(e) => handleUploadFIle(e)}
           />
           {image && (
-            <div className="w-[200px] h-[200px]">
-              <img src={image} className="w-full h-full" />
+            <div className="w-full  flex flex-wrap">
+              {image.map((url) => (
+                <img src={url} className="w-[150px] h-[150px] mr-2 mt-2" />
+              ))}
             </div>
           )}
         </div>
@@ -228,7 +276,7 @@ const AddProductModel: React.FC<{
             className="text-sm px-3 py-1 hover:text-[#0074da] cursor-pointer"
             type="submit"
           >
-            Submit
+            Submit{loading ? " is in processing..." : ""}
           </button>
         </div>
       </form>
@@ -241,11 +289,9 @@ const AddProductModel: React.FC<{
             <div>
               <div className="min-[1000px]:flex">
                 <div className="w-full h-[300px] min-[600px]:w-[500px]  ">
-                  <img
-                    src={image}
-                    alt={product.Name}
-                    className="w-full h-full object-cover"
-                  />
+                  {image.map((url) => (
+                    <img src={url} className="w-full h-full" />
+                  ))}
                 </div>
                 <div className="mt-1 min-[1000px]:ml-3 ">
                   <h3

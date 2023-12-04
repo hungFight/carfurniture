@@ -11,32 +11,14 @@ import numeral from "numeral";
 import Link from "next/link";
 import dynamic from "next/dynamic";
 import PreviousAdmin from "@/components/PreviousAdmin";
+import moment from "moment";
 const RoutListing = dynamic(() => import("@/components/Items/RoutListing"));
 const AddNewsModel = dynamic(() => import("@/components/AddNewsModel"));
 const AddProductModel = dynamic(() => import("@/components/AddProductModel"));
 
 const page = () => {
-  const [product, setProduct] = useState<{
-    Id: number;
-    Name: string;
-    Price: string;
-    Discount: string;
-    Description: string;
-    UrlShoppe: string;
-    categoryId: number;
-    categoryName: string;
-    path: string;
-    FormCollection: any;
-  }>(); // update
-  const [dataCate, setDataCate] = useState<
-    {
-      id: number;
-      name: string;
-    }[]
-  >([]);
-  const [dataList, setDataList] = useState<
-    { categoryName: string; categoryId: number }[]
-  >([]);
+  const [loadingType, setLoadingType] = useState<boolean>(false);
+  const [loadingDirect, setLoadingDirect] = useState<boolean>(false);
   const [dataProducts, setDataProducts] = useState<
     {
       id: number;
@@ -48,12 +30,59 @@ const page = () => {
       urlImage: { image: string; path: string }[];
     }[]
   >([]);
+  const [dataNews, setDataNews] = useState<
+    {
+      id: number;
+      name: string;
+      create_Date: string;
+      content: string;
+      urlImage: { image: string; path: string }[];
+    }[]
+  >([]);
+
+  // update
+  const [productUp, setProductUp] = useState<{
+    Id: number;
+    Name: string;
+    Price: string;
+    Discount: string;
+    Description: string;
+    UrlShoppe: string;
+    categoryId: number;
+    categoryName: string;
+    path: string;
+    FormCollection: any;
+    urlImage: { image: string; path: string }[];
+  }>();
+
+  const [newsUp, setNewsUp] = useState<
+    | {
+        id: number;
+        name: string;
+        create_Date: string;
+        content: string;
+        urlImage: { image: string; path: string }[];
+      }
+    | undefined
+  >();
+
+  const [dataCate, setDataCate] = useState<
+    {
+      id: number;
+      name: string;
+    }[]
+  >([]);
+  const [dataList, setDataList] = useState<
+    { categoryName: string; categoryId: number }[]
+  >([]);
+
   const [add, setAdd] = useState<string>("");
   const [pre, setPre] = useState<boolean>(false);
+  console.log(productUp, "productUp", add);
 
   const [addCate, setAddCate] = useState<boolean>(false);
   const [aboutUs, setAboutUs] = useState<boolean>(false);
-  const [categoryType, setCategory] = useState<number>(2);
+  const [categoryType, setCategory] = useState<number>(2); // Directory
   const [cate, setCate] = useState<{
     categoryId: number;
     categoryName: string;
@@ -71,50 +100,60 @@ const page = () => {
     setDataCate(res.data);
   };
   const fetS = async () => {
+    setDataList([]);
+    setLoadingType(true);
     const which = dataCate.filter((c) => c.id === categoryType)[0].name;
     const resCate = await http.get<
       { categoryName: string; categoryId: number }[]
     >(`Category/GetAll/${which}`);
-    if (categoryType === 2 && resCate.data.length) {
-      const res = await http.post("Product/GetPaginationProduct", {
-        pageIndex: 1,
-        pageSize: 3,
-        search_CategoryName: resCate.data[0]?.categoryName,
-      });
-
-      setDataProducts(res.data.data);
-    }
     setNameRout(resCate.data[0]?.categoryName ?? "");
-
     setCate({
       categoryId: resCate.data[0]?.categoryId,
       categoryName: resCate.data[0]?.categoryName ?? "",
     });
     setDataList(resCate.data);
+    setLoadingType(false);
   };
+
   useEffect(() => {
     fet();
   }, []);
+
   useEffect(() => {
     if (dataCate.length) {
-      //default
-
       fetS();
     }
   }, [dataCate, categoryType]);
-  console.log(routs, "categoryId");
+  async function fetCateName(name: string) {
+    setLoadingDirect(true);
+    if (categoryType === 2 && name) {
+      const res = await http.post("Product/GetPaginationProduct", {
+        pageIndex: 1,
+        pageSize: 3,
+        search_CategoryName: name,
+      });
+      setDataProducts(res.data.data);
+    }
+    if (categoryType === 3 && name) {
+      const res = await http.post("Blog/GetPaginationProduct", {
+        pageIndex: 1,
+        pageSize: 3,
+        search_CategoryName: name,
+      });
+      setDataNews(res.data.data);
+    }
+    setLoadingDirect(false);
+  }
   useEffect(() => {
+    fetCateName(nameRout);
     if (routs.length >= 2) {
-      console.log("categoryId 11");
-      // routing of page category
       routs[1] = nameRout;
       setRouts(routs.filter((r, index) => index !== 2));
     } else {
-      console.log("categoryId 22");
-
       if (nameRout) setRouts((pre) => [...pre, nameRout]);
     }
   }, [nameRout]);
+
   const handleRount = (vl: string) => {
     if (routs.length >= 2) {
       routs[1] = vl;
@@ -122,12 +161,15 @@ const page = () => {
     } else {
       setRouts((pre) => [...pre, vl]);
     }
+    fetCateName(vl);
     setLoad(!load);
   };
+
   const chooseCate = (id: number) => {
     setCategory(id);
     setAddCate(false);
   };
+
   const [nameCate, setNameCate] = useState("");
   const handleAddCate = async () => {
     if (nameCate) {
@@ -140,11 +182,14 @@ const page = () => {
       if (res.data) fetS();
     }
   };
-
+  const handleDeleteDirectory = async (id: number) => {
+    console.log("directory", id);
+  };
   return (
     <div className="flex flex-wrap ">
       <div className="w-full px-5 py-2">
         <SlideCategory
+          loading={loadingType}
           data={dataCate}
           onClick={chooseCate}
           active={categoryType}
@@ -160,7 +205,9 @@ const page = () => {
               <div className="w-full">
                 <Listing
                   onClick={handleRount}
-                  data={dataList.map((l) => l.categoryName)}
+                  loading={loadingDirect}
+                  data={dataList}
+                  handleDeleteDirectory={handleDeleteDirectory}
                   menu={
                     dataCate
                       .filter((d) => d.id === categoryType)[0]
@@ -225,7 +272,7 @@ const page = () => {
                   onClick={(e) => {
                     e.stopPropagation();
                     setPre(true);
-                    setProduct({
+                    setProductUp({
                       Id: p.id,
                       Name: p.name,
                       Price: String(p.price),
@@ -235,6 +282,7 @@ const page = () => {
                       categoryName: cate.categoryName,
                       FormCollection: p.urlImage[0]?.image,
                       path: p.urlImage[0]?.path,
+                      urlImage: p.urlImage,
                       UrlShoppe: p.urlShoppe,
                     });
                   }}
@@ -243,7 +291,7 @@ const page = () => {
                     className="absolute right-1 cursor-pointer top-0 text-sm w-auto px-3 py-1  bg-white z-10 shadow-[0_0_2px_#999999]"
                     onClick={(e) => {
                       e.stopPropagation();
-                      setProduct({
+                      setProductUp({
                         Id: p.id,
                         Name: p.name,
                         Price: String(p.price),
@@ -253,6 +301,7 @@ const page = () => {
                         categoryName: cate.categoryName,
                         FormCollection: p.urlImage[0]?.image,
                         path: p.urlImage[0]?.path,
+                        urlImage: p.urlImage,
                         UrlShoppe: p.urlShoppe,
                       });
                       setAdd(routs[1]);
@@ -303,7 +352,8 @@ const page = () => {
                           const del = await http.delete(
                             `Product/Delete/${p.id}`
                           );
-                          fetS();
+                          if (productUp) setProductUp(undefined);
+                          fetCateName(nameRout);
                           setLoading("");
                         }
                       }}
@@ -327,88 +377,67 @@ const page = () => {
             </>
           ) : categoryType === 3 ? (
             <>
-              {" "}
-              <div className="w-full flex justify-between mb-4">
-                <div className="min-w-[190px] h-[50px] md:min-w-[250px] md:h-[140px] xl:min-w-[350px] xl:h-[210px] mr-3 md:mr-5">
-                  <img src="https://pasal.edu.vn/upload_images/images/2020/03/05/dfgdf.jpg" />
-                </div>
-                <div className="">
-                  <h3 className="text-base md:text-[17px] font-bold">
-                    Post's title
-                  </h3>
-                  <p className="text-sm ">date time</p>
-                  <p
-                    className={`text-sm md:text-base  mt-3 overflow-hidden ${styles.description}`}
-                    style={{
-                      display: "-webkit-box",
-                      WebkitLineClamp: 3,
-                      WebkitBoxOrient: "vertical",
+              {dataNews.map((bl) => (
+                <div
+                  className="w-full flex flex-wrap md:flex-nowrap  mb-4 relative"
+                  key={bl.id}
+                  onClick={() => {
+                    setNewsUp(bl);
+                    setPre(true);
+                  }}
+                >
+                  <div
+                    className="absolute left-[83px] cursor-pointer top-0 text-sm w-auto px-3 py-1  bg-white z-10 shadow-[0_0_2px_#999999]"
+                    onClick={async (e) => {
+                      e.stopPropagation();
+                      const isD = window.confirm("Bạn có muốn xoá không?");
+                      if (isD) {
+                        setLoading(String(bl.id));
+                        const del = await http.delete(`Blog/Delete/${bl.id}`);
+                        fetCateName(nameRout);
+                        if (newsUp) setNewsUp(undefined);
+                        setLoading("");
+                      }
                     }}
                   >
-                    Điểm mù là những vùng không gian bên ngoài xe bị che khuất
-                    và không nằm trong tầm nhìn của người điều khiển. Nói cách
-                    khác, người điều khiển không thể nào quan sát được điểm mù
-                    thông Điểm mù là những vùng không gian bên ngoài xe bị che
-                    khuất và không nằm trong tầm nhìn của người điều khiển. Nói
-                    cách khác, người điều khiển không thể nào quan sát được điểm
-                    mù thông qua...
-                  </p>
-                </div>
-              </div>{" "}
-              <div className="w-full flex justify-between mb-4">
-                <div className="min-w-[190px] h-[50px] md:min-w-[250px] md:h-[140px] xl:min-w-[350px] xl:h-[210px] mr-3 md:mr-5">
-                  <img src="https://pasal.edu.vn/upload_images/images/2020/03/05/dfgdf.jpg" />
-                </div>
-                <div className="">
-                  <h3 className="text-base md:text-[17px] font-bold">
-                    Post's title
-                  </h3>
-                  <p className="text-sm ">date time</p>
-                  <p
-                    className={`text-sm md:text-base  mt-3 overflow-hidden ${styles.description}`}
-                    style={{
-                      display: "-webkit-box",
-                      WebkitLineClamp: 3,
-                      WebkitBoxOrient: "vertical",
+                    {loading === String(bl.id) ? "deleting..." : "delete"}
+                  </div>
+                  <div
+                    className="absolute left-1 cursor-pointer top-0 text-sm w-auto px-3 py-1  bg-white z-10 shadow-[0_0_2px_#999999]"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setNewsUp(bl);
+                      setAdd(routs[1]);
                     }}
                   >
-                    Điểm mù là những vùng không gian bên ngoài xe bị che khuất
-                    và không nằm trong tầm nhìn của người điều khiển. Nói cách
-                    khác, người điều khiển không thể nào quan sát được điểm mù
-                    thông Điểm mù là những vùng không gian bên ngoài xe bị che
-                    khuất và không nằm trong tầm nhìn của người điều khiển. Nói
-                    cách khác, người điều khiển không thể nào quan sát được điểm
-                    mù thông qua...
-                  </p>
+                    Update
+                  </div>
+                  <div className="min-w-full h-[130px] md:min-w-[250px] md:h-[155px] xl:min-w-[350px] xl:h-[210px] mr-3 md:mr-5">
+                    <img
+                      src={bl.urlImage[0]?.image}
+                      alt={bl.urlImage[0]?.path}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  <div className="h-fit">
+                    <h3 className="text-base md:text-[17px] font-bold">
+                      {bl.name}
+                    </h3>
+                    <p className="text-xs mt-1">
+                      {moment(bl.create_Date).format("DD/MM/YYYY HH:MM:SS")}
+                    </p>
+                    <div
+                      className={`text-sm md:text-base  mt-2 overflow-hidden ${styles.description}`}
+                      style={{
+                        display: "-webkit-box",
+                        WebkitLineClamp: 4,
+                        WebkitBoxOrient: "vertical",
+                      }}
+                      dangerouslySetInnerHTML={{ __html: bl.content }}
+                    ></div>
+                  </div>
                 </div>
-              </div>
-              <div className="w-full flex justify-between mb-4">
-                <div className="min-w-[190px] h-[50px] md:min-w-[250px] md:h-[140px] xl:min-w-[350px] xl:h-[210px] mr-3 md:mr-5">
-                  <img src="https://pasal.edu.vn/upload_images/images/2020/03/05/dfgdf.jpg" />
-                </div>
-                <div className="">
-                  <h3 className="text-base md:text-[17px] font-bold">
-                    Post's title
-                  </h3>
-                  <p className="text-sm ">date time</p>
-                  <p
-                    className={`text-sm md:text-base  mt-3 overflow-hidden ${styles.description}`}
-                    style={{
-                      display: "-webkit-box",
-                      WebkitLineClamp: 3,
-                      WebkitBoxOrient: "vertical",
-                    }}
-                  >
-                    Điểm mù là những vùng không gian bên ngoài xe bị che khuất
-                    và không nằm trong tầm nhìn của người điều khiển. Nói cách
-                    khác, người điều khiển không thể nào quan sát được điểm mù
-                    thông Điểm mù là những vùng không gian bên ngoài xe bị che
-                    khuất và không nằm trong tầm nhìn của người điều khiển. Nói
-                    cách khác, người điều khiển không thể nào quan sát được điểm
-                    mù thông qua...
-                  </p>
-                </div>
-              </div>
+              ))}
             </>
           ) : (
             <></>
@@ -417,17 +446,25 @@ const page = () => {
       </div>
       {add && categoryType === 2 ? (
         <AddProductModel
-          upCate={product}
+          upCate={productUp}
+          setUpCate={setProductUp}
           title={routs[1]}
-          fet={fetS}
-          onClick={() => setAdd("")}
+          fet={fetCateName}
+          onClick={() => {
+            setAdd("");
+          }}
           cateId={cate.categoryId}
           cateName={cate.categoryName}
         />
       ) : add && categoryType === 3 ? (
         <AddNewsModel
           title={routs[1]}
-          onClick={() => setAdd("")}
+          onClick={() => {
+            setAdd("");
+          }}
+          newsUp={newsUp}
+          setNewsUp={setNewsUp}
+          fet={fetCateName}
           cateId={cate.categoryId}
           cateName={cate.categoryName}
         />
@@ -442,7 +479,9 @@ const page = () => {
       >
         About us
       </div>
-      {product && pre && <PreviousAdmin setPre={setPre} product={product} />}
+      {(productUp || newsUp) && pre && (
+        <PreviousAdmin setPre={setPre} product={productUp} news={newsUp} />
+      )}
     </div>
   );
 };
