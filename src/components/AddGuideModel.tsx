@@ -1,4 +1,4 @@
-("use client");
+"use client";
 import React from "react";
 
 import ReactQuill from "react-quill";
@@ -15,7 +15,35 @@ const AddGuideModel: React.FC<{
   onClick: () => void;
   cateId: number;
   cateName: string;
-}> = ({ title, onClick, cateId, cateName }) => {
+  newsUp:
+    | {
+        id: number;
+        name: string;
+        create_Date: string;
+        content: string;
+        urlImage: {
+          image: string;
+          path: string;
+        }[];
+      }
+    | undefined;
+  fet(name: string): Promise<void>;
+  setNewsUp: React.Dispatch<
+    React.SetStateAction<
+      | {
+          id: number;
+          name: string;
+          create_Date: string;
+          content: string;
+          urlImage: {
+            image: string;
+            path: string;
+          }[];
+        }
+      | undefined
+    >
+  >;
+}> = ({ title, onClick, cateId, cateName, newsUp, fet, setNewsUp }) => {
   const [value, setValue] = useState<string>("");
   const [pre, setPre] = useState<boolean>(false);
 
@@ -47,11 +75,12 @@ const AddGuideModel: React.FC<{
 
     const formData = new FormData();
     product.Content = value;
+    formData.append("categoryName", cateName);
     formData.append("Name", product.Name);
     formData.append("Content", product.Content);
     formData.append("categoryId", String(product.categoryId));
-    formData.append("file", product.FormCollection);
-    const res = await http.post("Product/Create", formData);
+    formData.append("FormCollection", product.FormCollection);
+    const res = await http.post("Guide/Create", formData);
   };
   const modules = {
     toolbar: [

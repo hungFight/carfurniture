@@ -88,8 +88,14 @@ const Listing: React.FC<{
                 {r.categoryName}
               </Tag>
               <div
-                className="absolute top-1 right-2"
-                onClick={async () => await handleDeleteDirectory(r.categoryId)}
+                className="absolute top-[-5px] right-2 cursor-pointer rounded-[50%] p-2"
+                onClick={async (e) => {
+                  e.stopPropagation();
+                  const isOk = window.confirm(
+                    "Are you sure you want to delete?"
+                  );
+                  if (isOk) await handleDeleteDirectory(r.categoryId);
+                }}
               >
                 <IoClose />
               </div>

@@ -12,6 +12,7 @@ import Link from "next/link";
 import dynamic from "next/dynamic";
 import PreviousAdmin from "@/components/PreviousAdmin";
 import moment from "moment";
+import AddGuideModel from "@/components/AddGuideModel";
 const RoutListing = dynamic(() => import("@/components/Items/RoutListing"));
 const AddNewsModel = dynamic(() => import("@/components/AddNewsModel"));
 const AddProductModel = dynamic(() => import("@/components/AddProductModel"));
@@ -39,7 +40,15 @@ const page = () => {
       urlImage: { image: string; path: string }[];
     }[]
   >([]);
-
+  const [dataGuid, setDataGuid] = useState<
+    {
+      id: number;
+      name: string;
+      create_Date: string;
+      content: string;
+      urlImage: { image: string; path: string }[];
+    }[]
+  >([]);
   // update
   const [productUp, setProductUp] = useState<{
     Id: number;
@@ -65,7 +74,16 @@ const page = () => {
       }
     | undefined
   >();
-
+  const [guideUp, setGuideUp] = useState<
+    | {
+        id: number;
+        name: string;
+        create_Date: string;
+        content: string;
+        urlImage: { image: string; path: string }[];
+      }
+    | undefined
+  >();
   const [dataCate, setDataCate] = useState<
     {
       id: number;
@@ -125,6 +143,8 @@ const page = () => {
     }
   }, [dataCate, categoryType]);
   async function fetCateName(name: string) {
+    console.log("name here", name);
+
     setLoadingDirect(true);
     if (categoryType === 2 && name) {
       const res = await http.post("Product/GetPaginationProduct", {
@@ -133,6 +153,8 @@ const page = () => {
         search_CategoryName: name,
       });
       setDataProducts(res.data.data);
+    } else {
+      setDataProducts([]);
     }
     if (categoryType === 3 && name) {
       const res = await http.post("Blog/GetPaginationProduct", {
@@ -141,6 +163,16 @@ const page = () => {
         search_CategoryName: name,
       });
       setDataNews(res.data.data);
+    } else {
+      setDataNews([]);
+    }
+    if (categoryType === 4 && name) {
+      const res = await http.post("Guide/GetPaginationProduct", {
+        pageIndex: 1,
+        pageSize: 3,
+        search_CategoryName: name,
+      });
+      setDataGuid(res.data.data);
     }
     setLoadingDirect(false);
   }
@@ -155,6 +187,7 @@ const page = () => {
   }, [nameRout]);
 
   const handleRount = (vl: string) => {
+    // change rout
     if (routs.length >= 2) {
       routs[1] = vl;
       setRouts(routs.filter((r, index) => index !== 2));
@@ -183,6 +216,10 @@ const page = () => {
     }
   };
   const handleDeleteDirectory = async (id: number) => {
+    const res = await http.delete(`Category/Delete/${id}`);
+    if (res.data?.mess) {
+      fetS();
+    }
     console.log("directory", id);
   };
   return (
@@ -230,6 +267,10 @@ const page = () => {
                     <input
                       required
                       type="text"
+                      placeholder="Thêm danh mục"
+                      onKeyUp={(e) => {
+                        if (e.key === "Enter") handleAddCate();
+                      }}
                       onChange={(e) => setNameCate(e.target.value)}
                       className="outline-[#41af6b] mr-1 shadow-[0_0_2px_#4a8cbf] border-[#4a8cbf] border-[1px] p-1 pr-3 rounded-md"
                     />
@@ -261,6 +302,7 @@ const page = () => {
             >
               {categoryType === 2 && <p>Thêm sản phẩm</p>}
               {categoryType === 3 && <p>Thêm tin tức</p>}
+              {categoryType === 4 && <p>Thêm hướng dẫn</p>}
             </div>
           )}
           {categoryType === 2 ? (
@@ -440,34 +482,106 @@ const page = () => {
               ))}
             </>
           ) : (
-            <></>
+            <>
+              {dataGuid.map((g) => (
+                <div
+                  className="w-full flex flex-wrap md:flex-nowrap  mb-4 relative"
+                  key={g.id}
+                >
+                  <div
+                    className="absolute left-[83px] cursor-pointer top-0 text-sm w-auto px-3 py-1  bg-white z-10 shadow-[0_0_2px_#999999]"
+                    onClick={async (e) => {
+                      e.stopPropagation();
+                      const isD = window.confirm("Bạn có muốn xoá không?");
+                      if (isD && g.id) {
+                        setLoading(String(g.id));
+                        const del = await http.delete(`Guide/Delete/${g.id}`);
+                        fetCateName(nameRout);
+                        if (newsUp) setNewsUp(undefined);
+                        setLoading("");
+                      }
+                    }}
+                  >
+                    {loading === String(g.id) ? "deleting..." : "delete"}
+                  </div>
+                  <div
+                    className="absolute left-1 cursor-pointer top-0 text-sm w-auto px-3 py-1  bg-white z-10 shadow-[0_0_2px_#999999]"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setGuideUp(g);
+                      setAdd(routs[1]);
+                    }}
+                  >
+                    Update
+                  </div>
+                  <div className="min-w-full h-[130px] md:min-w-[250px] md:h-[155px] xl:min-w-[350px] xl:h-[210px] mr-3 md:mr-5">
+                    <img
+                      src={g.urlImage[0]?.image}
+                      alt={g.urlImage[0]?.path}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  <div className="">
+                    <h3 className="text-base md:text-[17px] font-bold">
+                      {g.name}
+                    </h3>
+                    <p className="text-xs mt-1">
+                      {moment(g.create_Date).format("DD/MM/YYYY HH:MM:SS")}
+                    </p>
+                    <div
+                      className={`text-sm md:text-base  mt-2 overflow-hidden ${styles.description}`}
+                      style={{
+                        display: "-webkit-box",
+                        WebkitLineClamp: 4,
+                        WebkitBoxOrient: "vertical",
+                      }}
+                      dangerouslySetInnerHTML={{ __html: g.content }}
+                    ></div>
+                  </div>
+                </div>
+              ))}
+            </>
           )}
         </div>
       </div>
-      {add && categoryType === 2 ? (
-        <AddProductModel
-          upCate={productUp}
-          setUpCate={setProductUp}
-          title={routs[1]}
-          fet={fetCateName}
-          onClick={() => {
-            setAdd("");
-          }}
-          cateId={cate.categoryId}
-          cateName={cate.categoryName}
-        />
-      ) : add && categoryType === 3 ? (
-        <AddNewsModel
-          title={routs[1]}
-          onClick={() => {
-            setAdd("");
-          }}
-          newsUp={newsUp}
-          setNewsUp={setNewsUp}
-          fet={fetCateName}
-          cateId={cate.categoryId}
-          cateName={cate.categoryName}
-        />
+      {add ? (
+        categoryType === 2 ? (
+          <AddProductModel
+            upCate={productUp}
+            setUpCate={setProductUp}
+            title={routs[1]}
+            fet={fetCateName}
+            onClick={() => {
+              setAdd("");
+            }}
+            cateId={cate.categoryId}
+            cateName={cate.categoryName}
+          />
+        ) : categoryType === 3 ? (
+          <AddNewsModel
+            title={routs[1]}
+            onClick={() => {
+              setAdd("");
+            }}
+            newsUp={newsUp}
+            setNewsUp={setNewsUp}
+            fet={fetCateName}
+            cateId={cate.categoryId}
+            cateName={cate.categoryName}
+          />
+        ) : (
+          <AddGuideModel
+            title={routs[1]}
+            onClick={() => {
+              setAdd("");
+            }}
+            newsUp={guideUp}
+            setNewsUp={setGuideUp}
+            fet={fetCateName}
+            cateId={cate.categoryId}
+            cateName={cate.categoryName}
+          />
+        )
       ) : (
         <></>
       )}
