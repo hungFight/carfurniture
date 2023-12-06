@@ -25,7 +25,7 @@ export default async function RootLayout({
       <RoutListing
         currentPath="products"
         title="Sản phẩm"
-        defaultR=""
+        defaultR={data[0].categoryName}
         cate={data.map((r) => ({
           categoryId: r.categoryId,
           categoryName: r.categoryName,

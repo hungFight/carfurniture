@@ -165,13 +165,15 @@ export default function Home() {
             <p className="mx-1 cursor-pointer">4</p> */}
           </div>
           <div>
-            <div className="w-full flex flex-wrap mt-8 px-1 justify-around">
-              {dataProducts.map((r) => (
+            <div className="w-full flex flex-wrap mt-8 px-1 justify-center">
+              {dataProducts.map((r, index) => (
                 <Link
                   href="/[slug]"
                   as={`products/${caseChose.categoryName}/${r.name}/${r.id}`}
                   key={r.id}
-                  className="w-[200px] md:w-[300px] p-1 border shadow-[0_0_3px_#7a7a7a] hover:shadow-[0_0_10px] mb-4 cursor-pointer"
+                  className={`w-[200px] ${
+                    dataProducts.length === index + 1 ? "" : "mr-4"
+                  } md:w-[300px] p-1 border shadow-[0_0_3px_#7a7a7a] hover:shadow-[0_0_10px] mb-4 cursor-pointer`}
                 >
                   <div className="w-full h-[200px] md:h-[280px]">
                     <img

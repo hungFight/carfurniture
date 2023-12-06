@@ -1,92 +1,75 @@
+"use client";
 import InputSearch from "@/components/Items/InputSearch";
-import React from "react";
-import styles from "../styleNews.module.scss";
+import React, { useEffect, useState } from "react";
+import styles from "@/app/styleHomePage.module.scss";
 import Link from "next/link";
+import http from "@/utils/http";
+import moment from "moment";
 
 const page = (props: { params: { cate: string } }) => {
   console.log(props, "props");
+  const [data, setData] = useState<
+    {
+      id: number;
+      name: string;
+      create_Date: string;
+      content: string;
+      urlImage: { image: string; path: string }[];
+    }[]
+  >([]);
+  const getNews = async (cate: string) => {
+    const res = await http.post("Blog/GetPaginationProduct", {
+      pageIndex: 1,
+      pageSize: 3,
+      search_CategoryName: cate,
+    });
+    setData(res.data.data);
+  };
 
+  useEffect(() => {
+    getNews(props.params.cate);
+  }, []);
   return (
     <div className="w-full md:w-[60%] p-3">
       <div className="w-full mb-4">
         <InputSearch placeholder={props.params.cate} />
       </div>
       <div className="w-full">
-        <Link
-          href={`${props.params.cate}/adw/1`}
-          className="w-full flex justify-between mb-4"
-        >
-          <div className="min-w-[190px] h-[50px] md:min-w-[250px] md:h-[140px] xl:min-w-[350px] xl:h-[210px] mr-3 md:mr-5">
-            <img src="https://pasal.edu.vn/upload_images/images/2020/03/05/dfgdf.jpg" />
-          </div>
-          <div className="">
-            <h3 className="text-base md:text-[17px] font-bold">Post's title</h3>
-            <p className="text-sm ">date time</p>
-            <p
-              className={`text-sm md:text-base  mt-3 overflow-hidden ${styles.description}`}
-              style={{
-                display: "-webkit-box",
-                WebkitLineClamp: 3,
-                WebkitBoxOrient: "vertical",
-              }}
-            >
-              Điểm mù là những vùng không gian bên ngoài xe bị che khuất và
-              không nằm trong tầm nhìn của người điều khiển. Nói cách khác,
-              người điều khiển không thể nào quan sát được điểm mù thông Điểm mù
-              là những vùng không gian bên ngoài xe bị che khuất và không nằm
-              trong tầm nhìn của người điều khiển. Nói cách khác, người điều
-              khiển không thể nào quan sát được điểm mù thông qua...
-            </p>
-          </div>
-        </Link>{" "}
-        <div className="w-full flex justify-between mb-4">
-          <div className="min-w-[190px] h-[50px] md:min-w-[250px] md:h-[140px] xl:min-w-[350px] xl:h-[210px] mr-3 md:mr-5">
-            <img src="https://pasal.edu.vn/upload_images/images/2020/03/05/dfgdf.jpg" />
-          </div>
-          <div className="">
-            <h3 className="text-base md:text-[17px] font-bold">Post's title</h3>
-            <p className="text-sm ">date time</p>
-            <p
-              className={`text-sm md:text-base  mt-3 overflow-hidden ${styles.description}`}
-              style={{
-                display: "-webkit-box",
-                WebkitLineClamp: 3,
-                WebkitBoxOrient: "vertical",
-              }}
-            >
-              Điểm mù là những vùng không gian bên ngoài xe bị che khuất và
-              không nằm trong tầm nhìn của người điều khiển. Nói cách khác,
-              người điều khiển không thể nào quan sát được điểm mù thông Điểm mù
-              là những vùng không gian bên ngoài xe bị che khuất và không nằm
-              trong tầm nhìn của người điều khiển. Nói cách khác, người điều
-              khiển không thể nào quan sát được điểm mù thông qua...
-            </p>
-          </div>
-        </div>
-        <div className="w-full flex justify-between mb-4">
-          <div className="min-w-[190px] h-[50px] md:min-w-[250px] md:h-[140px] xl:min-w-[350px] xl:h-[210px] mr-3 md:mr-5">
-            <img src="https://pasal.edu.vn/upload_images/images/2020/03/05/dfgdf.jpg" />
-          </div>
-          <div className="">
-            <h3 className="text-base md:text-[17px] font-bold">Post's title</h3>
-            <p className="text-sm ">date time</p>
-            <p
-              className={`text-sm md:text-base  mt-3 overflow-hidden ${styles.description}`}
-              style={{
-                display: "-webkit-box",
-                WebkitLineClamp: 3,
-                WebkitBoxOrient: "vertical",
-              }}
-            >
-              Điểm mù là những vùng không gian bên ngoài xe bị che khuất và
-              không nằm trong tầm nhìn của người điều khiển. Nói cách khác,
-              người điều khiển không thể nào quan sát được điểm mù thông Điểm mù
-              là những vùng không gian bên ngoài xe bị che khuất và không nằm
-              trong tầm nhìn của người điều khiển. Nói cách khác, người điều
-              khiển không thể nào quan sát được điểm mù thông qua...
-            </p>
-          </div>
-        </div>
+        {data.map((n) => (
+          <Link
+            key={n.id}
+            href={`${props.params.cate}/${n.name}/${n.id}`}
+            className="w-full flex mb-4"
+            onClick={() => {
+              console.log(n.id, n, "JSON.stringify(n.id)");
+
+              localStorage.setItem("news", JSON.stringify(n.id));
+            }}
+          >
+            <div className="min-w-full h-[130px] md:min-w-[250px] md:h-[155px] xl:min-w-[350px] xl:h-[210px] mr-3 md:mr-5">
+              <img
+                src={n.urlImage[0]?.image}
+                alt={n.urlImage[0]?.path}
+                className="w-full h-full object-cover"
+              />
+            </div>
+            <div className="h-fit">
+              <h3 className="text-base md:text-[17px] font-bold">{n.name}</h3>
+              <p className="text-xs mt-1">
+                {moment(n.create_Date).format("DD/MM/YYYY HH:MM:SS")}
+              </p>
+              <div
+                className={`text-sm md:text-base  mt-2 overflow-hidden ${styles.description}`}
+                style={{
+                  display: "-webkit-box",
+                  WebkitLineClamp: 4,
+                  WebkitBoxOrient: "vertical",
+                }}
+                dangerouslySetInnerHTML={{ __html: n.content }}
+              ></div>
+            </div>
+          </Link>
+        ))}
       </div>
     </div>
   );

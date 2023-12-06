@@ -21,14 +21,18 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const data: { categoryName: string }[] = await getData();
+  const data: { categoryName: string; categoryId: number }[] = await getData();
   return (
     <div className="flex flex-wrap">
-      {/* <RoutListing
+      <RoutListing
         currentPath="news"
         title="Tin tức"
-        cate={data.map((r) => r.categoryName)}
-      /> */}
+        defaultR={data[0].categoryName}
+        cate={data.map((r) => ({
+          categoryId: r.categoryId,
+          categoryName: r.categoryName,
+        }))}
+      />
       {children}
     </div>
   );
