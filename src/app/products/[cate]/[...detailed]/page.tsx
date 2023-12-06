@@ -1,16 +1,14 @@
 import React from "react";
-import styles from "../../../styleHomePage.module.scss";
 import http from "@/utils/http";
 import { CiPhone } from "react-icons/ci";
 import { PiMessengerLogoLight } from "react-icons/pi";
 import { SiShopee } from "react-icons/si";
+import styles from "@/components/styleComponent.module.scss";
 const getProduct = async (detailed: string) => {
   const res = await http.get(`Product/GetByID/${detailed}`);
   return res.data;
 };
 const page = async (props: { params: { detailed: string[] | string } }) => {
-  console.log(props, "detail");
-
   const data:
     | {
         product: {
@@ -28,6 +26,7 @@ const page = async (props: { params: { detailed: string[] | string } }) => {
     typeof props.params.detailed === "string"
       ? undefined
       : await getProduct(props.params.detailed[1]);
+  console.log(data, "detail");
 
   return (
     <div className="w-full min-[1000px]:flex justify-center">
@@ -42,7 +41,9 @@ const page = async (props: { params: { detailed: string[] | string } }) => {
                   className="w-full h-full object-cover"
                 />
               </div>
-              <div className="mt-1 min-[1000px]:ml-3 ">
+              <div
+                className={`mt-1 min-[1000px]:ml-3 ${styles.containerProductTag}`}
+              >
                 <h3
                   className={`font-bold text-sm md:text-base ${styles.nameTag}`}
                 >
@@ -50,11 +51,17 @@ const page = async (props: { params: { detailed: string[] | string } }) => {
                 </h3>
                 <div className="w-full mt-1 md:mt-2 flex  items-center border-b border-solid">
                   <p className="text-[13px] md:text-[14px] font-medium text-[crimson]">
-                    {data.product.price}đ
+                    {data.product.price
+                      .toLocaleString("en-US")
+                      .replace(/,/g, ".")}
+                    đ
                   </p>
                   {data.product.price_After && (
                     <p className="text-[10px] md:text-[11px] mt-[5px] ml-2 line-through">
-                      {data.product.price_After}đ
+                      {data.product.price_After
+                        .toLocaleString("en-US")
+                        .replace(/,/g, ".")}
+                      đ
                     </p>
                   )}
                 </div>
@@ -95,9 +102,10 @@ const page = async (props: { params: { detailed: string[] | string } }) => {
 
             <div className="mt-5">
               <h3 className="text-sm font-semibold">Mô tả</h3>
-              <p className="text-xs md:text-[13px]">
-                {data.product.description}
-              </p>
+              <div
+                className={`text-xs md:text-[13px] w-full mb-5 ${styles.dangerouslySet}`}
+                dangerouslySetInnerHTML={{ __html: data.product.description }}
+              ></div>
             </div>
           </div>
           <div></div>

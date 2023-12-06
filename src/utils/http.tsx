@@ -1,4 +1,5 @@
 import axios, { AxiosInstance } from "axios";
+import https from "https";
 
 class Http {
   instance: AxiosInstance;
@@ -9,6 +10,9 @@ class Http {
         // "Content-Type": "application/json",
         Accept: "application/json",
       },
+      httpsAgent: new https.Agent({
+        rejectUnauthorized: false,
+      }),
     });
   }
 }

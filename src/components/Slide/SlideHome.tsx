@@ -300,11 +300,11 @@ export default function SlideHome() {
           setChange({ ...change, current: e.activeIndex })
         }
       >
-        {sildeData.map((r) => {
+        {sildeData.map((r, index) => {
           if (r.id === change.current) {
             return r.element;
           }
-          return <SwiperSlide key={r.id}></SwiperSlide>;
+          return <SwiperSlide key={r.id + index}></SwiperSlide>;
         })}
       </Swiper>
     </div>

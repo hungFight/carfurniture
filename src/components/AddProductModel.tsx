@@ -109,7 +109,7 @@ const AddProductModel: React.FC<{
       formData.append("FormCollection", f);
     });
     if (!upCate) {
-      formData.append("Discount", product.Discount);
+      formData.append("Price_After", product.Discount);
       const res = await http.post("Product/Create", formData);
     } else {
       formData.append("Price_After", product.Discount);

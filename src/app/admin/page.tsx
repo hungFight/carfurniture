@@ -114,7 +114,6 @@ const page = () => {
   const [load, setLoad] = useState(false);
   const fet = async () => {
     const res = await http.get<typeof dataCate>("CategoryType/GetAll");
-
     setDataCate(res.data);
   };
   const fetS = async () => {
@@ -149,7 +148,7 @@ const page = () => {
     if (categoryType === 2 && name) {
       const res = await http.post("Product/GetPaginationProduct", {
         pageIndex: 1,
-        pageSize: 3,
+        pageSize: 10,
         search_CategoryName: name,
       });
       setDataProducts(res.data.data);

@@ -11,7 +11,11 @@ const RoutListing: React.FC<{
   currentPath: string;
   title: string;
   defaultR?: string;
-  cate?: string[];
+  cate?:
+    | {
+        categoryName: string;
+        categoryId: number;
+      }[];
 }> = ({ currentPath, title, defaultR, cate, dataList }) => {
   const pathname = usePathname();
   const [routs, setRouts] = useState([

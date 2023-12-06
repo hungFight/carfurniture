@@ -24,11 +24,11 @@ export default async function RootLayout({
   const data: { categoryName: string }[] = await getData();
   return (
     <div className="flex flex-wrap">
-      <RoutListing
+      {/* <RoutListing
         currentPath="news"
         title="Tin tức"
         cate={data.map((r) => r.categoryName)}
-      />
+      /> */}
       {children}
     </div>
   );
