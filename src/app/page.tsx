@@ -67,8 +67,7 @@ export default function Home() {
     setDataNews(resNews.data.data);
     const resGuide = await http.post("Guide/GetPaginationProduct", {
       pageIndex: 1,
-      pageSize: 5,
-      search_CategoryName: name,
+      pageSize: 4,
     });
     setDataGuid(resGuide.data.data);
     setLoadingType(false);
@@ -76,7 +75,7 @@ export default function Home() {
   const fetSData = async (index: number = 1) => {
     const res = await http.post("Product/GetPaginationProduct", {
       pageIndex: index,
-      pageSize: 2,
+      pageSize: 8,
       search_CategoryName: caseChose.categoryName,
     });
     console.log("page size", res.data);

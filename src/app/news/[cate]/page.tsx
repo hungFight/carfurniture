@@ -7,7 +7,11 @@ import http from "@/utils/http";
 import moment from "moment";
 
 const page = (props: { params: { cate: string } }) => {
-  console.log(props, "props");
+  const [search, setSearch] = useState<string>("");
+  const [hasSeen, setHasSeen] = useState<number[]>(() =>
+    JSON.parse(localStorage.getItem("news") ?? "")
+  );
+  console.log(hasSeen, "props hasSeen");
   const [data, setData] = useState<
     {
       id: number;
@@ -29,22 +33,18 @@ const page = (props: { params: { cate: string } }) => {
   useEffect(() => {
     getNews(props.params.cate);
   }, []);
+  const handleSearch = (e: any) => {};
   return (
     <div className="w-full md:w-[60%] p-3">
       <div className="w-full mb-4">
-        <InputSearch placeholder={props.params.cate} />
+        <InputSearch placeholder={props.params.cate} onChange={handleSearch} />
       </div>
       <div className="w-full">
         {data.map((n) => (
           <Link
             key={n.id}
             href={`${props.params.cate}/${n.name}/${n.id}`}
-            className="w-full flex mb-4"
-            onClick={() => {
-              console.log(n.id, n, "JSON.stringify(n.id)");
-
-              localStorage.setItem("news", JSON.stringify(n.id));
-            }}
+            className="w-full flex flex-wrap md:flex-nowrap mb-4"
           >
             <div className="min-w-full h-[130px] md:min-w-[250px] md:h-[155px] xl:min-w-[350px] xl:h-[210px] mr-3 md:mr-5">
               <img

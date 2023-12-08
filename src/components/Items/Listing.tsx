@@ -14,6 +14,8 @@ const Listing: React.FC<{
   menu?: string;
   loading?: boolean;
   handleDeleteDirectory: (id: number) => Promise<void>;
+  del?: boolean;
+  category?: string;
 }> = ({
   data,
   choice,
@@ -23,6 +25,8 @@ const Listing: React.FC<{
   menu,
   handleDeleteDirectory,
   loading,
+  del,
+  category,
 }) => {
   const [onTap, setOnTap] = useState<boolean>(false);
   return (
@@ -56,14 +60,16 @@ const Listing: React.FC<{
                     >
                       {r.categoryName}
                     </Tag>
-                    <div
-                      className="absolute top-1 right-2"
-                      onClick={async () =>
-                        await handleDeleteDirectory(r.categoryId)
-                      }
-                    >
-                      <IoClose />
-                    </div>
+                    {del && (
+                      <div
+                        className="absolute top-1 right-2"
+                        onClick={async () =>
+                          await handleDeleteDirectory(r.categoryId)
+                        }
+                      >
+                        <IoClose />
+                      </div>
+                    )}
                   </div>
                 ))
               )}
@@ -87,20 +93,32 @@ const Listing: React.FC<{
               >
                 {r.categoryName}
               </Tag>
-              <div
-                className="absolute top-[-5px] right-2 cursor-pointer rounded-[50%] p-2"
-                onClick={async (e) => {
-                  e.stopPropagation();
-                  const isOk = window.confirm(
-                    "Are you sure you want to delete?"
-                  );
-                  if (isOk) await handleDeleteDirectory(r.categoryId);
-                }}
-              >
-                <IoClose />
-              </div>
+              {del && (
+                <div
+                  className="absolute top-[-5px] right-2 cursor-pointer rounded-[50%] p-2"
+                  onClick={async (e) => {
+                    e.stopPropagation();
+                    const isOk = window.confirm(
+                      "Are you sure you want to delete?"
+                    );
+                    if (isOk) await handleDeleteDirectory(r.categoryId);
+                  }}
+                >
+                  <IoClose />
+                </div>
+              )}
             </div>
           ))}
+          {/* {category === "product" && (
+            <div
+              className={`w-full  text-sm md:text-base cursor-pointer  ${
+                choice === "hasSeen" ? "text-[#0087ff]" : ""
+              }`}
+              onClick={() => onClick("hasSeen")}
+            >
+              Đã xem
+            </div>
+          )} */}
         </div>
       </div>
     </div>

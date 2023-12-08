@@ -2,10 +2,31 @@
 import { Images } from "@/asset/image";
 import Image from "next/image";
 import Link from "next/link";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { PiDotsNineBold } from "react-icons/pi";
 import { IoMdClose } from "react-icons/io";
+import http from "@/utils/http";
 const Header = () => {
+  const [firstCate, setFirstCate] = useState<{
+    product: string;
+    news: string;
+    guide: string;
+  }>({ product: "", news: "", guide: "" });
+  useEffect(() => {
+    getData();
+  }, []);
+  const getData = async () => {
+    const res1: any = await http.get("Category/GetAll/Tin tức");
+    const res2 = await http.get("Category/GetAll/Sản phẩm");
+    const res3 = await http.get("Category/GetAll/Hướng dẫn");
+    setFirstCate({
+      news: res1.data[0].categoryName,
+      product: res2.data[0].categoryName,
+      guide: res3.data[0].categoryName,
+    });
+  };
+  console.log(firstCate, "firstCate");
+
   const [onTab, setOnTab] = useState<boolean>(false);
   return (
     <div className="w-full 2xl:w-[1519px] bg-white flex justify-center h-auto sm:h-[125px] pt-4 border-b-2">
@@ -35,7 +56,7 @@ const Header = () => {
                 Trang chủ
               </Link>
               <Link
-                href="/news"
+                href={`/news/${firstCate.news}`}
                 className="header_home w-full text-[#3a3b3b]  text-sm sm:text-base mx-4 max-sm:my-1 whitespace-pre-wrap font-medium cursor-pointer hover:text-[#42aaea]"
                 onClick={(e: any) => {
                   if (document) {
@@ -50,7 +71,7 @@ const Header = () => {
                 Tin tức
               </Link>
               <Link
-                href="/products"
+                href={`/products/${firstCate.product}`}
                 className="header_home w-full text-[#3a3b3b]  text-sm sm:text-base mx-4 max-sm:my-1 whitespace-pre-wrap font-medium cursor-pointer hover:text-[#42aaea]"
                 onClick={(e: any) => {
                   if (document) {
@@ -65,7 +86,7 @@ const Header = () => {
                 Danh sách sản phẩm
               </Link>
               <Link
-                href="/guides"
+                href={`/guides/${firstCate.guide}`}
                 className="header_home w-full  text-[#3a3b3b] text-sm sm:text-base mx-4 max-sm:my-1 whitespace-pre-wrap font-medium cursor-pointer hover:text-[#42aaea]"
                 onClick={(e: any) => {
                   if (document) {
@@ -123,7 +144,7 @@ const Header = () => {
             Trang chủ
           </Link>
           <Link
-            href="/news"
+            href={`/news/${firstCate.news}`}
             className="header_home text-[#3a3b3b]  text-sm sm:text-base mx-4 max-sm:my-1 w-max whitespace-pre-wrap font-medium cursor-pointer hover:text-[#42aaea]"
             onClick={(e: any) => {
               if (document) {
@@ -138,7 +159,7 @@ const Header = () => {
             Tin tức
           </Link>
           <Link
-            href="/products"
+            href={`/products/${firstCate.product}`}
             className="header_home text-[#3a3b3b]  text-sm sm:text-base mx-4 max-sm:my-1 w-max whitespace-pre-wrap font-medium cursor-pointer hover:text-[#42aaea]"
             onClick={(e: any) => {
               if (document) {
@@ -153,7 +174,7 @@ const Header = () => {
             Danh sách sản phẩm
           </Link>
           <Link
-            href="/guides"
+            href={`/guides/${firstCate.guide}`}
             className="header_home  text-[#3a3b3b] text-sm sm:text-base mx-4 max-sm:my-1 w-max whitespace-pre-wrap font-medium cursor-pointer hover:text-[#42aaea]"
             onClick={(e: any) => {
               if (document) {

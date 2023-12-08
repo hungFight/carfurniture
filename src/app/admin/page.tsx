@@ -243,6 +243,7 @@ const page = () => {
                   onClick={handleRount}
                   loading={loadingDirect}
                   data={dataList}
+                  del={true}
                   handleDeleteDirectory={handleDeleteDirectory}
                   menu={
                     dataCate

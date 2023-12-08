@@ -19,17 +19,22 @@ export default async function RootLayout({
 }) {
   const data: { categoryName: string; categoryId: number }[] = await getData();
   console.log("producc", data);
-
+  const newData = data.map((r) => ({
+    categoryId: r.categoryId,
+    categoryName: r.categoryName,
+  }));
+  newData.push({
+    categoryId: 9999,
+    categoryName: "Đã xem",
+  });
   return (
     <div className="flex flex-wrap">
       <RoutListing
         currentPath="products"
         title="Sản phẩm"
+        category="product"
         defaultR={data[0].categoryName}
-        cate={data.map((r) => ({
-          categoryId: r.categoryId,
-          categoryName: r.categoryName,
-        }))}
+        cate={newData}
       />
       {children}
     </div>
