@@ -21,14 +21,14 @@ const page = (props: { params: { cate: string } }) => {
     if (name) {
       const res = await http.post("Blog/GetPaginationProduct", {
         pageIndex: 1,
-        pageSize: 3,
+        pageSize: 6,
         search_Name: name,
       });
       setData(res.data.data);
     } else {
       const res = await http.post("Blog/GetPaginationProduct", {
         pageIndex: 1,
-        pageSize: 3,
+        pageSize: 6,
         search_CategoryName: cate,
       });
       setData(res.data.data);
@@ -57,7 +57,8 @@ const page = (props: { params: { cate: string } }) => {
         {data.map((n) => (
           <Link
             key={n.id}
-            href={`${props.params.cate}/${n.name}/${n.id}`}
+            href={`/[slug]`}
+            as={`${props.params.cate}/${n.name}/${n.id}`}
             className="w-full flex flex-wrap md:flex-nowrap mb-4"
           >
             <div className="min-w-full h-[130px] md:min-w-[250px] md:h-[155px] xl:min-w-[350px] xl:h-[210px] mr-3 md:mr-5">
