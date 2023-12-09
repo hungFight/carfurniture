@@ -8,10 +8,6 @@ import moment from "moment";
 
 const page = (props: { params: { cate: string } }) => {
   const [search, setSearch] = useState<string>("");
-  const [hasSeen, setHasSeen] = useState<number[]>(() =>
-    JSON.parse(localStorage.getItem("news") ?? "")
-  );
-  console.log(hasSeen, "props hasSeen");
   const [data, setData] = useState<
     {
       id: number;
@@ -21,23 +17,41 @@ const page = (props: { params: { cate: string } }) => {
       urlImage: { image: string; path: string }[];
     }[]
   >([]);
-  const getNews = async (cate: string) => {
-    const res = await http.post("Blog/GetPaginationProduct", {
-      pageIndex: 1,
-      pageSize: 3,
-      search_CategoryName: cate,
-    });
-    setData(res.data.data);
+  const getNews = async (cate: string, name?: string) => {
+    if (name) {
+      const res = await http.post("Blog/GetPaginationProduct", {
+        pageIndex: 1,
+        pageSize: 3,
+        search_Name: name,
+      });
+      setData(res.data.data);
+    } else {
+      const res = await http.post("Blog/GetPaginationProduct", {
+        pageIndex: 1,
+        pageSize: 3,
+        search_CategoryName: cate,
+      });
+      setData(res.data.data);
+    }
   };
 
   useEffect(() => {
     getNews(props.params.cate);
   }, []);
-  const handleSearch = (e: any) => {};
+  const handleSearch = (e: any) => {
+    setSearch(e.target.value);
+  };
+  const handleClick = () => {
+    getNews(props.params.cate, search);
+  };
   return (
     <div className="w-full md:w-[60%] p-3">
       <div className="w-full mb-4">
-        <InputSearch placeholder={props.params.cate} onChange={handleSearch} />
+        <InputSearch
+          placeholder={props.params.cate}
+          onChange={handleSearch}
+          onClick={handleClick}
+        />
       </div>
       <div className="w-full">
         {data.map((n) => (

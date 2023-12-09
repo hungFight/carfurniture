@@ -11,6 +11,7 @@ import { SiShopee } from "react-icons/si";
 import http from "@/utils/http";
 import Link from "next/link";
 export default function Home() {
+  const [search, setSearch] = useState<string>("");
   const [dataProducts, setDataProducts] = useState<
     {
       id: number;
@@ -70,7 +71,7 @@ export default function Home() {
       news: resCateNews.data[0],
       guide: resCateGuide.data[0],
     });
-    fetSData();
+    fetSDataProduct();
     setDataList(
       resCatePr.data.map((r) => ({ id: r.categoryId, name: r.categoryName }))
     );
@@ -88,14 +89,22 @@ export default function Home() {
     setDataGuid(resGuide.data.data);
     setLoadingType(false);
   };
-  const fetSData = async (index: number = 1) => {
-    const res = await http.post("Product/GetPaginationProduct", {
-      pageIndex: index,
-      pageSize: 8,
-      search_CategoryName: caseChose.product.categoryName,
-    });
-    setPageIndex(res.data.totalPageIndex);
-    setDataProducts(res.data.data);
+  const fetSDataProduct = async (index: number = 1, name?: string) => {
+    if (name) {
+      const res = await http.post("Product/GetPaginationProduct", {
+        search_Name: name,
+      });
+      setPageIndex(res.data.totalPageIndex);
+      setDataProducts(res.data.data);
+    } else {
+      const res = await http.post("Product/GetPaginationProduct", {
+        pageIndex: index,
+        pageSize: 8,
+        search_CategoryName: caseChose.product.categoryName,
+      });
+      setPageIndex(res.data.totalPageIndex);
+      setDataProducts(res.data.data);
+    }
   };
   useEffect(() => {
     fetS();
@@ -105,13 +114,18 @@ export default function Home() {
       .filter((r) => r.id === v)
       .map((r) => ({ categoryId: r.id, categoryName: r.name }))[0];
     setCaseChose({ ...caseChose, product: cases });
-    fetSData();
+    fetSDataProduct();
   };
   console.log(
     Array.from({ length: pageIndex }, (_, index) => index + 1),
     "page size"
   );
-
+  const handleSearch = (e: any) => {
+    setSearch(e.target.value);
+  };
+  const handleClick = () => {
+    fetSDataProduct(1, search);
+  };
   return (
     <div className="w-full 2xl:w-[1519px]">
       <SlideHome />
@@ -145,9 +159,13 @@ export default function Home() {
               active={caseChose.product.categoryId}
             />
           </div>
-          <div className="w-full text-center flex items-center justify-center my-3 p-2 ">
+          <div className="w-full text-center flex items-center justify-center my-3 p-2 flex-wrap ">
             <div className="w-full">
-              {/* <InputSearch placeholder="Tìm kiếm sản phẩm" onChange={}/> */}
+              <InputSearch
+                placeholder="Tìm kiếm sản phẩm"
+                onChange={handleSearch}
+                onClick={handleClick}
+              />
             </div>
             {Array.from({ length: pageIndex }, (_, index) => index + 1).map(
               (p) => (
@@ -156,7 +174,7 @@ export default function Home() {
                   className="flex"
                   onClick={() => {
                     if (p !== pageChoice) {
-                      fetSData(p);
+                      fetSDataProduct(p);
                       setPageChoice(p);
                     }
                   }}
