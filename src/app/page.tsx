@@ -44,30 +44,46 @@ export default function Home() {
   >([]);
   const [dataList, setDataList] = useState<{ id: number; name: string }[]>([]);
   const [caseChose, setCaseChose] = useState<{
-    categoryId: number;
-    categoryName: string;
-  }>({ categoryId: 0, categoryName: "" });
+    product: { categoryId: number; categoryName: string };
+    news: { categoryId: number; categoryName: string };
+    guide: { categoryId: number; categoryName: string };
+  }>({
+    product: { categoryId: 0, categoryName: "" },
+    news: { categoryId: 0, categoryName: "" },
+    guide: { categoryId: 0, categoryName: "" },
+  });
   const [loadingType, setLoadingType] = useState<boolean>(false);
   const fetS = async () => {
     setDataList([]);
     setLoadingType(true);
-    const resCate = await http.get<
+    const resCatePr = await http.get<
       { categoryName: string; categoryId: number }[]
     >(`Category/GetAll/Sản phẩm`);
-    setCaseChose(resCate.data[0]);
+    const resCateNews = await http.get<
+      { categoryName: string; categoryId: number }[]
+    >(`Category/GetAll/Tin tức`);
+    const resCateGuide = await http.get<
+      { categoryName: string; categoryId: number }[]
+    >(`Category/GetAll/Hướng dẫn`);
+    setCaseChose({
+      product: resCatePr.data[0],
+      news: resCateNews.data[0],
+      guide: resCateGuide.data[0],
+    });
     fetSData();
     setDataList(
-      resCate.data.map((r) => ({ id: r.categoryId, name: r.categoryName }))
+      resCatePr.data.map((r) => ({ id: r.categoryId, name: r.categoryName }))
     );
     const resNews = await http.post("Blog/GetPaginationProduct", {
       pageIndex: 1,
       pageSize: 4,
-      search_CategoryName: "",
+      search_CategoryName: caseChose.news.categoryName,
     });
     setDataNews(resNews.data.data);
     const resGuide = await http.post("Guide/GetPaginationProduct", {
       pageIndex: 1,
       pageSize: 4,
+      search_CategoryName: caseChose.guide.categoryName,
     });
     setDataGuid(resGuide.data.data);
     setLoadingType(false);
@@ -76,10 +92,8 @@ export default function Home() {
     const res = await http.post("Product/GetPaginationProduct", {
       pageIndex: index,
       pageSize: 8,
-      search_CategoryName: caseChose.categoryName,
+      search_CategoryName: caseChose.product.categoryName,
     });
-    console.log("page size", res.data);
-
     setPageIndex(res.data.totalPageIndex);
     setDataProducts(res.data.data);
   };
@@ -90,7 +104,7 @@ export default function Home() {
     const cases = dataList
       .filter((r) => r.id === v)
       .map((r) => ({ categoryId: r.id, categoryName: r.name }))[0];
-    setCaseChose(cases);
+    setCaseChose({ ...caseChose, product: cases });
     fetSData();
   };
   console.log(
@@ -128,10 +142,13 @@ export default function Home() {
               loading={loadingType}
               data={dataList}
               onClick={handle}
-              active={caseChose.categoryId}
+              active={caseChose.product.categoryId}
             />
           </div>
           <div className="w-full text-center flex items-center justify-center my-3 p-2 ">
+            <div className="w-full">
+              {/* <InputSearch placeholder="Tìm kiếm sản phẩm" onChange={}/> */}
+            </div>
             {Array.from({ length: pageIndex }, (_, index) => index + 1).map(
               (p) => (
                 <div
@@ -168,7 +185,7 @@ export default function Home() {
               {dataProducts.map((r, index) => (
                 <Link
                   href="/[slug]"
-                  as={`products/${caseChose.categoryName}/${r.name}/${r.id}`}
+                  as={`products/${caseChose.product.categoryName}/${r.name}/${r.id}`}
                   key={r.id}
                   className={`w-[200px] ${
                     dataProducts.length === index + 1 ? "" : "mr-4"
@@ -236,7 +253,8 @@ export default function Home() {
               </h3>
               <div className="flex flex-wrap justify-around">
                 {dataNews.map((n) => (
-                  <div
+                  <Link
+                    href={`news/${caseChose.news.categoryName}/${n.name}/${n.id}`}
                     key={n.id}
                     className="w-[200px] xl:w-[250px] p-1 border shadow-[0_0_3px_#7a7a7a] hover:shadow-[0_0_10px] mb-4 cursor-pointer mr-2"
                   >
@@ -265,7 +283,7 @@ export default function Home() {
                         View more
                       </button>
                     </div>
-                  </div>
+                  </Link>
                 ))}
               </div>
             </div>{" "}
@@ -277,7 +295,8 @@ export default function Home() {
               </h3>
               <div className="flex flex-wrap justify-around">
                 {dataGuid.map((n) => (
-                  <div
+                  <Link
+                    href={`guide/${caseChose.product.categoryName}/${n.name}/${n.id}`}
                     key={n.id}
                     className="w-[200px] xl:w-[250px] p-1 border shadow-[0_0_3px_#7a7a7a] hover:shadow-[0_0_10px] mb-4 cursor-pointer mr-2"
                   >
@@ -306,7 +325,7 @@ export default function Home() {
                         View more
                       </button>
                     </div>
-                  </div>
+                  </Link>
                 ))}
               </div>
             </div>
