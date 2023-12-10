@@ -12,6 +12,7 @@ import http from "@/utils/http";
 import Link from "next/link";
 export default function Home() {
   const [search, setSearch] = useState<string>("");
+  const [loading, setLoading] = useState<boolean>(false);
   const [dataProducts, setDataProducts] = useState<
     {
       id: number;
@@ -91,15 +92,17 @@ export default function Home() {
   };
   const fetSDataProduct = async (index: number = 1, name?: string) => {
     if (name) {
+      setLoading(true);
       const res = await http.post("Product/GetPaginationProduct", {
         search_Name: name,
       });
       setPageIndex(res.data.totalPageIndex);
       setDataProducts(res.data.data);
+      setLoading(false);
     } else {
       const res = await http.post("Product/GetPaginationProduct", {
         pageIndex: index,
-        pageSize: 8,
+        pageSize: 3,
         search_CategoryName: caseChose.product.categoryName,
       });
       setPageIndex(res.data.totalPageIndex);
@@ -148,118 +151,117 @@ export default function Home() {
       </div>
       <div className=" w-full mb-[100px] flex justify-center">
         <div className="w-full sm:w-[90%] ">
-          <div className="w-full mt-2 mb-10">
+          <div className="w-full mt-2 mb-1">
             <h3 className="w-full pl-1 font-semibold text-base xl:text-lg">
               Danh sách sản phẩm
             </h3>
             <SlideCategory
-              loading={loadingType}
+              loading={loading}
               data={dataList}
               onClick={handle}
               active={caseChose.product.categoryId}
             />
           </div>
-          <div className="w-full text-center flex items-center justify-center my-3 p-2 flex-wrap ">
+          <div className="w-full text-center flex items-center justify-center mb-3 p-2 flex-wrap ">
             <div className="w-full">
               <InputSearch
                 placeholder="Tìm kiếm sản phẩm"
                 onChange={handleSearch}
                 onClick={handleClick}
+                loading={loading}
               />
             </div>
-            {Array.from({ length: pageIndex }, (_, index) => index + 1).map(
-              (p) => (
-                <div
-                  key={p}
-                  className="flex"
-                  onClick={() => {
-                    if (p !== pageChoice) {
-                      fetSDataProduct(p);
-                      setPageChoice(p);
-                    }
-                  }}
-                >
-                  <p
-                    className={`mx-1 ${
-                      pageChoice === p ? "text-[crimson]" : ""
-                    } cursor-pointer`}
+            <div className="w-full h-fit flex justify-center pb-1 border-b mt-2">
+              {Array.from({ length: pageIndex }, (_, index) => index + 1).map(
+                (p) => (
+                  <div
+                    key={p}
+                    className="flex"
+                    onClick={() => {
+                      if (p !== pageChoice) {
+                        fetSDataProduct(p);
+                        setPageChoice(p);
+                      }
+                    }}
                   >
-                    {p}
-                  </p>
-                  {pageIndex === p ? "" : <p className="mx-1 ">/</p>}
-                </div>
-              )
-            )}
-
-            {/* <p className="mx-1 cursor-pointer">2</p>
-            <p className="mx-1">/</p>
-            <p className="mx-1 cursor-pointer">3</p>
-            <p className="mx-1">...</p>
-            <p className="mx-1">/</p>
-            <p className="mx-1 cursor-pointer">4</p> */}
-          </div>
-          <div>
-            <div className="w-full flex flex-wrap mt-8 px-1 justify-center">
-              {dataProducts.map((r, index) => (
-                <Link
-                  href="/[slug]"
-                  as={`products/${caseChose.product.categoryName}/${r.name}/${r.id}`}
-                  key={r.id}
-                  className={`w-[200px] ${
-                    dataProducts.length === index + 1 ? "" : "mr-4"
-                  } md:w-[300px] p-1 border shadow-[0_0_3px_#7a7a7a] hover:shadow-[0_0_10px] mb-4 cursor-pointer`}
-                >
-                  <div className="w-full h-[200px] md:h-[280px]">
-                    <img
-                      src={r.urlImage[0]?.image}
-                      alt={r.urlImage[0]?.path}
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                  <div className={`mt-1 ${styles.containerProductTag}`}>
-                    <h3
-                      className={`font-bold text-sm md:text-base ${styles.nameTag}`}
-                    >
-                      {r.name}
-                    </h3>
-                    <div className="w-full mt-1 md:mt-2 flex items-center border-b border-solid">
-                      <p className="text-[13px] md:text-[14px] font-medium text-[crimson]">
-                        {r.price.toLocaleString("en-US").replace(/,/g, ".")}
-                      </p>
-                      {r.price_After && (
-                        <p className="text-[10px] md:text-[11px] mt-[5px] ml-2 line-through">
-                          {r.price_After
-                            .toLocaleString("en-US")
-                            .replace(/,/g, ".")}
-                        </p>
-                      )}
-                    </div>
                     <p
-                      className={`text-[13px] md:text-[14px] mt-2 md:mt-3 ${styles.desTag}`}
+                      className={`mx-1 px-[5px] hover:bg-[#d2d5d8] border border-[#2b2b2b] rounded-[5px]  ${
+                        pageChoice === p ? "bg-[#d2d5d8]" : ""
+                      } cursor-pointer`}
                     >
-                      {" "}
-                      <strong className="text-[crimson]">*</strong>
-                      Lamborghini Urus 2023 có đầy đủ những phẩm chất ưu việt
-                      của một chiếc siêu xe hàng đầu. Nhưng nhiều người vẫn cho
-                      rằng các mẫu siêu SUV không phải là thế mạnh của
-                      Lamborghini và Urus 2023 sẽ bị lép vế trước những mẫu xe
-                      gầm thấp đã làm nên tên tuổi của thương hiệu
+                      {p}
                     </p>
                   </div>
-                  <div className="my-2 flex items-center justify-center relative">
-                    <button className="text-sm shadow-[0_0_2px_#4a8cbf] border-[#4a8cbf] border-[1px] p-1 pr-3 rounded-md">
-                      View more
-                    </button>
-                    <a
-                      href="#"
-                      className="absolute top-[5px] right-[10px] md:right-[40px]"
-                      style={{ color: "crimson !important" }}
-                    >
-                      <SiShopee />
-                    </a>
-                  </div>
-                </Link>
-              ))}{" "}
+                )
+              )}
+            </div>
+          </div>
+          <div>
+            <div className="w-full flex flex-wrap mt-7 px-1 justify-center">
+              {!loadingType ? (
+                dataProducts.map((r, index) => (
+                  <Link
+                    href="/[slug]"
+                    as={`products/${caseChose.product.categoryName}/${r.name}/${r.id}`}
+                    key={r.id}
+                    className={`w-[200px] ${
+                      dataProducts.length === index + 1 ? "" : "mr-4"
+                    } md:w-[300px] p-1 border shadow-[0_0_3px_#7a7a7a] hover:shadow-[0_0_10px] mb-4 cursor-pointer`}
+                  >
+                    <div className="w-full h-[200px] md:h-[280px]">
+                      <img
+                        src={r.urlImage[0]?.image}
+                        alt={r.urlImage[0]?.path}
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                    <div className={`mt-1 ${styles.containerProductTag}`}>
+                      <h3
+                        className={`font-bold text-sm md:text-base ${styles.nameTag}`}
+                      >
+                        {r.name}
+                      </h3>
+                      <div className="w-full mt-1 md:mt-2 flex items-center border-b border-solid">
+                        <p className="text-[13px] md:text-[14px] font-medium text-[crimson]">
+                          {r.price.toLocaleString("en-US").replace(/,/g, ".")}
+                        </p>
+                        {r.price_After && (
+                          <p className="text-[10px] md:text-[11px] mt-[5px] ml-2 line-through">
+                            {r.price_After
+                              .toLocaleString("en-US")
+                              .replace(/,/g, ".")}
+                          </p>
+                        )}
+                      </div>
+                      <p
+                        className={`text-[13px] md:text-[14px] mt-2 md:mt-3 ${styles.desTag}`}
+                      >
+                        {" "}
+                        <strong className="text-[crimson]">*</strong>
+                        Lamborghini Urus 2023 có đầy đủ những phẩm chất ưu việt
+                        của một chiếc siêu xe hàng đầu. Nhưng nhiều người vẫn
+                        cho rằng các mẫu siêu SUV không phải là thế mạnh của
+                        Lamborghini và Urus 2023 sẽ bị lép vế trước những mẫu xe
+                        gầm thấp đã làm nên tên tuổi của thương hiệu
+                      </p>
+                    </div>
+                    <div className="my-2 flex items-center justify-center relative">
+                      <button className="text-sm shadow-[0_0_2px_#4a8cbf] border-[#4a8cbf] border-[1px] p-1 pr-3 rounded-md">
+                        View more
+                      </button>
+                      <a
+                        href="#"
+                        className="absolute top-[5px] right-[10px] md:right-[40px]"
+                        style={{ color: "crimson !important" }}
+                      >
+                        <SiShopee />
+                      </a>
+                    </div>
+                  </Link>
+                ))
+              ) : (
+                <p>Loading...</p>
+              )}{" "}
             </div>
           </div>{" "}
           <div className="flex mt-3 flex-wrap max-h-[785px] h-auto overflow-hidden border-b">
