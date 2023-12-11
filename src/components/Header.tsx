@@ -7,14 +7,26 @@ import { PiDotsNineBold } from "react-icons/pi";
 import { IoMdClose } from "react-icons/io";
 import http from "@/utils/http";
 import Login from "./Login";
+import moment from "moment";
 const Header = () => {
+  const [session, setSession] = useState<boolean>(false);
   const [firstCate, setFirstCate] = useState<{
     product: string;
     news: string;
     guide: string;
   }>({ product: "", news: "", guide: "" });
+  const [auth, setAuth] = useState<boolean>(false);
   useEffect(() => {
     getData();
+    if (typeof window !== "undefined") {
+      // your code
+      const token = localStorage.getItem("token") ?? "";
+      const refreshToken = localStorage.getItem("refreshToken") ?? "";
+      const expire = localStorage.getItem("expiration") ?? "";
+      console.log(moment(expire).format("YYYY-MM-DD HH:mm:ss"), "time");
+
+      if (!token || !refreshToken || !expire) setAuth(true);
+    }
   }, []);
   const getData = async () => {
     const res1: any = await http.get("Category/GetAll/Tin tức");
@@ -137,9 +149,18 @@ const Header = () => {
             <p className="text-xs">chuyên cung cấp các đồ chơi xe chính hãng</p>
           </div>
         </div>
-        <div className="flex max-sm:absolute max-sm:top-[5px] max-sm:right-11 ">
-          <p className="text-sm">Login</p>
-        </div>
+        {auth ? (
+          <div
+            className="flex max-sm:absolute max-sm:top-[5px] max-sm:right-11 "
+            onClick={() => setSession(true)}
+          >
+            <p className="text-sm">Đăng nhập</p>
+          </div>
+        ) : (
+          <div className="flex max-sm:absolute max-sm:top-[5px] max-sm:right-11 ">
+            <p className="text-sm">Đăng xuất</p>
+          </div>
+        )}
         <div className="hidden md:flex w-full max-sm:pl-[78px] max-sm:flex-wrap max-sm:justify-start sm:w-auto sm:absolute -bottom-11 left-[19%] md:left-[30%] justify-around sm:mt-3">
           <Link
             href="/"
@@ -219,11 +240,10 @@ const Header = () => {
           className="flex w-full pr-[20px] pb-2 text-[20px] justify-end md:hidden"
           onClick={() => setOnTab(!onTab)}
         >
-          {" "}
           <PiDotsNineBold />
         </div>
       </div>
-      <Login />
+      {session && <Login />}
     </div>
   );
 };

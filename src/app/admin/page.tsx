@@ -15,11 +15,18 @@ import moment from "moment";
 import AddGuideModel from "@/components/AddGuideModel";
 import InputSearch from "@/components/Items/InputSearch";
 import FormAboutUs from "@/components/FormAboutUs";
+import { redirect } from "next/navigation";
+import httpToken from "@/utils/httpToken";
 const RoutListing = dynamic(() => import("@/components/Items/RoutListing"));
 const AddNewsModel = dynamic(() => import("@/components/AddNewsModel"));
 const AddProductModel = dynamic(() => import("@/components/AddProductModel"));
 
 const page = () => {
+  // your code
+  const token = localStorage.getItem("token") ?? "";
+  const refreshToken = localStorage.getItem("refreshToken") ?? "";
+  const expire = localStorage.getItem("expiration") ?? "";
+  if (!token || !refreshToken || !expire) redirect("/");
   let product = 2;
   let news = 3;
   let guide = 4;
@@ -122,7 +129,8 @@ const page = () => {
   const [nameRout, setNameRout] = useState("");
   const [load, setLoad] = useState(false);
   const fet = async () => {
-    const res = await http.get<typeof dataCate>("CategoryType/GetAll");
+    const axio = httpToken(token, refreshToken);
+    const res = await axio.get<typeof dataCate>("CategoryType/GetAll");
     setDataCate(res.data);
   };
   const fetS = async () => {
@@ -799,3 +807,6 @@ const page = () => {
 };
 
 export default page;
+function useEffectLayout(arg0: () => void, arg1: never[]) {
+  throw new Error("Function not implemented.");
+}

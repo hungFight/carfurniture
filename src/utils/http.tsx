@@ -1,5 +1,6 @@
 import axios, { AxiosInstance } from "axios";
 import https from "https";
+import { jwtDecode } from "jwt-decode";
 
 class Http {
   instance: AxiosInstance;
@@ -15,5 +16,6 @@ class Http {
       }),
     });
   }
+  private isInterceptorAttached: boolean = false;
 }
 export default new Http().instance;
