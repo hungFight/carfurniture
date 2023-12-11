@@ -13,11 +13,20 @@ import dynamic from "next/dynamic";
 import PreviousAdmin from "@/components/PreviousAdmin";
 import moment from "moment";
 import AddGuideModel from "@/components/AddGuideModel";
+import InputSearch from "@/components/Items/InputSearch";
+import FormAboutUs from "@/components/FormAboutUs";
 const RoutListing = dynamic(() => import("@/components/Items/RoutListing"));
 const AddNewsModel = dynamic(() => import("@/components/AddNewsModel"));
 const AddProductModel = dynamic(() => import("@/components/AddProductModel"));
 
 const page = () => {
+  let product = 2;
+  let news = 3;
+  let guide = 4;
+  const [search, setSearch] = useState<string>("");
+  const [pageIndex, setPageIndex] = useState<number>(0);
+  const [loadingSearch, setLoadingSearch] = useState<boolean>(false);
+  const [pageChoice, setPageChoice] = useState<number>(1);
   const [loadingType, setLoadingType] = useState<boolean>(false);
   const [loadingDirect, setLoadingDirect] = useState<boolean>(false);
   const [dataProducts, setDataProducts] = useState<
@@ -141,42 +150,50 @@ const page = () => {
       fetS();
     }
   }, [dataCate, categoryType]);
-  async function fetCateName(name: string) {
+  async function fetCateName(name: string, index = 1, search?: string) {
     console.log("name here", name);
+    setLoadingSearch(true);
 
     setLoadingDirect(true);
-    if (categoryType === 2 && name) {
+    if (categoryType === product && name) {
       const res = await http.post("Product/GetPaginationProduct", {
-        pageIndex: 1,
-        pageSize: 10,
+        pageIndex: index,
+        pageSize: 2,
         search_CategoryName: name,
+        search_Name: search,
       });
+      setPageIndex(res.data.totalPageIndex);
       setDataProducts(res.data.data);
     } else {
       setDataProducts([]);
     }
-    if (categoryType === 3 && name) {
+    if (categoryType === news && name) {
       const res = await http.post("Blog/GetPaginationProduct", {
-        pageIndex: 1,
+        pageIndex: index,
         pageSize: 3,
+        search_Name: search,
         search_CategoryName: name,
       });
+      setPageIndex(res.data.totalPageIndex);
       setDataNews(res.data.data);
     } else {
       setDataNews([]);
     }
-    if (categoryType === 4 && name) {
+    if (categoryType === guide && name) {
       const res = await http.post("Guide/GetPaginationProduct", {
-        pageIndex: 1,
+        pageIndex: index,
         pageSize: 3,
+        search_Name: search,
         search_CategoryName: name,
       });
+      setPageIndex(res.data.totalPageIndex);
       setDataGuid(res.data.data);
     }
+    setLoadingSearch(false);
     setLoadingDirect(false);
   }
   useEffect(() => {
-    fetCateName(nameRout);
+    fetCateName(nameRout, 1);
     if (routs.length >= 2) {
       routs[1] = nameRout;
       setRouts(routs.filter((r, index) => index !== 2));
@@ -193,7 +210,7 @@ const page = () => {
     } else {
       setRouts((pre) => [...pre, vl]);
     }
-    fetCateName(vl);
+    fetCateName(vl, 1);
     setLoad(!load);
   };
 
@@ -221,6 +238,27 @@ const page = () => {
     }
     console.log("directory", id);
   };
+  const handleSearch = (e: any) => {
+    setSearch(e.target.value);
+  };
+  const handleClick = () => {
+    fetCateName(cate.categoryName, 1, search);
+  };
+  const handleUpdateDirectory = async (id: number, name: string) => {
+    const res = await http.put(`Category/Update`, {
+      Id: id,
+      Name: name,
+      CategoryTypeId: categoryType,
+    });
+    setDataList((pre) =>
+      pre.map((r) => {
+        if (r.categoryId === id) r.categoryName = name;
+        return r;
+      })
+    );
+    return true;
+  };
+
   return (
     <div className="flex flex-wrap ">
       <div className="w-full px-5 py-2">
@@ -244,6 +282,7 @@ const page = () => {
                   loading={loadingDirect}
                   data={dataList}
                   del={true}
+                  handleUpdateDirectory={handleUpdateDirectory}
                   handleDeleteDirectory={handleDeleteDirectory}
                   menu={
                     dataCate
@@ -305,11 +344,45 @@ const page = () => {
               {categoryType === 4 && <p>Thêm hướng dẫn</p>}
             </div>
           )}
+          <div className="w-full mb-4">
+            <InputSearch
+              placeholder={routs[1]}
+              onChange={handleSearch}
+              onClick={handleClick}
+              loading={loadingSearch}
+            />
+          </div>
           {categoryType === 2 ? (
             <>
+              <div className="w-full h-fit flex justify-center pb-1 border-b mb-3">
+                {Array.from({ length: pageIndex }, (_, index) => index + 1).map(
+                  (p) => (
+                    <div
+                      key={p}
+                      className="flex w-auto h-fit"
+                      onClick={() => {
+                        if (p !== pageChoice) {
+                          fetCateName(routs[1], p);
+                          setPageChoice(p);
+                        }
+                      }}
+                    >
+                      <p
+                        className={`mx-1 px-[5px] hover:bg-[#d2d5d8] border border-[#2b2b2b] rounded-[5px]  ${
+                          pageChoice === p ? "bg-[#d2d5d8]" : ""
+                        } cursor-pointer`}
+                      >
+                        {p}
+                      </p>
+                    </div>
+                  )
+                )}
+              </div>
               {dataProducts.map((p) => (
-                <div
+                <Link
                   key={p.id}
+                  href="/[slug]"
+                  as={`product/${routs[1]}/${p.name}/${p.id}`}
                   className=" relative w-[250px] p-1 border shadow-[0_0_3px_#7a7a7a] hover:shadow-[0_0_10px] mb-4 mx-3 cursor-pointer"
                   onClick={(e) => {
                     e.stopPropagation();
@@ -414,13 +487,63 @@ const page = () => {
                       <SiShopee />
                     </a>
                   </div>
-                </div>
+                </Link>
               ))}
+              <div className="w-full h-fit flex justify-center pb-1 border-t mt-3">
+                {Array.from({ length: pageIndex }, (_, index) => index + 1).map(
+                  (p) => (
+                    <div
+                      key={p}
+                      className="flex w-auto h-fit"
+                      onClick={() => {
+                        if (p !== pageChoice) {
+                          fetCateName(routs[1], p);
+                          setPageChoice(p);
+                        }
+                      }}
+                    >
+                      <p
+                        className={`mx-1 px-[5px] hover:bg-[#d2d5d8] border border-[#2b2b2b] rounded-[5px]  ${
+                          pageChoice === p ? "bg-[#d2d5d8]" : ""
+                        } cursor-pointer`}
+                      >
+                        {p}
+                      </p>
+                    </div>
+                  )
+                )}
+              </div>
             </>
           ) : categoryType === 3 ? (
             <>
+              <div className="w-full h-fit flex justify-center pb-1 border-b mb-3">
+                {Array.from({ length: pageIndex }, (_, index) => index + 1).map(
+                  (p) => (
+                    <div
+                      key={p}
+                      className="flex w-auto h-fit"
+                      onClick={() => {
+                        if (p !== pageChoice) {
+                          fetCateName(routs[1], p);
+                          setPageChoice(p);
+                        }
+                      }}
+                    >
+                      <p
+                        className={`mx-1 px-[5px] hover:bg-[#d2d5d8] border border-[#2b2b2b] rounded-[5px]  ${
+                          pageChoice === p ? "bg-[#d2d5d8]" : ""
+                        } cursor-pointer`}
+                      >
+                        {p}
+                      </p>
+                    </div>
+                  )
+                )}
+              </div>
               {dataNews.map((bl) => (
-                <div
+                <Link
+                  href="/[slug]"
+                  as={`news/${routs[1]}/${bl.name}/${bl.id}`}
                   className="w-full flex flex-wrap md:flex-nowrap  mb-4 relative"
                   key={bl.id}
                   onClick={() => {
@@ -478,13 +601,63 @@ const page = () => {
                       dangerouslySetInnerHTML={{ __html: bl.content }}
                     ></div>
                   </div>
-                </div>
+                </Link>
               ))}
+              <div className="w-full h-fit flex justify-center pb-1 border-t mt-3">
+                {Array.from({ length: pageIndex }, (_, index) => index + 1).map(
+                  (p) => (
+                    <div
+                      key={p}
+                      className="flex w-auto h-fit"
+                      onClick={() => {
+                        if (p !== pageChoice) {
+                          fetCateName(routs[1], p);
+                          setPageChoice(p);
+                        }
+                      }}
+                    >
+                      <p
+                        className={`mx-1 px-[5px] hover:bg-[#d2d5d8] border border-[#2b2b2b] rounded-[5px]  ${
+                          pageChoice === p ? "bg-[#d2d5d8]" : ""
+                        } cursor-pointer`}
+                      >
+                        {p}
+                      </p>
+                    </div>
+                  )
+                )}
+              </div>
             </>
           ) : (
             <>
+              <div className="w-full h-fit flex justify-center pb-1 border-b mb-3">
+                {Array.from({ length: pageIndex }, (_, index) => index + 1).map(
+                  (p) => (
+                    <div
+                      key={p}
+                      className="flex w-auto h-fit"
+                      onClick={() => {
+                        if (p !== pageChoice) {
+                          fetCateName(routs[1], p);
+                          setPageChoice(p);
+                        }
+                      }}
+                    >
+                      <p
+                        className={`mx-1 px-[5px] hover:bg-[#d2d5d8] border border-[#2b2b2b] rounded-[5px]  ${
+                          pageChoice === p ? "bg-[#d2d5d8]" : ""
+                        } cursor-pointer`}
+                      >
+                        {p}
+                      </p>
+                    </div>
+                  )
+                )}
+              </div>
               {dataGuid.map((g) => (
-                <div
+                <Link
+                  href="/[slug]"
+                  as={`guide/${routs[1]}/${g.name}/${g.id}`}
                   className="w-full flex flex-wrap md:flex-nowrap  mb-4 relative"
                   key={g.id}
                 >
@@ -538,8 +711,32 @@ const page = () => {
                       dangerouslySetInnerHTML={{ __html: g.content }}
                     ></div>
                   </div>
-                </div>
+                </Link>
               ))}
+              <div className="w-full h-fit flex justify-center pb-1 border-t mt-3">
+                {Array.from({ length: pageIndex }, (_, index) => index + 1).map(
+                  (p) => (
+                    <div
+                      key={p}
+                      className="flex w-auto h-fit"
+                      onClick={() => {
+                        if (p !== pageChoice) {
+                          fetCateName(routs[1], p);
+                          setPageChoice(p);
+                        }
+                      }}
+                    >
+                      <p
+                        className={`mx-1 px-[5px] hover:bg-[#d2d5d8] border border-[#2b2b2b] rounded-[5px]  ${
+                          pageChoice === p ? "bg-[#d2d5d8]" : ""
+                        } cursor-pointer`}
+                      >
+                        {p}
+                      </p>
+                    </div>
+                  )
+                )}
+              </div>
             </>
           )}
         </div>
@@ -585,8 +782,9 @@ const page = () => {
       ) : (
         <></>
       )}
-      {/* : category === 4 ? (
-      <FormAboutUs title="About us" />) */}
+      {aboutUs && (
+        <FormAboutUs title="About us" onClick={() => setAboutUs(false)} />
+      )}
       <div
         className="w-fit fixed bg-[#0099e6] bottom-[80px] z-10 left-[52px] rounded-[5px] cursor-pointer font-medium px-3 py-1 text-white"
         onClick={() => setAboutUs(true)}

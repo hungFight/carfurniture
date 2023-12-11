@@ -102,7 +102,7 @@ export default function Home() {
     } else {
       const res = await http.post("Product/GetPaginationProduct", {
         pageIndex: index,
-        pageSize: 3,
+        pageSize: 8,
         search_CategoryName: caseChose.product.categoryName,
       });
       setPageIndex(res.data.totalPageIndex);

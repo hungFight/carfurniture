@@ -2,7 +2,10 @@
 import http from "@/utils/http";
 import React, { useEffect, useRef, useState } from "react";
 import { IoCloseCircleOutline } from "react-icons/io5";
-const FormAboutUs: React.FC<{ title: string }> = ({ title }) => {
+const FormAboutUs: React.FC<{ title: string; onClick: () => void }> = ({
+  title,
+  onClick,
+}) => {
   const [data, setData] = useState<{
     id: number;
     name: string;
@@ -31,12 +34,19 @@ const FormAboutUs: React.FC<{ title: string }> = ({ title }) => {
         Email: data.email,
         Url_Mess: data?.url_Mess,
       });
+      onClick();
       console.log(res.data, "update");
     }
   };
   return (
-    <>
-      <div className="w-full z-50 h-full p-5 sm:w-[640px] overflow-overlay  bg-white">
+    <div
+      className="fixed top-0 left-0 w-full h-full flex justify-center bg-[#1c1c1cc4] z-[999]"
+      onClick={onClick}
+    >
+      <div
+        className="w-full z-50 h-full p-5 sm:w-[640px] overflow-overlay  bg-white"
+        onClick={(e) => e.stopPropagation()}
+      >
         <h3 className="w-full p-3 text-center relative">About us</h3>
         <div className="w-full flex items-center h-fit my-3">
           <label className="text-base mr-3" htmlFor="nameCTY">
@@ -52,7 +62,7 @@ const FormAboutUs: React.FC<{ title: string }> = ({ title }) => {
                 setData({ ...data, name: e.target.value });
               }
             }}
-            value={data?.name ?? ''}
+            value={data?.name ?? ""}
             placeholder="Tên công ty"
           />
         </div>
@@ -65,7 +75,7 @@ const FormAboutUs: React.FC<{ title: string }> = ({ title }) => {
             className="outline-[#41af6b] mr-1 shadow-[0_0_2px_#4a8cbf] border-[#4a8cbf] border-[1px] p-1 pr-3 rounded-md"
             id="address"
             type="text"
-            value={data?.address ?? ''}
+            value={data?.address ?? ""}
             onChange={(e) => {
               if (data) {
                 setData({ ...data, address: e.target.value });
@@ -83,7 +93,7 @@ const FormAboutUs: React.FC<{ title: string }> = ({ title }) => {
             className="outline-[#41af6b] mr-1 shadow-[0_0_2px_#4a8cbf] border-[#4a8cbf] border-[1px] p-1 pr-3 rounded-md"
             id="sdt"
             type="text"
-            value={data?.phone ?? ''}
+            value={data?.phone ?? ""}
             onChange={(e) => {
               if (data) {
                 setData({ ...data, phone: e.target.value });
@@ -101,7 +111,7 @@ const FormAboutUs: React.FC<{ title: string }> = ({ title }) => {
             required
             type="text"
             placeholder="Email"
-            value={data?.email ?? ''}
+            value={data?.email ?? ""}
             onChange={(e) => {
               if (data) {
                 setData({ ...data, email: e.target.value });
@@ -119,7 +129,7 @@ const FormAboutUs: React.FC<{ title: string }> = ({ title }) => {
             className="outline-[#41af6b] mr-1 shadow-[0_0_2px_#4a8cbf] border-[#4a8cbf] border-[1px] p-1 pr-3 rounded-md"
             id="Messenger"
             type="text"
-            value={data?.url_Mess ?? ''}
+            value={data?.url_Mess ?? ""}
             onChange={(e) => {
               if (data) {
                 setData({ ...data, url_Mess: e.target.value });
@@ -150,7 +160,7 @@ const FormAboutUs: React.FC<{ title: string }> = ({ title }) => {
           </button>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

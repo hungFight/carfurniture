@@ -6,6 +6,7 @@ import React, { useEffect, useState } from "react";
 import { PiDotsNineBold } from "react-icons/pi";
 import { IoMdClose } from "react-icons/io";
 import http from "@/utils/http";
+import Login from "./Login";
 const Header = () => {
   const [firstCate, setFirstCate] = useState<{
     product: string;
@@ -25,8 +26,8 @@ const Header = () => {
       guide: res3.data[0].categoryName,
     });
   };
-  console.log(firstCate, "firstCate");
-
+  const active = window ? window.location.pathname : "";
+  console.log(active.indexOf("news"), "active");
   const [onTab, setOnTab] = useState<boolean>(false);
   return (
     <div className="w-full 2xl:w-[1519px] bg-white flex justify-center h-auto sm:h-[125px] pt-4 border-b-2">
@@ -42,7 +43,13 @@ const Header = () => {
             <div className=" w-full flex flex-wrap mt-[15px]">
               <Link
                 href="/"
-                className="header_home w-full text-[#3a3b3b]  text-sm sm:text-base mx-4 max-sm:my-1 whitespace-pre-wrap font-medium cursor-pointer hover:text-[#42aaea]"
+                className={`header_home w-full text-[#3a3b3b]  text-sm sm:text-base mx-4 max-sm:my-1 whitespace-pre-wrap font-medium cursor-pointer hover:text-[#42aaea] ${
+                  !(active.indexOf("products") > 0) &&
+                  !(active.indexOf("news") > 0) &&
+                  !(active.indexOf("guides") > 0)
+                    ? "text-[#42aaea]"
+                    : ""
+                }`}
                 onClick={(e: any) => {
                   if (document) {
                     const hear = document?.querySelectorAll(".header_home");
@@ -57,7 +64,9 @@ const Header = () => {
               </Link>
               <Link
                 href={`/news/${firstCate.news}`}
-                className="header_home w-full text-[#3a3b3b]  text-sm sm:text-base mx-4 max-sm:my-1 whitespace-pre-wrap font-medium cursor-pointer hover:text-[#42aaea]"
+                className={`header_home w-full text-[#3a3b3b] ${
+                  active.indexOf("news") > 0 ? "text-[#42aaea]" : ""
+                } text-sm sm:text-base mx-4 max-sm:my-1 whitespace-pre-wrap font-medium cursor-pointer hover:text-[#42aaea]`}
                 onClick={(e: any) => {
                   if (document) {
                     const hear = document?.querySelectorAll(".header_home");
@@ -72,7 +81,9 @@ const Header = () => {
               </Link>
               <Link
                 href={`/products/${firstCate.product}`}
-                className="header_home w-full text-[#3a3b3b]  text-sm sm:text-base mx-4 max-sm:my-1 whitespace-pre-wrap font-medium cursor-pointer hover:text-[#42aaea]"
+                className={`header_home w-full text-[#3a3b3b] ${
+                  active.indexOf("products") > 0 ? "text-[#42aaea]" : ""
+                }  text-sm sm:text-base mx-4 max-sm:my-1 whitespace-pre-wrap font-medium cursor-pointer hover:text-[#42aaea]`}
                 onClick={(e: any) => {
                   if (document) {
                     const hear = document?.querySelectorAll(".header_home");
@@ -87,7 +98,9 @@ const Header = () => {
               </Link>
               <Link
                 href={`/guides/${firstCate.guide}`}
-                className="header_home w-full  text-[#3a3b3b] text-sm sm:text-base mx-4 max-sm:my-1 whitespace-pre-wrap font-medium cursor-pointer hover:text-[#42aaea]"
+                className={`header_home w-full  ${
+                  active.indexOf("guides") > 0 ? "text-[#42aaea]" : ""
+                } text-[#3a3b3b] text-sm sm:text-base mx-4 max-sm:my-1 whitespace-pre-wrap font-medium cursor-pointer hover:text-[#42aaea]`}
                 onClick={(e: any) => {
                   if (document) {
                     const hear = document?.querySelectorAll(".header_home");
@@ -130,7 +143,13 @@ const Header = () => {
         <div className="hidden md:flex w-full max-sm:pl-[78px] max-sm:flex-wrap max-sm:justify-start sm:w-auto sm:absolute -bottom-11 left-[19%] md:left-[30%] justify-around sm:mt-3">
           <Link
             href="/"
-            className="header_home text-[#3a3b3b]  text-sm sm:text-base mx-4 max-sm:my-1 w-max whitespace-pre-wrap font-medium cursor-pointer hover:text-[#42aaea]"
+            className={`header_home text-[#3a3b3b] ${
+              !(active.indexOf("products") > 0) &&
+              !(active.indexOf("news") > 0) &&
+              !(active.indexOf("guides") > 0)
+                ? "text-[#42aaea]"
+                : ""
+            } text-sm sm:text-base mx-4 max-sm:my-1 w-max whitespace-pre-wrap font-medium cursor-pointer hover:text-[#42aaea]`}
             onClick={(e: any) => {
               if (document) {
                 const hear = document?.querySelectorAll(".header_home");
@@ -145,7 +164,9 @@ const Header = () => {
           </Link>
           <Link
             href={`/news/${firstCate.news}`}
-            className="header_home text-[#3a3b3b]  text-sm sm:text-base mx-4 max-sm:my-1 w-max whitespace-pre-wrap font-medium cursor-pointer hover:text-[#42aaea]"
+            className={`header_home text-[#3a3b3b] ${
+              active.indexOf("news") > 0 ? "text-[#42aaea]" : ""
+            } text-sm sm:text-base mx-4 max-sm:my-1 w-max whitespace-pre-wrap font-medium cursor-pointer hover:text-[#42aaea]`}
             onClick={(e: any) => {
               if (document) {
                 const hear = document?.querySelectorAll(".header_home");
@@ -160,7 +181,9 @@ const Header = () => {
           </Link>
           <Link
             href={`/products/${firstCate.product}`}
-            className="header_home text-[#3a3b3b]  text-sm sm:text-base mx-4 max-sm:my-1 w-max whitespace-pre-wrap font-medium cursor-pointer hover:text-[#42aaea]"
+            className={`header_home text-[#3a3b3b] ${
+              active.indexOf("products") > 0 ? "text-[#42aaea]" : ""
+            }  text-sm sm:text-base mx-4 max-sm:my-1 w-max whitespace-pre-wrap font-medium cursor-pointer hover:text-[#42aaea]`}
             onClick={(e: any) => {
               if (document) {
                 const hear = document?.querySelectorAll(".header_home");
@@ -175,7 +198,9 @@ const Header = () => {
           </Link>
           <Link
             href={`/guides/${firstCate.guide}`}
-            className="header_home  text-[#3a3b3b] text-sm sm:text-base mx-4 max-sm:my-1 w-max whitespace-pre-wrap font-medium cursor-pointer hover:text-[#42aaea]"
+            className={`header_home ${
+              active.indexOf("guides") > 0 ? "text-[#42aaea]" : ""
+            } text-[#3a3b3b] text-sm sm:text-base mx-4 max-sm:my-1 w-max whitespace-pre-wrap font-medium cursor-pointer hover:text-[#42aaea]`}
             onClick={(e: any) => {
               if (document) {
                 const hear = document?.querySelectorAll(".header_home");
@@ -198,6 +223,7 @@ const Header = () => {
           <PiDotsNineBold />
         </div>
       </div>
+      <Login />
     </div>
   );
 };
