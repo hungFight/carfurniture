@@ -4,9 +4,14 @@ import { CiPhone } from "react-icons/ci";
 import { PiMessengerLogoLight } from "react-icons/pi";
 import { SiShopee } from "react-icons/si";
 import styles from "@/components/styleComponent.module.scss";
+import Image from "./Image";
+
 const getProduct = async (detailed: string) => {
-  const res = await http.get(`Product/GetByID/${detailed}`);
-  return res.data;
+  if (detailed) {
+    const res = await http.get(`Product/GetByID/${detailed}`);
+    return res.data;
+  }
+  return undefined;
 };
 const page = async (props: { params: { detailed: string[] | string } }) => {
   const data:
@@ -34,12 +39,15 @@ const page = async (props: { params: { detailed: string[] | string } }) => {
         <div className="w-full min-[1200px]:w-[1200px] relative mt-15 border-t p-5">
           <div>
             <div className="min-[1000px]:flex">
-              <div className="w-full h-[300px] min-[600px]:w-[500px]  ">
-                <img
-                  src={data.urlImage[0]?.image}
-                  alt={data.urlImage[0]?.path}
-                  className="w-full h-full object-cover"
-                />
+              <div className="w-full h-[470px]  min-[600px]:w-[500px]  ">
+                <div className="w-full h-[350px] min-[600px]:w-[500px]  ">
+                  <img
+                    src={data.urlImage[0]?.image}
+                    alt={data.urlImage[0]?.path}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+                {data.urlImage?.length > 1 && <Image data={data.urlImage} />}
               </div>
               <div
                 className={`mt-1 min-[1000px]:ml-3 ${styles.containerProductTag}`}
@@ -77,13 +85,13 @@ const page = async (props: { params: { detailed: string[] | string } }) => {
                     Messenger
                   </a>
                   <a
-                    href={`tel:${data.info_in_AboutUs[0].phone}`}
+                    href={`tel:${data.info_in_AboutUs[0]?.phone}`}
                     className="w-fit mr-2 my-2 text-sm text-white py-2 px-5 rounded-[20px] bg-slate-700 flex items-center"
                   >
                     <div className="flex text-[20px] text-[#57eb57] mr-2">
                       <CiPhone />
                     </div>{" "}
-                    {data.info_in_AboutUs[0].phone}
+                    {data.info_in_AboutUs[0]?.phone}
                   </a>
                   <a
                     href={data.product.urlShoppe}

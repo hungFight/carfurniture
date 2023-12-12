@@ -79,13 +79,13 @@ export default function Home() {
     const resNews = await http.post("Blog/GetPaginationProduct", {
       pageIndex: 1,
       pageSize: 4,
-      search_CategoryName: caseChose.news.categoryName,
+      search_CategoryName: caseChose.news?.categoryName,
     });
     setDataNews(resNews.data.data);
     const resGuide = await http.post("Guide/GetPaginationProduct", {
       pageIndex: 1,
       pageSize: 4,
-      search_CategoryName: caseChose.guide.categoryName,
+      search_CategoryName: caseChose.guide?.categoryName,
     });
     setDataGuid(resGuide.data.data);
     setLoadingType(false);
@@ -103,7 +103,7 @@ export default function Home() {
       const res = await http.post("Product/GetPaginationProduct", {
         pageIndex: index,
         pageSize: 8,
-        search_CategoryName: caseChose.product.categoryName,
+        search_CategoryName: caseChose.product?.categoryName,
       });
       setPageIndex(res.data.totalPageIndex);
       setDataProducts(res.data.data);
@@ -159,7 +159,7 @@ export default function Home() {
               loading={loading}
               data={dataList}
               onClick={handle}
-              active={caseChose.product.categoryId}
+              active={caseChose.product?.categoryId}
             />
           </div>
           <div className="w-full text-center flex items-center justify-center mb-3 p-2 flex-wrap ">
@@ -202,7 +202,7 @@ export default function Home() {
                 dataProducts.map((r, index) => (
                   <Link
                     href="/[slug]"
-                    as={`products/${caseChose.product.categoryName}/${r.name}/${r.id}`}
+                    as={`products/${caseChose.product?.categoryName}/${r.name}/${r.id}`}
                     key={r.id}
                     className={`w-[200px] ${
                       dataProducts.length === index + 1 ? "" : "mr-4"
@@ -274,7 +274,7 @@ export default function Home() {
               <div className="flex flex-wrap justify-around">
                 {dataNews.map((n) => (
                   <Link
-                    href={`news/${caseChose.news.categoryName}/${n.name}/${n.id}`}
+                    href={`news/${caseChose.news?.categoryName}/${n.name}/${n.id}`}
                     key={n.id}
                     className="w-[200px] xl:w-[250px] p-1 border shadow-[0_0_3px_#7a7a7a] hover:shadow-[0_0_10px] mb-4 cursor-pointer mr-2"
                   >
@@ -316,7 +316,7 @@ export default function Home() {
               <div className="flex flex-wrap justify-around">
                 {dataGuid.map((n) => (
                   <Link
-                    href={`guide/${caseChose.product.categoryName}/${n.name}/${n.id}`}
+                    href={`guide/${caseChose.product?.categoryName}/${n.name}/${n.id}`}
                     key={n.id}
                     className="w-[200px] xl:w-[250px] p-1 border shadow-[0_0_3px_#7a7a7a] hover:shadow-[0_0_10px] mb-4 cursor-pointer mr-2"
                   >

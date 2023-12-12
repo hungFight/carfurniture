@@ -49,9 +49,15 @@ const RoutListing: React.FC<{
   ]);
   useEffect(() => {
     const getProduct = async () => {
-      const re1 = await http.get(`Product/GetByID/${hasSeen[0]}`);
-      const re2 = await http.get(`Product/GetByID/${hasSeen[1]}`);
-      setDataHasSeen([re1.data, re2.data]);
+      if (hasSeen.length === 1) {
+        const re1 = await http.get(`Product/GetByID/${hasSeen[0]}`);
+        setDataHasSeen([re1.data]);
+      }
+      if (hasSeen.length === 2) {
+        const re1 = await http.get(`Product/GetByID/${hasSeen[0]}`);
+        const re2 = await http.get(`Product/GetByID/${hasSeen[1]}`);
+        setDataHasSeen([re1.data, re2.data]);
+      }
     };
     getProduct();
   }, []);

@@ -49,17 +49,20 @@ const AddNewsModel: React.FC<{
   const [loading, setLoading] = useState<boolean>(false);
   const checkRef = useRef<boolean>(false);
   const [news, setNews] = useState<{
+    Id?: number;
     Name: string;
     Content: string;
     categoryId: number;
     FormCollection: any;
   }>({
+    Id: newsUp?.id,
     Name: newsUp?.name ?? "",
     Content: newsUp?.content ?? "",
     categoryId: cateId,
     FormCollection: null,
   });
   const [image, setImage] = useState<string>(newsUp?.urlImage[0]?.image ?? "");
+  console.log(newsUp, "newsUp");
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
@@ -70,18 +73,17 @@ const AddNewsModel: React.FC<{
     formData.append("CategoryId", String(cateId));
     formData.append("Name", news.Name);
     formData.append("Content", news.Content);
-    if (cateName && cateId && news.Name && news.Content) {
-      if (newsUp) {
-        // update
-        formData.append("Id", String(newsUp.id));
+    if (newsUp) {
+      // update
+      formData.append("Id", String(newsUp.id));
 
-        formData.append("FormCollection", news.FormCollection);
-        if (checkRef.current)
-          formData.append("Paths", newsUp.urlImage[0]?.path);
-        if (newsUp.id && news.Content) {
-          const res = await http.put("Blog/Update", formData);
-        }
-      } else {
+      formData.append("FormCollection", news.FormCollection);
+      if (checkRef.current) formData.append("Paths", newsUp.urlImage[0]?.path);
+      if (newsUp.id !== null) {
+        const res = await http.put("Blog/Update", formData);
+      }
+    } else {
+      if (cateName && cateId && news.Name && news.Content) {
         //add
         formData.append("FormCollection", news.FormCollection);
         formData.append("Name", news.Name);
@@ -90,12 +92,11 @@ const AddNewsModel: React.FC<{
           const res = await http.post("Blog/Create", formData);
         }
       }
-      await fet(cateName);
-      checkRef.current = false;
-      setNewsUp(undefined);
-      onClick();
     }
-
+    await fet(cateName);
+    checkRef.current = false;
+    setNewsUp(undefined);
+    onClick();
     setLoading(false);
   };
   // upload file
@@ -207,6 +208,7 @@ const AddNewsModel: React.FC<{
           <button
             className="text-sm px-3 py-1 hover:text-[#0074da] cursor-pointer"
             type="submit"
+            onClick={handleSubmit}
           >
             Submit{loading ? " is in processing..." : ""}
           </button>

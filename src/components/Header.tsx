@@ -33,9 +33,9 @@ const Header = () => {
     const res2 = await http.get("Category/GetAll/Sản phẩm");
     const res3 = await http.get("Category/GetAll/Hướng dẫn");
     setFirstCate({
-      news: res1.data[0].categoryName,
-      product: res2.data[0].categoryName,
-      guide: res3.data[0].categoryName,
+      news: res1.data[0]?.categoryName,
+      product: res2.data[0]?.categoryName,
+      guide: res3.data[0]?.categoryName,
     });
   };
   const active = window ? window.location.pathname : "";

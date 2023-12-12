@@ -27,9 +27,7 @@ const page = () => {
   const refreshToken = localStorage.getItem("refreshToken") ?? "";
   const expire = localStorage.getItem("expiration") ?? "";
   if (!token || !refreshToken || !expire) redirect("/");
-  let product = 2;
-  let news = 3;
-  let guide = 4;
+
   const [search, setSearch] = useState<string>("");
   const [pageIndex, setPageIndex] = useState<number>(0);
   const [loadingSearch, setLoadingSearch] = useState<boolean>(false);
@@ -106,6 +104,9 @@ const page = () => {
       name: string;
     }[]
   >([]);
+  let product = dataCate[0]?.id;
+  let news = dataCate[1]?.id;
+  let guide = dataCate[2]?.id;
   const [dataList, setDataList] = useState<
     { categoryName: string; categoryId: number }[]
   >([]);
@@ -116,7 +117,7 @@ const page = () => {
 
   const [addCate, setAddCate] = useState<boolean>(false);
   const [aboutUs, setAboutUs] = useState<boolean>(false);
-  const [categoryType, setCategory] = useState<number>(2); // Directory
+  const [categoryType, setCategory] = useState<number>(product ?? 0); // Directory
   const [cate, setCate] = useState<{
     categoryId: number;
     categoryName: string;
@@ -129,14 +130,16 @@ const page = () => {
   const [nameRout, setNameRout] = useState("");
   const [load, setLoad] = useState(false);
   const fet = async () => {
-    const axio = httpToken(token, refreshToken);
-    const res = await axio.get<typeof dataCate>("CategoryType/GetAll");
+    // const axio = httpToken(token, refreshToken);
+    setLoadingType(true);
+    const res = await http.get<typeof dataCate>("CategoryType/GetAll");
+    setCategory(res.data[0].id);
     setDataCate(res.data);
+    setLoadingType(false);
   };
   const fetS = async () => {
     setDataList([]);
-    setLoadingType(true);
-    const which = dataCate.filter((c) => c.id === categoryType)[0].name;
+    const which = dataCate.filter((c) => c.id === categoryType)[0]?.name;
     const resCate = await http.get<
       { categoryName: string; categoryId: number }[]
     >(`Category/GetAll/${which}`);
@@ -146,7 +149,6 @@ const page = () => {
       categoryName: resCate.data[0]?.categoryName ?? "",
     });
     setDataList(resCate.data);
-    setLoadingType(false);
   };
 
   useEffect(() => {
@@ -163,7 +165,7 @@ const page = () => {
     setLoadingSearch(true);
 
     setLoadingDirect(true);
-    if (categoryType === product && name) {
+    if (categoryType === product) {
       const res = await http.post("Product/GetPaginationProduct", {
         pageIndex: index,
         pageSize: 2,
@@ -175,7 +177,7 @@ const page = () => {
     } else {
       setDataProducts([]);
     }
-    if (categoryType === news && name) {
+    if (categoryType === news) {
       const res = await http.post("Blog/GetPaginationProduct", {
         pageIndex: index,
         pageSize: 3,
@@ -187,7 +189,7 @@ const page = () => {
     } else {
       setDataNews([]);
     }
-    if (categoryType === guide && name) {
+    if (categoryType === guide) {
       const res = await http.post("Guide/GetPaginationProduct", {
         pageIndex: index,
         pageSize: 3,
@@ -347,9 +349,9 @@ const page = () => {
                 setLoad(!load);
               }}
             >
-              {categoryType === 2 && <p>Thêm sản phẩm</p>}
-              {categoryType === 3 && <p>Thêm tin tức</p>}
-              {categoryType === 4 && <p>Thêm hướng dẫn</p>}
+              {categoryType === product && <p>Thêm sản phẩm</p>}
+              {categoryType === news && <p>Thêm tin tức</p>}
+              {categoryType === guide && <p>Thêm hướng dẫn</p>}
             </div>
           )}
           <div className="w-full mb-4">
@@ -360,7 +362,7 @@ const page = () => {
               loading={loadingSearch}
             />
           </div>
-          {categoryType === 2 ? (
+          {categoryType === product ? (
             <>
               <div className="w-full h-fit flex justify-center pb-1 border-b mb-3">
                 {Array.from({ length: pageIndex }, (_, index) => index + 1).map(
@@ -390,30 +392,14 @@ const page = () => {
                 <Link
                   key={p.id}
                   href="/[slug]"
-                  as={`product/${routs[1]}/${p.name}/${p.id}`}
+                  as={`products/${routs[1]}/${p.name}/${p.id}`}
                   className=" relative w-[250px] p-1 border shadow-[0_0_3px_#7a7a7a] hover:shadow-[0_0_10px] mb-4 mx-3 cursor-pointer"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setPre(true);
-                    setProductUp({
-                      Id: p.id,
-                      Name: p.name,
-                      Price: String(p.price),
-                      Description: p.description,
-                      Discount: String(p.price_After),
-                      categoryId: cate.categoryId,
-                      categoryName: cate.categoryName,
-                      FormCollection: p.urlImage[0]?.image,
-                      path: p.urlImage[0]?.path,
-                      urlImage: p.urlImage,
-                      UrlShoppe: p.urlShoppe,
-                    });
-                  }}
                 >
                   <div
                     className="absolute right-1 cursor-pointer top-0 text-sm w-auto px-3 py-1  bg-white z-10 shadow-[0_0_2px_#999999]"
                     onClick={(e) => {
                       e.stopPropagation();
+                      e.preventDefault();
                       setProductUp({
                         Id: p.id,
                         Name: p.name,
@@ -522,7 +508,7 @@ const page = () => {
                 )}
               </div>
             </>
-          ) : categoryType === 3 ? (
+          ) : categoryType === news ? (
             <>
               <div className="w-full h-fit flex justify-center pb-1 border-b mb-3">
                 {Array.from({ length: pageIndex }, (_, index) => index + 1).map(
@@ -562,6 +548,7 @@ const page = () => {
                   <div
                     className="absolute left-[83px] cursor-pointer top-0 text-sm w-auto px-3 py-1  bg-white z-10 shadow-[0_0_2px_#999999]"
                     onClick={async (e) => {
+                      e.preventDefault();
                       e.stopPropagation();
                       const isD = window.confirm("Bạn có muốn xoá không?");
                       if (isD) {
@@ -578,6 +565,7 @@ const page = () => {
                   <div
                     className="absolute left-1 cursor-pointer top-0 text-sm w-auto px-3 py-1  bg-white z-10 shadow-[0_0_2px_#999999]"
                     onClick={(e) => {
+                      e.preventDefault();
                       e.stopPropagation();
                       setNewsUp(bl);
                       setAdd(routs[1]);
@@ -673,6 +661,8 @@ const page = () => {
                     className="absolute left-[83px] cursor-pointer top-0 text-sm w-auto px-3 py-1  bg-white z-10 shadow-[0_0_2px_#999999]"
                     onClick={async (e) => {
                       e.stopPropagation();
+                      e.preventDefault();
+
                       const isD = window.confirm("Bạn có muốn xoá không?");
                       if (isD && g.id) {
                         setLoading(String(g.id));
@@ -688,6 +678,7 @@ const page = () => {
                   <div
                     className="absolute left-1 cursor-pointer top-0 text-sm w-auto px-3 py-1  bg-white z-10 shadow-[0_0_2px_#999999]"
                     onClick={(e) => {
+                      e.preventDefault();
                       e.stopPropagation();
                       setGuideUp(g);
                       setAdd(routs[1]);
@@ -750,7 +741,7 @@ const page = () => {
         </div>
       </div>
       {add ? (
-        categoryType === 2 ? (
+        categoryType === product ? (
           <AddProductModel
             upCate={productUp}
             setUpCate={setProductUp}
@@ -762,7 +753,7 @@ const page = () => {
             cateId={cate.categoryId}
             cateName={cate.categoryName}
           />
-        ) : categoryType === 3 ? (
+        ) : categoryType === news ? (
           <AddNewsModel
             title={routs[1]}
             onClick={() => {

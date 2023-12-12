@@ -45,8 +45,7 @@ class HttpToken {
                 accessToken: token,
                 refreshToken,
               });
-
-              console.log(data, "newAccessToken");
+              // if (data.accessToken) console.log(data, "newAccessToken");
 
               // if (data?.newAccessToken) {
               //   const newToken = "Bearer " + data.newAccessToken;

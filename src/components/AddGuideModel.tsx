@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useRef } from "react";
 
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
@@ -44,27 +44,34 @@ const AddGuideModel: React.FC<{
     >
   >;
 }> = ({ title, onClick, cateId, cateName, newsUp, fet, setNewsUp }) => {
-  const [value, setValue] = useState<string>("");
+  const [value, setValue] = useState<string>(newsUp?.content ?? "");
   const [pre, setPre] = useState<boolean>(false);
 
   const [product, setProduct] = useState<{
+    Id?: number;
     Name: string;
     Content: string;
     categoryId: number;
     FormCollection: any;
   }>({
-    Name: "",
-    Content: "",
+    Id: newsUp?.id,
+    Name: newsUp?.name ?? "",
+    Content: newsUp?.content ?? "",
     categoryId: cateId,
     FormCollection: null,
   });
-  const [image, setImage] = useState<string>("");
+  const [image, setImage] = useState<string>(newsUp?.urlImage[0].image ?? "");
   console.log(product);
+  const checkRef = useRef<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
+  console.log(newsUp, "newsUp");
 
   const [componentDisabled, setComponentDisabled] = useState<boolean>(true);
   const handleUploadFIle = (e: any) => {
     const file = e.target.files[0];
+
     if (file) {
+      checkRef.current = true;
       setImage(URL.createObjectURL(file));
       setProduct({ ...product, FormCollection: file });
     }
@@ -72,7 +79,7 @@ const AddGuideModel: React.FC<{
   const handleSubmit = async (e: any) => {
     e.preventDefault();
     console.log(product.FormCollection, "product");
-
+    setLoading(true);
     const formData = new FormData();
     product.Content = value;
     formData.append("categoryName", cateName);
@@ -80,7 +87,31 @@ const AddGuideModel: React.FC<{
     formData.append("Content", product.Content);
     formData.append("categoryId", String(product.categoryId));
     formData.append("FormCollection", product.FormCollection);
-    const res = await http.post("Guide/Create", formData);
+    if (newsUp) {
+      // update
+      formData.append("Id", String(newsUp.id));
+
+      formData.append("FormCollection", product.FormCollection);
+      if (checkRef.current) formData.append("Paths", newsUp.urlImage[0]?.path);
+      if (newsUp.id !== null) {
+        const res = await http.put("Guide/Update", formData);
+      }
+    } else {
+      if (cateName && cateId && product.Name && product.Content) {
+        //add
+        formData.append("FormCollection", product.FormCollection);
+        formData.append("Name", product.Name);
+        formData.append("Content", product.Content);
+        if (product.FormCollection) {
+          const res = await http.post("Guide/Create", formData);
+        }
+      }
+    }
+    await fet(cateName);
+    checkRef.current = false;
+    setNewsUp(undefined);
+    onClick();
+    setLoading(false);
   };
   const modules = {
     toolbar: [
@@ -153,6 +184,7 @@ const AddGuideModel: React.FC<{
             className="outline-[#41af6b] mr-1 shadow-[0_0_2px_#4a8cbf] border-[#4a8cbf] border-[1px] p-1 pr-3 rounded-md"
             id="productName"
             type="text"
+            value={product?.Name ?? ""}
             onChange={(e) => setProduct({ ...product, Name: e.target.value })}
             placeholder="Tiêu đề"
           />
@@ -191,24 +223,26 @@ const AddGuideModel: React.FC<{
           className="w-full h-full fixed top-0 left-0 bg-white z-[999] overflow-auto"
           onClick={() => setPre(false)}
         >
-          <div className="w-full flex justify-between mb-4">
-            <div className="min-w-[190px] h-[50px] md:min-w-[250px] md:h-[140px] xl:min-w-[350px] xl:h-[210px] mr-3 md:mr-5">
-              <img src="https://pasal.edu.vn/upload_images/images/2020/03/05/dfgdf.jpg" />
-            </div>
-            <div className="">
-              <h3 className="text-base md:text-[17px] font-bold">
-                Guide's title
-              </h3>
-              <p className="text-sm ">date time</p>
-              <div
-                className={`text-sm md:text-base  mt-3 overflow-hidden ${styles.description}`}
-                style={{
-                  display: "-webkit-box",
-                  WebkitLineClamp: 3,
-                  WebkitBoxOrient: "vertical",
-                }}
-                dangerouslySetInnerHTML={{ __html: value }}
-              ></div>
+          <div className="w-full h-full flex justify-between mb-4 overflow-auto md:w-[80%] mt-5">
+            <div className="w-full h-full">
+              <div className="w-fill h-[260px] min-[600px]:w-[600px] min-[600px]:h-[300px]">
+                <img src={image} className="w-full h-full" />
+              </div>
+              <div className="w-full h-full p-2">
+                <h3 className="text-base md:text-[17px] font-bold">
+                  {product.Name}
+                </h3>
+                <p className="text-sm ">date time</p>
+                <div
+                  className={`w-full text-sm md:text-base  mt-3  ${styles.dangerouslySet}`}
+                  // style={{
+                  //   display: "-webkit-box",
+                  //   WebkitLineClamp: 3,
+                  //   WebkitBoxOrient: "vertical",
+                  // }}
+                  dangerouslySetInnerHTML={{ __html: value }}
+                ></div>
+              </div>
             </div>
           </div>
         </div>
