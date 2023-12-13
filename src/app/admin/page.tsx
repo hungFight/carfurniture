@@ -130,9 +130,9 @@ const page = () => {
   const [nameRout, setNameRout] = useState("");
   const [load, setLoad] = useState(false);
   const fet = async () => {
-    // const axio = httpToken(token, refreshToken);
+    const axio = httpToken(token, refreshToken);
     setLoadingType(true);
-    const res = await http.get<typeof dataCate>("CategoryType/GetAll");
+    const res = await axio.get<typeof dataCate>("CategoryType/GetAll");
     setCategory(res.data[0].id);
     setDataCate(res.data);
     setLoadingType(false);

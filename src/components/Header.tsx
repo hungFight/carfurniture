@@ -151,13 +151,21 @@ const Header = () => {
         </div>
         {auth ? (
           <div
-            className="flex max-sm:absolute max-sm:top-[5px] max-sm:right-11 "
+            className="flex max-sm:absolute max-sm:top-[5px] max-sm:right-11  cursor-pointer"
             onClick={() => setSession(true)}
           >
             <p className="text-sm">Đăng nhập</p>
           </div>
         ) : (
-          <div className="flex max-sm:absolute max-sm:top-[5px] max-sm:right-11 ">
+          <div
+            className="flex max-sm:absolute max-sm:top-[5px] max-sm:right-11 cursor-pointer "
+            onClick={() => {
+              localStorage.removeItem("token");
+              localStorage.removeItem("refreshToken");
+              localStorage.removeItem("expiration");
+              setAuth(true);
+            }}
+          >
             <p className="text-sm">Đăng xuất</p>
           </div>
         )}
@@ -243,7 +251,7 @@ const Header = () => {
           <PiDotsNineBold />
         </div>
       </div>
-      {session && <Login />}
+      {session && <Login setSession={setSession} />}
     </div>
   );
 };

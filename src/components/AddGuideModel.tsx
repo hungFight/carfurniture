@@ -162,7 +162,6 @@ const AddGuideModel: React.FC<{
             Tải ảnh hưỡng dẫn:
           </label>
           <input
-            required
             className="outline-[#41af6b] mr-1 shadow-[0_0_2px_#4a8cbf] border-[#4a8cbf] border-[1px] p-1 pr-3 rounded-md"
             id="productFile"
             type="file"
