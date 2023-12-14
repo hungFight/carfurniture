@@ -3,7 +3,8 @@ import http from "@/utils/http";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 const getData = async () => {
-  const res = await http.get("Category/GetAll/Tin tức");
+  const resT = await http.get("CategoryType/GetAll");
+  const res = await http.get(`Category/GetAll/${resT.data[2].name}`);
   return res.data;
 };
 export const metadata: Metadata = {

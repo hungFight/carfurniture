@@ -133,9 +133,9 @@ const page = () => {
   const [load, setLoad] = useState(false);
   const fet = async () => {
     try {
-      const axio = httpToken(token, refreshToken);
+      // const axio = httpToken(token, refreshToken);
       setLoadingType(true);
-      const res = await axio.get<typeof dataCate>("CategoryType/GetAll");
+      const res = await http.get<typeof dataCate>("CategoryType/GetAll");
       setCategory(res.data[0].id);
       setDataCate(res.data);
       setLoadingType(false);
@@ -150,9 +150,9 @@ const page = () => {
   const fetS = async () => {
     setDataList([]);
     try {
-      const axio = httpToken(token, refreshToken);
+      // const axio = httpToken(token, refreshToken);
       const which = dataCate.filter((c) => c.id === categoryType)[0]?.name;
-      const resCate = await axio.get<
+      const resCate = await http.get<
         { categoryName: string; categoryId: number }[]
       >(`Category/GetAll/${which}`);
       setNameRout(resCate.data[0]?.categoryName ?? "");
@@ -184,10 +184,10 @@ const page = () => {
 
     setLoadingDirect(true);
     try {
-      const axio = httpToken(token, refreshToken);
+      // const axio = httpToken(token, refreshToken);
 
       if (categoryType === product) {
-        const res = await axio.post("Product/GetPaginationProduct", {
+        const res = await http.post("Product/GetPaginationProduct", {
           pageIndex: index,
           pageSize: 2,
           search_CategoryName: name,
@@ -199,7 +199,7 @@ const page = () => {
         setDataProducts([]);
       }
       if (categoryType === news) {
-        const res = await axio.post("Blog/GetPaginationProduct", {
+        const res = await http.post("Blog/GetPaginationProduct", {
           pageIndex: index,
           pageSize: 3,
           search_Name: search,
@@ -211,7 +211,7 @@ const page = () => {
         setDataNews([]);
       }
       if (categoryType === guide) {
-        const res = await axio.post("Guide/GetPaginationProduct", {
+        const res = await http.post("Guide/GetPaginationProduct", {
           pageIndex: index,
           pageSize: 3,
           search_Name: search,
@@ -260,7 +260,7 @@ const page = () => {
   const [nameCate, setNameCate] = useState("");
   const handleAddCate = async () => {
     try {
-      const axio = httpToken(token, refreshToken);
+      // const axio = httpToken(token, refreshToken);
 
       if (nameCate) {
         const res = await http.post<typeof dataCate>("Category/Create", {
@@ -280,7 +280,7 @@ const page = () => {
   };
   const handleDeleteDirectory = async (id: number) => {
     try {
-      const axio = httpToken(token, refreshToken);
+      // const axio = httpToken(token, refreshToken);
       const res = await http.delete(`Category/Delete/${id}`);
       if (res.data?.mess) {
         fetS();
@@ -302,8 +302,8 @@ const page = () => {
   };
   const handleUpdateDirectory = async (id: number, name: string) => {
     try {
-      const axio = httpToken(token, refreshToken);
-      const res = await axio.put(`Category/Update`, {
+      // const axio = httpToken(token, refreshToken);
+      const res = await http.put(`Category/Update`, {
         Id: id,
         Name: name,
         CategoryTypeId: categoryType,
@@ -441,8 +441,11 @@ const page = () => {
           {categoryType === product ? (
             <>
               <div className="w-full h-fit flex justify-center pb-1 border-b mb-3">
-                {Array.from({ length: pageIndex }, (_, index) => index + 1).map(
-                  (p) => (
+                {pageIndex > 1 &&
+                  Array.from(
+                    { length: pageIndex },
+                    (_, index) => index + 1
+                  ).map((p) => (
                     <div
                       key={p}
                       className="flex w-auto h-fit"
@@ -461,8 +464,7 @@ const page = () => {
                         {p}
                       </p>
                     </div>
-                  )
-                )}
+                  ))}
               </div>
               {dataProducts.map((p) => (
                 <Link
@@ -560,8 +562,11 @@ const page = () => {
                 </Link>
               ))}
               <div className="w-full h-fit flex justify-center pb-1 border-t mt-3">
-                {Array.from({ length: pageIndex }, (_, index) => index + 1).map(
-                  (p) => (
+                {pageIndex > 1 &&
+                  Array.from(
+                    { length: pageIndex },
+                    (_, index) => index + 1
+                  ).map((p) => (
                     <div
                       key={p}
                       className="flex w-auto h-fit"
@@ -580,15 +585,17 @@ const page = () => {
                         {p}
                       </p>
                     </div>
-                  )
-                )}
+                  ))}
               </div>
             </>
           ) : categoryType === news ? (
             <>
               <div className="w-full h-fit flex justify-center pb-1 border-b mb-3">
-                {Array.from({ length: pageIndex }, (_, index) => index + 1).map(
-                  (p) => (
+                {pageIndex > 1 &&
+                  Array.from(
+                    { length: pageIndex },
+                    (_, index) => index + 1
+                  ).map((p) => (
                     <div
                       key={p}
                       className="flex w-auto h-fit"
@@ -607,8 +614,7 @@ const page = () => {
                         {p}
                       </p>
                     </div>
-                  )
-                )}
+                  ))}
               </div>
               {dataNews.map((bl) => (
                 <Link
@@ -676,8 +682,11 @@ const page = () => {
                 </Link>
               ))}
               <div className="w-full h-fit flex justify-center pb-1 border-t mt-3">
-                {Array.from({ length: pageIndex }, (_, index) => index + 1).map(
-                  (p) => (
+                {pageIndex > 1 &&
+                  Array.from(
+                    { length: pageIndex },
+                    (_, index) => index + 1
+                  ).map((p) => (
                     <div
                       key={p}
                       className="flex w-auto h-fit"
@@ -696,15 +705,17 @@ const page = () => {
                         {p}
                       </p>
                     </div>
-                  )
-                )}
+                  ))}
               </div>
             </>
           ) : (
             <>
               <div className="w-full h-fit flex justify-center pb-1 border-b mb-3">
-                {Array.from({ length: pageIndex }, (_, index) => index + 1).map(
-                  (p) => (
+                {pageIndex > 1 &&
+                  Array.from(
+                    { length: pageIndex },
+                    (_, index) => index + 1
+                  ).map((p) => (
                     <div
                       key={p}
                       className="flex w-auto h-fit"
@@ -723,8 +734,7 @@ const page = () => {
                         {p}
                       </p>
                     </div>
-                  )
-                )}
+                  ))}
               </div>
               {dataGuid.map((g) => (
                 <Link
@@ -789,8 +799,11 @@ const page = () => {
                 </Link>
               ))}
               <div className="w-full h-fit flex justify-center pb-1 border-t mt-3">
-                {Array.from({ length: pageIndex }, (_, index) => index + 1).map(
-                  (p) => (
+                {pageIndex > 1 &&
+                  Array.from(
+                    { length: pageIndex },
+                    (_, index) => index + 1
+                  ).map((p) => (
                     <div
                       key={p}
                       className="flex w-auto h-fit"
@@ -809,8 +822,7 @@ const page = () => {
                         {p}
                       </p>
                     </div>
-                  )
-                )}
+                  ))}
               </div>
             </>
           )}

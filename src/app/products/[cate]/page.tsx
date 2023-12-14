@@ -31,6 +31,7 @@ const page = (props: { params: { cate: string } }) => {
   const getProduct = async (cate: string, index = 1, name?: string) => {
     if (name) {
       setLoading(true);
+
       const res = await http.post("Product/GetPaginationProduct", {
         pageIndex: index,
         pageSize: 6,
@@ -171,13 +172,15 @@ const page = (props: { params: { cate: string } }) => {
                         </p>
                       )}
                     </div>
-                    <p
-                      className={`text-[13px] md:text-[14px] mt-2 md:mt-3 ${styles.desTag}`}
-                    >
-                      {" "}
-                      <strong className="text-[crimson]">*</strong>
-                      {p.description}
-                    </p>
+                    <div
+                      className={`text-sm md:text-base  mt-2 overflow-hidden ${styles.description}`}
+                      style={{
+                        display: "-webkit-box",
+                        WebkitLineClamp: 4,
+                        WebkitBoxOrient: "vertical",
+                      }}
+                      dangerouslySetInnerHTML={{ __html: p.description }}
+                    ></div>
                   </div>
                   <div className="my-2 flex items-center justify-center relative">
                     <button className="text-sm shadow-[0_0_2px_#4a8cbf] border-[#4a8cbf] border-[1px] p-1 pr-3 rounded-md">

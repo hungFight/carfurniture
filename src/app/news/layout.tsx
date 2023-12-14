@@ -8,7 +8,8 @@ import dynamic from "next/dynamic";
 const RoutListing = dynamic(() => import("@/components/Items/RoutListing"));
 
 const getData = async () => {
-  const res = await http.get("Category/GetAll/Tin tức");
+  const resT = await http.get("CategoryType/GetAll");
+  const res = await http.get(`Category/GetAll/${resT.data[1]?.name}`);
   return res.data;
 };
 export const metadata: Metadata = {

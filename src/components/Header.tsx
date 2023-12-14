@@ -29,12 +29,14 @@ const Header = () => {
     }
   }, []);
   const getData = async () => {
-    const res1: any = await http.get("Category/GetAll/Tin tức");
-    const res2 = await http.get("Category/GetAll/Sản phẩm");
-    const res3 = await http.get("Category/GetAll/Hướng dẫn");
+    const res = await http.get("CategoryType/GetAll");
+
+    const res1: any = await http.get(`Category/GetAll/${res.data[0]?.name}`);
+    const res2 = await http.get(`Category/GetAll/${res.data[1]?.name}`);
+    const res3 = await http.get(`Category/GetAll/${res.data[2]?.name}`);
     setFirstCate({
-      news: res1.data[0]?.categoryName,
-      product: res2.data[0]?.categoryName,
+      product: res1.data[0]?.categoryName,
+      news: res2.data[0]?.categoryName,
       guide: res3.data[0]?.categoryName,
     });
   };

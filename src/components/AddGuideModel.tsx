@@ -86,7 +86,6 @@ const AddGuideModel: React.FC<{
     formData.append("Name", product.Name);
     formData.append("Content", product.Content);
     formData.append("categoryId", String(product.categoryId));
-    formData.append("FormCollection", product.FormCollection);
     if (newsUp) {
       // update
       formData.append("Id", String(newsUp.id));
@@ -196,7 +195,6 @@ const AddGuideModel: React.FC<{
             value={value}
             onChange={setValue}
             modules={modules}
-          
             formats={formats}
           />
         </div>{" "}

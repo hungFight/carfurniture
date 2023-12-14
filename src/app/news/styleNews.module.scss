@@ -9,6 +9,10 @@
   }
 }
 .description {
+  img,
+  iframe {
+    display: none;
+  }
   p {
     font-size: 14px;
   }

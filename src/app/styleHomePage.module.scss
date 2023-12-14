@@ -27,11 +27,13 @@
     border-bottom: 1px solid rgb(138, 138, 138);
   }
 }
+
 .description {
-  p {
-    font-size: 13px;
+  img,
+  iframe {
+    display: none;
   }
-  @media (min-width: 1280px) {
-    -webkit-line-clamp: 6 !important;
+  p {
+    font-size: 14px;
   }
 }
