@@ -1,6 +1,6 @@
 "use client";
 import http from "@/utils/http";
-import { redirect } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { IoEyeOffOutline } from "react-icons/io5";
 import { MdOutlineRemoveRedEye } from "react-icons/md";
@@ -15,6 +15,7 @@ const Login: React.FC<{
   const [err, setErr] = useState<boolean>(false);
   const [eye, setEye] = useState<boolean>(true);
   const [loading, setLoading] = useState<boolean>(false);
+  const router = useRouter();
 
   const handleLogin = async () => {
     if (account.userName && account.password) {
@@ -32,7 +33,9 @@ const Login: React.FC<{
         localStorage.setItem("token", res.data.token);
         localStorage.setItem("refreshToken", res.data.refreshToken);
         localStorage.setItem("expiration", res.data.expiration);
-        window.location.reload();
+        localStorage.setItem("userName", account.userName);
+        router.push("/admin");
+        setSession(false);
       } else {
         setErr(true);
       }
@@ -68,9 +71,15 @@ const Login: React.FC<{
     }
   };
   return (
-    <div className="w-full h-full z-[999] flex items-center justify-center bg-[#212121d4] fixed top-0 left-0 " >
+    <div
+      className="w-full h-full z-[999] flex items-center justify-center bg-[#212121d4] fixed top-0 left-0 "
+      onClick={() => setSession(false)}
+    >
       {changePass !== null ? (
-        <div className="w-[350px] flex flex-wrap items-center bg-[#4184a5] justify-center px-3 py-5 rounded-[5px]">
+        <div
+          className="w-[350px] flex flex-wrap items-center bg-[#4184a5] justify-center px-3 py-5 rounded-[5px]"
+          onClick={(e) => e.stopPropagation()}
+        >
           <h3 className="text-base w-full text-center font-bold text-white mb-3">
             Gửi mã đến
           </h3>
@@ -114,7 +123,10 @@ const Login: React.FC<{
           </button>
         </div>
       ) : (
-        <div className="w-[350px] flex flex-wrap items-center bg-[#4184a5] justify-center px-3 py-5 rounded-[5px]">
+        <div
+          className="w-[350px] flex flex-wrap items-center bg-[#4184a5] justify-center px-3 py-5 rounded-[5px]"
+          onClick={(e) => e.stopPropagation()}
+        >
           <h3 className="text-base w-full text-center font-bold text-white mb-3">
             MazdaShop.vn
           </h3>

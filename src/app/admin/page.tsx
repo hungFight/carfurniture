@@ -17,6 +17,8 @@ import InputSearch from "@/components/Items/InputSearch";
 import FormAboutUs from "@/components/FormAboutUs";
 import { redirect } from "next/navigation";
 import httpToken from "@/utils/httpToken";
+import { AxiosError } from "axios";
+import { useRouter } from "next/navigation";
 const RoutListing = dynamic(() => import("@/components/Items/RoutListing"));
 const AddNewsModel = dynamic(() => import("@/components/AddNewsModel"));
 const AddProductModel = dynamic(() => import("@/components/AddProductModel"));
@@ -110,11 +112,11 @@ const page = () => {
   const [dataList, setDataList] = useState<
     { categoryName: string; categoryId: number }[]
   >([]);
-
+  const router = useRouter();
   const [add, setAdd] = useState<string>("");
   const [pre, setPre] = useState<boolean>(false);
   console.log(productUp, "productUp", add);
-
+  const [login, setLogin] = useState<boolean>(false);
   const [addCate, setAddCate] = useState<boolean>(false);
   const [aboutUs, setAboutUs] = useState<boolean>(false);
   const [categoryType, setCategory] = useState<number>(product ?? 0); // Directory
@@ -130,25 +132,41 @@ const page = () => {
   const [nameRout, setNameRout] = useState("");
   const [load, setLoad] = useState(false);
   const fet = async () => {
-    const axio = httpToken(token, refreshToken);
-    setLoadingType(true);
-    const res = await axio.get<typeof dataCate>("CategoryType/GetAll");
-    setCategory(res.data[0].id);
-    setDataCate(res.data);
-    setLoadingType(false);
+    try {
+      const axio = httpToken(token, refreshToken);
+      setLoadingType(true);
+      const res = await axio.get<typeof dataCate>("CategoryType/GetAll");
+      setCategory(res.data[0].id);
+      setDataCate(res.data);
+      setLoadingType(false);
+    } catch (error) {
+      const err = error as AxiosError;
+      if (err.response?.status === 400) {
+        setLogin(true);
+      }
+      console.log(err, "error here");
+    }
   };
   const fetS = async () => {
     setDataList([]);
-    const which = dataCate.filter((c) => c.id === categoryType)[0]?.name;
-    const resCate = await http.get<
-      { categoryName: string; categoryId: number }[]
-    >(`Category/GetAll/${which}`);
-    setNameRout(resCate.data[0]?.categoryName ?? "");
-    setCate({
-      categoryId: resCate.data[0]?.categoryId,
-      categoryName: resCate.data[0]?.categoryName ?? "",
-    });
-    setDataList(resCate.data);
+    try {
+      const axio = httpToken(token, refreshToken);
+      const which = dataCate.filter((c) => c.id === categoryType)[0]?.name;
+      const resCate = await axio.get<
+        { categoryName: string; categoryId: number }[]
+      >(`Category/GetAll/${which}`);
+      setNameRout(resCate.data[0]?.categoryName ?? "");
+      setCate({
+        categoryId: resCate.data[0]?.categoryId,
+        categoryName: resCate.data[0]?.categoryName ?? "",
+      });
+      setDataList(resCate.data);
+    } catch (error) {
+      const err = error as AxiosError;
+      if (err.response?.status === 400) {
+        setLogin(true);
+      }
+    }
   };
 
   useEffect(() => {
@@ -165,40 +183,50 @@ const page = () => {
     setLoadingSearch(true);
 
     setLoadingDirect(true);
-    if (categoryType === product) {
-      const res = await http.post("Product/GetPaginationProduct", {
-        pageIndex: index,
-        pageSize: 2,
-        search_CategoryName: name,
-        search_Name: search,
-      });
-      setPageIndex(res.data.totalPageIndex);
-      setDataProducts(res.data.data);
-    } else {
-      setDataProducts([]);
+    try {
+      const axio = httpToken(token, refreshToken);
+
+      if (categoryType === product) {
+        const res = await axio.post("Product/GetPaginationProduct", {
+          pageIndex: index,
+          pageSize: 2,
+          search_CategoryName: name,
+          search_Name: search,
+        });
+        setPageIndex(res.data.totalPageIndex);
+        setDataProducts(res.data.data);
+      } else {
+        setDataProducts([]);
+      }
+      if (categoryType === news) {
+        const res = await axio.post("Blog/GetPaginationProduct", {
+          pageIndex: index,
+          pageSize: 3,
+          search_Name: search,
+          search_CategoryName: name,
+        });
+        setPageIndex(res.data.totalPageIndex);
+        setDataNews(res.data.data);
+      } else {
+        setDataNews([]);
+      }
+      if (categoryType === guide) {
+        const res = await axio.post("Guide/GetPaginationProduct", {
+          pageIndex: index,
+          pageSize: 3,
+          search_Name: search,
+          search_CategoryName: name,
+        });
+        setPageIndex(res.data.totalPageIndex);
+        setDataGuid(res.data.data);
+      }
+    } catch (error) {
+      const err = error as AxiosError;
+      if (err.response?.status === 400) {
+        setLogin(true);
+      }
     }
-    if (categoryType === news) {
-      const res = await http.post("Blog/GetPaginationProduct", {
-        pageIndex: index,
-        pageSize: 3,
-        search_Name: search,
-        search_CategoryName: name,
-      });
-      setPageIndex(res.data.totalPageIndex);
-      setDataNews(res.data.data);
-    } else {
-      setDataNews([]);
-    }
-    if (categoryType === guide) {
-      const res = await http.post("Guide/GetPaginationProduct", {
-        pageIndex: index,
-        pageSize: 3,
-        search_Name: search,
-        search_CategoryName: name,
-      });
-      setPageIndex(res.data.totalPageIndex);
-      setDataGuid(res.data.data);
-    }
+
     setLoadingSearch(false);
     setLoadingDirect(false);
   }
@@ -231,21 +259,39 @@ const page = () => {
 
   const [nameCate, setNameCate] = useState("");
   const handleAddCate = async () => {
-    if (nameCate) {
-      const res = await http.post<typeof dataCate>("Category/Create", {
-        Name: nameCate,
-        categoryTypeId: categoryType,
-      });
-      setAddCate(false);
-      setNameCate("");
-      if (res.data) fetS();
+    try {
+      const axio = httpToken(token, refreshToken);
+
+      if (nameCate) {
+        const res = await http.post<typeof dataCate>("Category/Create", {
+          Name: nameCate,
+          categoryTypeId: categoryType,
+        });
+        setAddCate(false);
+        setNameCate("");
+        if (res.data) fetS();
+      }
+    } catch (error) {
+      const err = error as AxiosError;
+      if (err.response?.status === 400) {
+        setLogin(true);
+      }
     }
   };
   const handleDeleteDirectory = async (id: number) => {
-    const res = await http.delete(`Category/Delete/${id}`);
-    if (res.data?.mess) {
-      fetS();
+    try {
+      const axio = httpToken(token, refreshToken);
+      const res = await http.delete(`Category/Delete/${id}`);
+      if (res.data?.mess) {
+        fetS();
+      }
+    } catch (error) {
+      const err = error as AxiosError;
+      if (err.response?.status === 400) {
+        setLogin(true);
+      }
     }
+
     console.log("directory", id);
   };
   const handleSearch = (e: any) => {
@@ -255,22 +301,52 @@ const page = () => {
     fetCateName(cate.categoryName, 1, search);
   };
   const handleUpdateDirectory = async (id: number, name: string) => {
-    const res = await http.put(`Category/Update`, {
-      Id: id,
-      Name: name,
-      CategoryTypeId: categoryType,
-    });
-    setDataList((pre) =>
-      pre.map((r) => {
-        if (r.categoryId === id) r.categoryName = name;
-        return r;
-      })
-    );
-    return true;
+    try {
+      const axio = httpToken(token, refreshToken);
+      const res = await axio.put(`Category/Update`, {
+        Id: id,
+        Name: name,
+        CategoryTypeId: categoryType,
+      });
+      setDataList((pre) =>
+        pre.map((r) => {
+          if (r.categoryId === id) r.categoryName = name;
+          return r;
+        })
+      );
+      return true;
+    } catch (error) {
+      const err = error as AxiosError;
+      if (err.response?.status === 400) {
+        setLogin(true);
+      }
+    }
+    return false;
   };
 
   return (
     <div className="flex flex-wrap ">
+      {login && (
+        <div className="w-full h-full z-[999] flex items-center justify-center bg-[#212121d4] fixed top-0 left-0 ">
+          <div
+            className="w-[350px] flex flex-wrap items-center bg-[#4184a5] justify-center px-3 py-5 rounded-[5px]"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <h3>Session này đã hết hạn vui lòng ra ngoài đăng nhập lại</h3>
+            <p
+              className="text-white mt-2 text-base cursor-pointer w-full"
+              onClick={() => {
+                localStorage.removeItem("token");
+                localStorage.removeItem("refreshToken");
+                localStorage.removeItem("expiration");
+                router.push("/");
+              }}
+            >
+              Thoát khỏi session
+            </p>
+          </div>
+        </div>
+      )}
       <div className="w-full px-5 py-2">
         <SlideCategory
           loading={loadingType}

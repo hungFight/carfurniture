@@ -45,18 +45,6 @@ class HttpToken {
                 accessToken: token,
                 refreshToken,
               });
-              // if (data.accessToken) console.log(data, "newAccessToken");
-
-              // if (data?.newAccessToken) {
-              //   const newToken = "Bearer " + data.newAccessToken;
-              //   tokenN = newToken;
-              //   Cookies.set("tks", newToken, {
-              //     path: "/",
-              //     secure: false,
-              //     sameSite: "strict",
-              //     expires: new Date(new Date().getTime() + 30 * 86409000),
-              //   });
-              // }
             }
             resolve(config);
           } catch (error) {

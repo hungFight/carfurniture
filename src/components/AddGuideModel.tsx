@@ -196,6 +196,7 @@ const AddGuideModel: React.FC<{
             value={value}
             onChange={setValue}
             modules={modules}
+          
             formats={formats}
           />
         </div>{" "}
