@@ -6,7 +6,8 @@ import { SiShopee } from "react-icons/si";
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import http from "@/utils/http";
-
+import { BiSkipNext } from "react-icons/bi";
+import { MdSkipPrevious } from "react-icons/md";
 const page = (props: { params: { cate: string } }) => {
   const [search, setSearch] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
@@ -29,24 +30,17 @@ const page = (props: { params: { cate: string } }) => {
     getProduct(props.params.cate);
   }, []);
   const getProduct = async (cate: string, index = 1, name?: string) => {
-    if (name) {
-      setLoading(true);
+    if (decodeURIComponent(cate) === "Đã xem") {
+      console.log("has seen out");
 
-      const res = await http.post("Product/GetPaginationProduct", {
-        pageIndex: index,
-        pageSize: 6,
-        search_Name: name,
-      });
-      setLoading(false);
-      setPageIndex(res.data.totalPageIndex);
-      setData(res.data.data);
-    } else {
-      if (decodeURIComponent(cate) === "Đã xem") {
-        if (localStorage) {
-          const hasSeen: number[] =
-            JSON.parse(localStorage.getItem("product") ?? JSON.stringify([])) ??
-            [];
-          if (hasSeen.length) {
+      if (localStorage) {
+        const hasSeen: number[] =
+          JSON.parse(localStorage.getItem("product") ?? JSON.stringify([])) ??
+          [];
+        console.log("has seen in", hasSeen);
+
+        if (hasSeen.length) {
+          if (hasSeen.length === 1) {
             const res1 = await http.get<{
               product: {
                 id: number;
@@ -60,9 +54,23 @@ const page = (props: { params: { cate: string } }) => {
               urlImage: { image: string; path: string }[];
               info_in_AboutUs: [{ url_Mess: string; phone: string }];
             }>(`Product/GetByID/${hasSeen[0]}`);
-            const res2: typeof res1 = await http.get(
-              `Product/GetByID/${hasSeen[1]}`
-            );
+            setPageIndex(0);
+            setData([{ ...res1.data.product, urlImage: res1.data.urlImage }]);
+          } else if (hasSeen.length === 2) {
+            const res1 = await http.get<{
+              product: {
+                id: number;
+                name: string;
+                price: number;
+                price_After: number;
+                description: string;
+                urlShoppe: string;
+              };
+              categoryName: string;
+              urlImage: { image: string; path: string }[];
+              info_in_AboutUs: [{ url_Mess: string; phone: string }];
+            }>(`Product/GetByID/${hasSeen[0]}`);
+            const res2 = await http.get(`Product/GetByID/${hasSeen[1]}`);
             console.log(res1.data);
 
             setPageIndex(0);
@@ -72,11 +80,24 @@ const page = (props: { params: { cate: string } }) => {
             ]);
           }
         }
+      }
+    } else {
+      if (name) {
+        setLoading(true);
+
+        const res = await http.post("Product/GetPaginationProduct", {
+          pageIndex: index,
+          pageSize: 6,
+          search_Name: name,
+        });
+        setLoading(false);
+        setPageIndex(res.data.totalPageIndex);
+        setData(res.data.data);
       } else {
         setLoadingSearch(true);
         const res = await http.post("Product/GetPaginationProduct", {
           pageIndex: index,
-          pageSize: 6,
+          pageSize: 1,
           search_CategoryName: decodeURIComponent(cate),
         });
         setPageIndex(res.data.totalPageIndex);
@@ -92,6 +113,7 @@ const page = (props: { params: { cate: string } }) => {
   const handleAdd = () => {
     getProduct(props.params.cate, 1, search);
   };
+  const [additionalPage, setAdditionalPage] = useState<number>(1);
   return (
     <>
       <div className="w-full min-[1200px]:w-[60%] p-3">
@@ -107,28 +129,49 @@ const page = (props: { params: { cate: string } }) => {
         )}
         <div className="w-full flex flex-wrap justify-center">
           <div className="w-full h-fit flex justify-center pb-1 border-b mb-1">
-            {Array.from({ length: pageIndex }, (_, index) => index + 1).map(
-              (p) => (
-                <div
-                  key={p}
-                  className="flex w-auto h-fit"
-                  onClick={() => {
-                    if (p !== pageChoice) {
-                      getProduct(props.params.cate, p);
-                      setPageChoice(p);
-                    }
-                  }}
-                >
-                  <p
-                    className={`mx-1 px-[5px] hover:bg-[#d2d5d8] border border-[#2b2b2b] rounded-[5px]  ${
-                      pageChoice === p ? "bg-[#d2d5d8]" : ""
-                    } cursor-pointer`}
-                  >
-                    {p}
-                  </p>
-                </div>
-              )
-            )}
+            {pageIndex > 1 &&
+              Array.from({ length: pageIndex }, (_, index) => index + 1).map(
+                (p) => (
+                  <div key={p} className="flex w-auto h-fit">
+                    {additionalPage > 1 && additionalPage === p && (
+                      <div
+                        onClick={() =>
+                          setAdditionalPage((pre) =>
+                            pre - 1 < 1 ? 1 : pre - 1
+                          )
+                        }
+                        className="flex items-center cursor-pointer text-[22px] px-1 py-[2px]  mr-2 bg-[#22b3bf] text-white"
+                      >
+                        <MdSkipPrevious />
+                      </div>
+                    )}
+                    {p > additionalPage * 5 ? (
+                      <div
+                        onClick={() => setAdditionalPage((pre) => pre + 1)}
+                        className="flex items-center text-[22px]  cursor-pointer  px-1 py-[2px]  ml-2 bg-[#22b3bf] text-white"
+                      >
+                        <BiSkipNext />
+                      </div>
+                    ) : (
+                      (additionalPage - 1) * (pageIndex - 5) < p && (
+                        <p
+                          onClick={() => {
+                            if (p !== pageChoice) {
+                              getProduct(props.params.cate, p);
+                              setPageChoice(p);
+                            }
+                          }}
+                          className={`mx-1 px-[6px] hover:bg-[#d2d5d8] border border-[#2b2b2b]   ${
+                            pageChoice === p ? "bg-[#d2d5d8]" : ""
+                          } cursor-pointer`}
+                        >
+                          {p}
+                        </p>
+                      )
+                    )}
+                  </div>
+                )
+              )}
           </div>
           {!loadingSearch ? (
             data?.length ? (
@@ -142,9 +185,15 @@ const page = (props: { params: { cate: string } }) => {
                     const h: number[] = JSON.parse(
                       localStorage.getItem("product") ?? JSON.stringify([])
                     );
-                    h.unshift(p.id);
-                    const newH = h.filter((s, index) => index !== 2);
-                    localStorage.setItem("product", JSON.stringify(newH));
+                    console.log(h, "hhhh");
+
+                    if (h.some((m) => m !== p.id) || !h.length) {
+                      console.log(h, "hhhh voooo");
+
+                      h.unshift(p.id);
+                      const newH = h.filter((s, index) => index !== 2);
+                      localStorage.setItem("product", JSON.stringify(newH));
+                    }
                   }}
                 >
                   <div className="w-full h-[200px] md:h-[230px]">
@@ -173,10 +222,10 @@ const page = (props: { params: { cate: string } }) => {
                       )}
                     </div>
                     <div
-                      className={`text-sm md:text-base  mt-2 overflow-hidden ${styles.description}`}
+                      className={`text-sm md:text-base h-[38px]  mt-2 overflow-hidden ${styles.description}`}
                       style={{
                         display: "-webkit-box",
-                        WebkitLineClamp: 4,
+                        WebkitLineClamp: 1,
                         WebkitBoxOrient: "vertical",
                       }}
                       dangerouslySetInnerHTML={{ __html: p.description }}

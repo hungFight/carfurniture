@@ -116,60 +116,59 @@ const RoutListing: React.FC<{
         </div>
       )}
       {category === "product" && (
-        <div className="w-[80%]">
-          {" "}
+        <div className="w-[80%] xl:block hidden">
           {dataHasSeen.map((p) => (
-            <Link
+            <div
               key={p.product.id}
-              href="/[slug]"
-              as={`${p.categoryName}/${p.product.id}`}
-              className="w-[200px] m-3 md:w-[250px] p-1 border shadow-[0_0_3px_#7a7a7a] hover:shadow-[0_0_10px] mb-4 cursor-pointer"
+              className="w-[200px] h-auto m-3 md:w-[250px] p-1 border shadow-[0_0_3px_#7a7a7a] hover:shadow-[0_0_10px] mb-4 cursor-pointer"
             >
-              <div className="w-full h-[200px] md:h-[230px]">
-                <img
-                  src={p.urlImage[0]?.image}
-                  alt={p.urlImage[0]?.path}
-                  className="w-full h-full object-cover"
-                />
-              </div>
-              <div className={`mt-1 ${styles.containerProductTag}`}>
-                <h3
-                  className={`font-bold text-sm md:text-base ${styles.nameTag}`}
-                >
-                  {p.product.name}
-                </h3>
-                <div className="w-full mt-1 md:mt-2 flex items-center border-b border-solid">
-                  <p className="text-[13px] md:text-[14px] font-medium text-[crimson]">
-                    {p.product.price}đ
-                  </p>
-                  {p.product.price_After && (
-                    <p className="text-[10px] md:text-[11px] mt-[5px] ml-2 line-through">
-                      {p.product.price_After}đ
-                    </p>
-                  )}
+              <Link href="/[slug]" as={`${p.categoryName}/${p.product.id}`}>
+                <div className="w-full h-[200px] md:h-[230px]">
+                  <img
+                    src={p.urlImage[0]?.image}
+                    alt={p.urlImage[0]?.path}
+                    className="w-full h-full object-cover"
+                  />
                 </div>
-                <div
-                  className={`text-[13px] md:text-[14px] mt-2 md:mt-3 ${styles.desTag}`}
-                  dangerouslySetInnerHTML={{
-                    __html:
-                      ' <strong className="text-[crimson]">*</strong>' +
-                      p.product.description,
-                  }}
-                ></div>
-              </div>
-              <div className="my-2 flex items-center justify-center relative">
-                <button className="text-sm shadow-[0_0_2px_#4a8cbf] border-[#4a8cbf] border-[1px] p-1 pr-3 rounded-md">
-                  View more
-                </button>
-                <a
-                  href={p.product.urlShoppe}
-                  className="absolute top-[5px] right-[10px] md:right-[40px]"
-                  style={{ color: "crimson !important" }}
-                >
-                  <SiShopee />
-                </a>
-              </div>
-            </Link>
+                <div className={`mt-1 ${styles.containerProductTag}`}>
+                  <h3
+                    className={`font-bold text-sm md:text-base ${styles.nameTag}`}
+                  >
+                    {p.product.name}
+                  </h3>
+                  <div className="w-full mt-1 md:mt-2 flex items-center border-b border-solid">
+                    <p className="text-[13px] md:text-[14px] font-medium text-[crimson]">
+                      {p.product.price}đ
+                    </p>
+                    {p.product.price_After && (
+                      <p className="text-[10px] md:text-[11px] mt-[5px] ml-2 line-through">
+                        {p.product.price_After}đ
+                      </p>
+                    )}
+                  </div>
+                  <div
+                    className={`text-[13px] md:text-[14px] mt-2 md:mt-3 ${styles.desTag}`}
+                    dangerouslySetInnerHTML={{
+                      __html:
+                        ' <strong className="text-[crimson]">*</strong>' +
+                        p.product.description,
+                    }}
+                  ></div>
+                </div>
+                <div className="my-2 flex items-center justify-center relative">
+                  <button className="text-sm shadow-[0_0_2px_#4a8cbf] border-[#4a8cbf] border-[1px] p-1 pr-3 rounded-md">
+                    View more
+                  </button>
+                  <a
+                    href={p.product.urlShoppe}
+                    className="absolute top-[5px] right-[10px] md:right-[40px]"
+                    style={{ color: "crimson !important" }}
+                  >
+                    <SiShopee />
+                  </a>
+                </div>
+              </Link>
+            </div>
           ))}
         </div>
       )}

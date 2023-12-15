@@ -34,7 +34,7 @@ const Login: React.FC<{
         localStorage.setItem("refreshToken", res.data.refreshToken);
         localStorage.setItem("expiration", res.data.expiration);
         localStorage.setItem("userName", account.userName);
-        router.push("/admin");
+        window.location.reload();
         setSession(false);
       } else {
         setErr(true);
@@ -61,9 +61,10 @@ const Login: React.FC<{
           userName: changePass,
           code: code,
         });
-        setMassage;
         if (res.data?.message) {
           setMassage(res.data?.message);
+        } else {
+          setMassage("confirm code invalid");
         }
       }
 

@@ -10,6 +10,8 @@ import SlideCategory from "@/components/Slide/SlideCategory";
 import { SiShopee } from "react-icons/si";
 import http from "@/utils/http";
 import Link from "next/link";
+import { MdSkipPrevious } from "react-icons/md";
+import { BiSkipNext } from "react-icons/bi";
 export default function Home() {
   const [search, setSearch] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
@@ -58,15 +60,17 @@ export default function Home() {
   const fetS = async () => {
     setDataList([]);
     setLoadingType(true);
+    const resT = await http.get("CategoryType/GetAll");
+
     const resCatePr = await http.get<
       { categoryName: string; categoryId: number }[]
-    >(`Category/GetAll/Sản phẩm`);
+    >(`Category/GetAll/${resT.data[0].name}`);
     const resCateNews = await http.get<
       { categoryName: string; categoryId: number }[]
-    >(`Category/GetAll/Tin tức`);
+    >(`Category/GetAll/${resT.data[1].name}`);
     const resCateGuide = await http.get<
       { categoryName: string; categoryId: number }[]
-    >(`Category/GetAll/Hướng dẫn`);
+    >(`Category/GetAll/${resT.data[2].name}`);
     setCaseChose({
       product: resCatePr.data[0],
       news: resCateNews.data[0],
@@ -102,7 +106,7 @@ export default function Home() {
     } else {
       const res = await http.post("Product/GetPaginationProduct", {
         pageIndex: index,
-        pageSize: 8,
+        pageSize: 1,
         search_CategoryName: caseChose.product?.categoryName,
       });
       setPageIndex(res.data.totalPageIndex);
@@ -129,6 +133,8 @@ export default function Home() {
   const handleClick = () => {
     fetSDataProduct(1, search);
   };
+  const [additionalPage, setAdditionalPage] = useState<number>(1);
+
   return (
     <div className="w-full 2xl:w-[1519px]">
       <SlideHome />
@@ -172,28 +178,49 @@ export default function Home() {
               />
             </div>
             <div className="w-full h-fit flex justify-center pb-1 border-b mt-2">
-              {Array.from({ length: pageIndex }, (_, index) => index + 1).map(
-                (p) => (
-                  <div
-                    key={p}
-                    className="flex"
-                    onClick={() => {
-                      if (p !== pageChoice) {
-                        fetSDataProduct(p);
-                        setPageChoice(p);
-                      }
-                    }}
-                  >
-                    <p
-                      className={`mx-1 px-[5px] hover:bg-[#d2d5d8] border border-[#2b2b2b] rounded-[5px]  ${
-                        pageChoice === p ? "bg-[#d2d5d8]" : ""
-                      } cursor-pointer`}
-                    >
-                      {p}
-                    </p>
-                  </div>
-                )
-              )}
+              {pageIndex > 1 &&
+                Array.from({ length: pageIndex }, (_, index) => index + 1).map(
+                  (p) => (
+                    <div key={p} className="flex w-auto h-fit">
+                      {additionalPage > 1 && additionalPage === p && (
+                        <div
+                          onClick={() =>
+                            setAdditionalPage((pre) =>
+                              pre - 1 < 1 ? 1 : pre - 1
+                            )
+                          }
+                          className="flex items-center cursor-pointer text-[22px] px-1 py-[2px]  mr-2 bg-[#22b3bf] text-white"
+                        >
+                          <MdSkipPrevious />
+                        </div>
+                      )}
+                      {p > additionalPage * 5 ? (
+                        <div
+                          onClick={() => setAdditionalPage((pre) => pre + 1)}
+                          className="flex items-center text-[22px]  cursor-pointer  px-1 py-[2px]  ml-2 bg-[#22b3bf] text-white"
+                        >
+                          <BiSkipNext />
+                        </div>
+                      ) : (
+                        (additionalPage - 1) * (pageIndex - 5) < p && (
+                          <p
+                            onClick={() => {
+                              if (p !== pageChoice) {
+                                fetSDataProduct(p);
+                                setPageChoice(p);
+                              }
+                            }}
+                            className={`mx-1 px-[6px] hover:bg-[#d2d5d8] border border-[#2b2b2b]   ${
+                              pageChoice === p ? "bg-[#d2d5d8]" : ""
+                            } cursor-pointer`}
+                          >
+                            {p}
+                          </p>
+                        )
+                      )}
+                    </div>
+                  )
+                )}
             </div>
           </div>
           <div>
@@ -278,7 +305,7 @@ export default function Home() {
                     key={n.id}
                     className="w-[200px] xl:w-[250px] p-1 border shadow-[0_0_3px_#7a7a7a] hover:shadow-[0_0_10px] mb-4 cursor-pointer mr-2"
                   >
-                    <div className="w-full h-[180px] xl:[200px]">
+                    <div className="w-full h-[180px] xl:h-[220px]">
                       <img
                         src={n.urlImage[0]?.image}
                         alt={n.urlImage[0]?.path}
@@ -320,7 +347,7 @@ export default function Home() {
                     key={n.id}
                     className="w-[200px] xl:w-[250px] p-1 border shadow-[0_0_3px_#7a7a7a] hover:shadow-[0_0_10px] mb-4 cursor-pointer mr-2"
                   >
-                    <div className="w-full h-[180px] xl:[200px]">
+                    <div className="w-full h-[180px] xl:h-[220px]">
                       <img
                         src={n.urlImage[0]?.image}
                         alt={n.urlImage[0]?.path}

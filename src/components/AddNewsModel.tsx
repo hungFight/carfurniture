@@ -158,6 +158,7 @@ const AddNewsModel: React.FC<{
             Tải ảnh sản phẩm lên:
           </label>
           <input
+            required={newsUp ? false : true}
             className="outline-[#41af6b] mr-1 shadow-[0_0_2px_#4a8cbf] border-[#4a8cbf] border-[1px] p-1 pr-3 rounded-md"
             id="productFile"
             type="file"
@@ -219,7 +220,7 @@ const AddNewsModel: React.FC<{
           className="w-full h-full fixed top-0 left-0 bg-white z-[999] flex justify-center"
           onClick={() => setPre(false)}
         >
-          <div className="w-full h-full flex justify-between mb-4 overflow-auto md:w-[80%] mt-5">
+          <div className="w-full h-full m-auto flex justify-between mb-4 overflow-auto md:w-[80%] mt-5">
             <div className="w-full h-full">
               <div className="w-fill h-[260px] min-[600px]:w-[600px] min-[600px]:h-[300px]">
                 <img src={image} className="w-full h-full" />

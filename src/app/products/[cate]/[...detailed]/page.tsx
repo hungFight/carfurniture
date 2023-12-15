@@ -39,7 +39,11 @@ const page = async (props: { params: { detailed: string[] | string } }) => {
         <div className="w-full min-[1200px]:w-[1200px] relative mt-15 border-t p-5">
           <div>
             <div className="min-[1000px]:flex">
-              <div className="w-full h-[470px]  min-[600px]:w-[500px]  ">
+              <div
+                className={`w-full ${
+                  data.urlImage?.length > 1 ? "h-[470px] " : "h-[350px] "
+                } min-[600px]:w-[500px]`}
+              >
                 <div className="w-full h-[350px] min-[600px]:w-[500px]  ">
                   <img
                     src={data.urlImage[0]?.image}

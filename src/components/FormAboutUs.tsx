@@ -13,7 +13,16 @@ const FormAboutUs: React.FC<{ title: string; onClick: () => void }> = ({
     phone: string;
     email: string;
     url_Mess: string;
-  }>({ id: 0, name: "", address: "", phone: "", email: "", url_Mess: "" });
+    location: string;
+  }>({
+    id: 0,
+    name: "",
+    address: "",
+    phone: "",
+    email: "",
+    url_Mess: "",
+    location: "",
+  });
   const dataF = useRef<typeof data>();
   const fet = async () => {
     const res = await http.get<(typeof data)[]>("AboutUs/GetAll");
@@ -33,6 +42,7 @@ const FormAboutUs: React.FC<{ title: string; onClick: () => void }> = ({
         Phone: data.phone,
         Email: data.email,
         Url_Mess: data?.url_Mess,
+        google_map: data.location,
       });
       onClick();
       console.log(res.data, "update");
@@ -146,6 +156,11 @@ const FormAboutUs: React.FC<{ title: string; onClick: () => void }> = ({
             id="Location"
             type="text"
             placeholder="Location"
+            onChange={(e) => {
+              if (data) {
+                setData({ ...data, location: e.target.value });
+              }
+            }}
           />
         </div>{" "}
         <div className="w-full text-center">

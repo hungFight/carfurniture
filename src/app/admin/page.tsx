@@ -19,6 +19,8 @@ import { redirect } from "next/navigation";
 import httpToken from "@/utils/httpToken";
 import { AxiosError } from "axios";
 import { useRouter } from "next/navigation";
+import { BiSkipNext } from "react-icons/bi";
+import { MdSkipPrevious } from "react-icons/md";
 const RoutListing = dynamic(() => import("@/components/Items/RoutListing"));
 const AddNewsModel = dynamic(() => import("@/components/AddNewsModel"));
 const AddProductModel = dynamic(() => import("@/components/AddProductModel"));
@@ -133,9 +135,9 @@ const page = () => {
   const [load, setLoad] = useState(false);
   const fet = async () => {
     try {
-      // const axio = httpToken(token, refreshToken);
+      const axio = httpToken(token, refreshToken);
       setLoadingType(true);
-      const res = await http.get<typeof dataCate>("CategoryType/GetAll");
+      const res = await axio.get<typeof dataCate>("CategoryType/GetAll");
       setCategory(res.data[0].id);
       setDataCate(res.data);
       setLoadingType(false);
@@ -150,9 +152,9 @@ const page = () => {
   const fetS = async () => {
     setDataList([]);
     try {
-      // const axio = httpToken(token, refreshToken);
+      const axio = httpToken(token, refreshToken);
       const which = dataCate.filter((c) => c.id === categoryType)[0]?.name;
-      const resCate = await http.get<
+      const resCate = await axio.get<
         { categoryName: string; categoryId: number }[]
       >(`Category/GetAll/${which}`);
       setNameRout(resCate.data[0]?.categoryName ?? "");
@@ -184,12 +186,12 @@ const page = () => {
 
     setLoadingDirect(true);
     try {
-      // const axio = httpToken(token, refreshToken);
+      const axio = httpToken(token, refreshToken);
 
       if (categoryType === product) {
-        const res = await http.post("Product/GetPaginationProduct", {
+        const res = await axio.post("Product/GetPaginationProduct", {
           pageIndex: index,
-          pageSize: 2,
+          pageSize: 1,
           search_CategoryName: name,
           search_Name: search,
         });
@@ -199,9 +201,9 @@ const page = () => {
         setDataProducts([]);
       }
       if (categoryType === news) {
-        const res = await http.post("Blog/GetPaginationProduct", {
+        const res = await axio.post("Blog/GetPaginationProduct", {
           pageIndex: index,
-          pageSize: 3,
+          pageSize: 1,
           search_Name: search,
           search_CategoryName: name,
         });
@@ -211,9 +213,9 @@ const page = () => {
         setDataNews([]);
       }
       if (categoryType === guide) {
-        const res = await http.post("Guide/GetPaginationProduct", {
+        const res = await axio.post("Guide/GetPaginationProduct", {
           pageIndex: index,
-          pageSize: 3,
+          pageSize: 1,
           search_Name: search,
           search_CategoryName: name,
         });
@@ -260,10 +262,10 @@ const page = () => {
   const [nameCate, setNameCate] = useState("");
   const handleAddCate = async () => {
     try {
-      // const axio = httpToken(token, refreshToken);
+      const axio = httpToken(token, refreshToken);
 
       if (nameCate) {
-        const res = await http.post<typeof dataCate>("Category/Create", {
+        const res = await axio.post<typeof dataCate>("Category/Create", {
           Name: nameCate,
           categoryTypeId: categoryType,
         });
@@ -280,8 +282,8 @@ const page = () => {
   };
   const handleDeleteDirectory = async (id: number) => {
     try {
-      // const axio = httpToken(token, refreshToken);
-      const res = await http.delete(`Category/Delete/${id}`);
+      const axio = httpToken(token, refreshToken);
+      const res = await axio.delete(`Category/Delete/${id}`);
       if (res.data?.mess) {
         fetS();
       }
@@ -302,8 +304,8 @@ const page = () => {
   };
   const handleUpdateDirectory = async (id: number, name: string) => {
     try {
-      // const axio = httpToken(token, refreshToken);
-      const res = await http.put(`Category/Update`, {
+      const axio = httpToken(token, refreshToken);
+      const res = await axio.put(`Category/Update`, {
         Id: id,
         Name: name,
         CategoryTypeId: categoryType,
@@ -323,7 +325,7 @@ const page = () => {
     }
     return false;
   };
-
+  const [additionalPage, setAdditionalPage] = useState<number>(1);
   return (
     <div className="flex flex-wrap ">
       {login && (
@@ -332,18 +334,20 @@ const page = () => {
             className="w-[350px] flex flex-wrap items-center bg-[#4184a5] justify-center px-3 py-5 rounded-[5px]"
             onClick={(e) => e.stopPropagation()}
           >
-            <h3>Session này đã hết hạn vui lòng ra ngoài đăng nhập lại</h3>
-            <p
-              className="text-white mt-2 text-base cursor-pointer w-full"
+            <h3 className="text-white">
+              Session này đã hết hạn vui lòng ra ngoài đăng nhập lại
+            </h3>
+            <button
+              className="text-white mt-2 text-base cursor-pointer w-full border-[2px]"
               onClick={() => {
                 localStorage.removeItem("token");
                 localStorage.removeItem("refreshToken");
                 localStorage.removeItem("expiration");
-                router.push("/");
+                window.location.href = "/";
               }}
             >
               Thoát khỏi session
-            </p>
+            </button>
           </div>
         </div>
       )}
@@ -446,23 +450,43 @@ const page = () => {
                     { length: pageIndex },
                     (_, index) => index + 1
                   ).map((p) => (
-                    <div
-                      key={p}
-                      className="flex w-auto h-fit"
-                      onClick={() => {
-                        if (p !== pageChoice) {
-                          fetCateName(routs[1], p);
-                          setPageChoice(p);
-                        }
-                      }}
-                    >
-                      <p
-                        className={`mx-1 px-[5px] hover:bg-[#d2d5d8] border border-[#2b2b2b] rounded-[5px]  ${
-                          pageChoice === p ? "bg-[#d2d5d8]" : ""
-                        } cursor-pointer`}
-                      >
-                        {p}
-                      </p>
+                    <div key={p} className="flex w-auto h-fit">
+                      {additionalPage > 1 && additionalPage === p && (
+                        <div
+                          onClick={() =>
+                            setAdditionalPage((pre) =>
+                              pre - 1 < 1 ? 1 : pre - 1
+                            )
+                          }
+                          className="flex items-center cursor-pointer text-[22px] px-1 py-[2px]  mr-2 bg-[#22b3bf] text-white"
+                        >
+                          <MdSkipPrevious />
+                        </div>
+                      )}
+                      {p > additionalPage * 5 ? (
+                        <div
+                          onClick={() => setAdditionalPage((pre) => pre + 1)}
+                          className="flex items-center text-[22px]  cursor-pointer  px-1 py-[2px]  ml-2 bg-[#22b3bf] text-white"
+                        >
+                          <BiSkipNext />
+                        </div>
+                      ) : (
+                        (additionalPage - 1) * (pageIndex - 5) < p && (
+                          <p
+                            onClick={() => {
+                              if (p !== pageChoice) {
+                                fetCateName(routs[1], p);
+                                setPageChoice(p);
+                              }
+                            }}
+                            className={`mx-1 px-[6px] hover:bg-[#d2d5d8] border border-[#2b2b2b]   ${
+                              pageChoice === p ? "bg-[#d2d5d8]" : ""
+                            } cursor-pointer`}
+                          >
+                            {p}
+                          </p>
+                        )
+                      )}
                     </div>
                   ))}
               </div>
@@ -523,7 +547,7 @@ const page = () => {
                       )}
                     </div>
                     <div
-                      className={`text-[13px] md:text-[14px] mt-2 md:mt-3 ${styles.desTag}`}
+                      className={`text-[13px] h-[38px] md:text-[14px] mt-2 md:mt-3 ${styles.desTag}`}
                       dangerouslySetInnerHTML={{ __html: p.description }}
                     ></div>
                   </div>
@@ -567,23 +591,43 @@ const page = () => {
                     { length: pageIndex },
                     (_, index) => index + 1
                   ).map((p) => (
-                    <div
-                      key={p}
-                      className="flex w-auto h-fit"
-                      onClick={() => {
-                        if (p !== pageChoice) {
-                          fetCateName(routs[1], p);
-                          setPageChoice(p);
-                        }
-                      }}
-                    >
-                      <p
-                        className={`mx-1 px-[5px] hover:bg-[#d2d5d8] border border-[#2b2b2b] rounded-[5px]  ${
-                          pageChoice === p ? "bg-[#d2d5d8]" : ""
-                        } cursor-pointer`}
-                      >
-                        {p}
-                      </p>
+                    <div key={p} className="flex w-auto h-fit">
+                      {additionalPage > 1 && additionalPage === p && (
+                        <div
+                          onClick={() =>
+                            setAdditionalPage((pre) =>
+                              pre - 1 < 1 ? 1 : pre - 1
+                            )
+                          }
+                          className="flex items-center cursor-pointer text-[22px] px-1 py-[2px]  mr-2 bg-[#22b3bf] text-white"
+                        >
+                          <MdSkipPrevious />
+                        </div>
+                      )}
+                      {p > additionalPage * 5 ? (
+                        <div
+                          onClick={() => setAdditionalPage((pre) => pre + 1)}
+                          className="flex items-center text-[22px]  cursor-pointer  px-1 py-[2px]  ml-2 bg-[#22b3bf] text-white"
+                        >
+                          <BiSkipNext />
+                        </div>
+                      ) : (
+                        (additionalPage - 1) * (pageIndex - 5) < p && (
+                          <p
+                            onClick={() => {
+                              if (p !== pageChoice) {
+                                fetCateName(routs[1], p);
+                                setPageChoice(p);
+                              }
+                            }}
+                            className={`mx-1 px-[6px] hover:bg-[#d2d5d8] border border-[#2b2b2b]   ${
+                              pageChoice === p ? "bg-[#d2d5d8]" : ""
+                            } cursor-pointer`}
+                          >
+                            {p}
+                          </p>
+                        )
+                      )}
                     </div>
                   ))}
               </div>
@@ -596,23 +640,43 @@ const page = () => {
                     { length: pageIndex },
                     (_, index) => index + 1
                   ).map((p) => (
-                    <div
-                      key={p}
-                      className="flex w-auto h-fit"
-                      onClick={() => {
-                        if (p !== pageChoice) {
-                          fetCateName(routs[1], p);
-                          setPageChoice(p);
-                        }
-                      }}
-                    >
-                      <p
-                        className={`mx-1 px-[5px] hover:bg-[#d2d5d8] border border-[#2b2b2b] rounded-[5px]  ${
-                          pageChoice === p ? "bg-[#d2d5d8]" : ""
-                        } cursor-pointer`}
-                      >
-                        {p}
-                      </p>
+                    <div key={p} className="flex w-auto h-fit">
+                      {additionalPage > 1 && additionalPage === p && (
+                        <div
+                          onClick={() =>
+                            setAdditionalPage((pre) =>
+                              pre - 1 < 1 ? 1 : pre - 1
+                            )
+                          }
+                          className="flex items-center cursor-pointer text-[22px] px-1 py-[2px]  mr-2 bg-[#22b3bf] text-white"
+                        >
+                          <MdSkipPrevious />
+                        </div>
+                      )}
+                      {p > additionalPage * 5 ? (
+                        <div
+                          onClick={() => setAdditionalPage((pre) => pre + 1)}
+                          className="flex items-center text-[22px]  cursor-pointer  px-1 py-[2px]  ml-2 bg-[#22b3bf] text-white"
+                        >
+                          <BiSkipNext />
+                        </div>
+                      ) : (
+                        (additionalPage - 1) * (pageIndex - 5) < p && (
+                          <p
+                            onClick={() => {
+                              if (p !== pageChoice) {
+                                fetCateName(routs[1], p);
+                                setPageChoice(p);
+                              }
+                            }}
+                            className={`mx-1 px-[6px] hover:bg-[#d2d5d8] border border-[#2b2b2b]   ${
+                              pageChoice === p ? "bg-[#d2d5d8]" : ""
+                            } cursor-pointer`}
+                          >
+                            {p}
+                          </p>
+                        )
+                      )}
                     </div>
                   ))}
               </div>
@@ -655,7 +719,7 @@ const page = () => {
                   >
                     Update
                   </div>
-                  <div className="min-w-full h-[130px] md:min-w-[250px] md:h-[155px] xl:min-w-[350px] xl:h-[210px] mr-3 md:mr-5">
+                  <div className="min-w-full h-[130px] md:min-w-[250px] md:h-[155px]  mr-3 md:mr-5">
                     <img
                       src={bl.urlImage[0]?.image}
                       alt={bl.urlImage[0]?.path}
@@ -663,7 +727,15 @@ const page = () => {
                     />
                   </div>
                   <div className="h-fit">
-                    <h3 className="text-base md:text-[17px] font-bold">
+                    <h3
+                      className="text-base md:text-[17px] font-bold overflow-hidden"
+                      style={{
+                        display: "-webkit-box",
+                        WebkitLineClamp: 2,
+                        WebkitBoxOrient: "vertical",
+                        wordBreak: "break-all",
+                      }}
+                    >
                       {bl.name}
                     </h3>
                     <p className="text-xs mt-1">
@@ -687,23 +759,43 @@ const page = () => {
                     { length: pageIndex },
                     (_, index) => index + 1
                   ).map((p) => (
-                    <div
-                      key={p}
-                      className="flex w-auto h-fit"
-                      onClick={() => {
-                        if (p !== pageChoice) {
-                          fetCateName(routs[1], p);
-                          setPageChoice(p);
-                        }
-                      }}
-                    >
-                      <p
-                        className={`mx-1 px-[5px] hover:bg-[#d2d5d8] border border-[#2b2b2b] rounded-[5px]  ${
-                          pageChoice === p ? "bg-[#d2d5d8]" : ""
-                        } cursor-pointer`}
-                      >
-                        {p}
-                      </p>
+                    <div key={p} className="flex w-auto h-fit">
+                      {additionalPage > 1 && additionalPage === p && (
+                        <div
+                          onClick={() =>
+                            setAdditionalPage((pre) =>
+                              pre - 1 < 1 ? 1 : pre - 1
+                            )
+                          }
+                          className="flex items-center cursor-pointer text-[22px] px-1 py-[2px]  mr-2 bg-[#22b3bf] text-white"
+                        >
+                          <MdSkipPrevious />
+                        </div>
+                      )}
+                      {p > additionalPage * 5 ? (
+                        <div
+                          onClick={() => setAdditionalPage((pre) => pre + 1)}
+                          className="flex items-center text-[22px]  cursor-pointer  px-1 py-[2px]  ml-2 bg-[#22b3bf] text-white"
+                        >
+                          <BiSkipNext />
+                        </div>
+                      ) : (
+                        (additionalPage - 1) * (pageIndex - 5) < p && (
+                          <p
+                            onClick={() => {
+                              if (p !== pageChoice) {
+                                fetCateName(routs[1], p);
+                                setPageChoice(p);
+                              }
+                            }}
+                            className={`mx-1 px-[6px] hover:bg-[#d2d5d8] border border-[#2b2b2b]   ${
+                              pageChoice === p ? "bg-[#d2d5d8]" : ""
+                            } cursor-pointer`}
+                          >
+                            {p}
+                          </p>
+                        )
+                      )}
                     </div>
                   ))}
               </div>
@@ -716,23 +808,43 @@ const page = () => {
                     { length: pageIndex },
                     (_, index) => index + 1
                   ).map((p) => (
-                    <div
-                      key={p}
-                      className="flex w-auto h-fit"
-                      onClick={() => {
-                        if (p !== pageChoice) {
-                          fetCateName(routs[1], p);
-                          setPageChoice(p);
-                        }
-                      }}
-                    >
-                      <p
-                        className={`mx-1 px-[5px] hover:bg-[#d2d5d8] border border-[#2b2b2b] rounded-[5px]  ${
-                          pageChoice === p ? "bg-[#d2d5d8]" : ""
-                        } cursor-pointer`}
-                      >
-                        {p}
-                      </p>
+                    <div key={p} className="flex w-auto h-fit">
+                      {additionalPage > 1 && additionalPage === p && (
+                        <div
+                          onClick={() =>
+                            setAdditionalPage((pre) =>
+                              pre - 1 < 1 ? 1 : pre - 1
+                            )
+                          }
+                          className="flex items-center cursor-pointer text-[22px] px-1 py-[2px]  mr-2 bg-[#22b3bf] text-white"
+                        >
+                          <MdSkipPrevious />
+                        </div>
+                      )}
+                      {p > additionalPage * 5 ? (
+                        <div
+                          onClick={() => setAdditionalPage((pre) => pre + 1)}
+                          className="flex items-center text-[22px]  cursor-pointer  px-1 py-[2px]  ml-2 bg-[#22b3bf] text-white"
+                        >
+                          <BiSkipNext />
+                        </div>
+                      ) : (
+                        (additionalPage - 1) * (pageIndex - 5) < p && (
+                          <p
+                            onClick={() => {
+                              if (p !== pageChoice) {
+                                fetCateName(routs[1], p);
+                                setPageChoice(p);
+                              }
+                            }}
+                            className={`mx-1 px-[6px] hover:bg-[#d2d5d8] border border-[#2b2b2b]   ${
+                              pageChoice === p ? "bg-[#d2d5d8]" : ""
+                            } cursor-pointer`}
+                          >
+                            {p}
+                          </p>
+                        )
+                      )}
                     </div>
                   ))}
               </div>
@@ -780,7 +892,15 @@ const page = () => {
                     />
                   </div>
                   <div className="">
-                    <h3 className="text-base md:text-[17px] font-bold">
+                    <h3
+                      className="text-base md:text-[17px] font-bold overflow-hidden"
+                      style={{
+                        display: "-webkit-box",
+                        WebkitLineClamp: 2,
+                        WebkitBoxOrient: "vertical",
+                        wordBreak: "break-all",
+                      }}
+                    >
                       {g.name}
                     </h3>
                     <p className="text-xs mt-1">
@@ -804,23 +924,43 @@ const page = () => {
                     { length: pageIndex },
                     (_, index) => index + 1
                   ).map((p) => (
-                    <div
-                      key={p}
-                      className="flex w-auto h-fit"
-                      onClick={() => {
-                        if (p !== pageChoice) {
-                          fetCateName(routs[1], p);
-                          setPageChoice(p);
-                        }
-                      }}
-                    >
-                      <p
-                        className={`mx-1 px-[5px] hover:bg-[#d2d5d8] border border-[#2b2b2b] rounded-[5px]  ${
-                          pageChoice === p ? "bg-[#d2d5d8]" : ""
-                        } cursor-pointer`}
-                      >
-                        {p}
-                      </p>
+                    <div key={p} className="flex w-auto h-fit">
+                      {additionalPage > 1 && additionalPage === p && (
+                        <div
+                          onClick={() =>
+                            setAdditionalPage((pre) =>
+                              pre - 1 < 1 ? 1 : pre - 1
+                            )
+                          }
+                          className="flex items-center cursor-pointer text-[22px] px-1 py-[2px]  mr-2 bg-[#22b3bf] text-white"
+                        >
+                          <MdSkipPrevious />
+                        </div>
+                      )}
+                      {p > additionalPage * 5 ? (
+                        <div
+                          onClick={() => setAdditionalPage((pre) => pre + 1)}
+                          className="flex items-center text-[22px]  cursor-pointer  px-1 py-[2px]  ml-2 bg-[#22b3bf] text-white"
+                        >
+                          <BiSkipNext />
+                        </div>
+                      ) : (
+                        (additionalPage - 1) * (pageIndex - 5) < p && (
+                          <p
+                            onClick={() => {
+                              if (p !== pageChoice) {
+                                fetCateName(routs[1], p);
+                                setPageChoice(p);
+                              }
+                            }}
+                            className={`mx-1 px-[6px] hover:bg-[#d2d5d8] border border-[#2b2b2b]   ${
+                              pageChoice === p ? "bg-[#d2d5d8]" : ""
+                            } cursor-pointer`}
+                          >
+                            {p}
+                          </p>
+                        )
+                      )}
                     </div>
                   ))}
               </div>

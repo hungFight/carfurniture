@@ -40,7 +40,7 @@ const Header = () => {
       guide: res3.data[0]?.categoryName,
     });
   };
-  const active = window ? window.location.pathname : "";
+  const active = window.location.pathname;
   console.log(active.indexOf("news"), "active");
   const [onTab, setOnTab] = useState<boolean>(false);
   return (
@@ -133,26 +133,6 @@ const Header = () => {
               >
                 Ẩn thanh Tab <IoMdClose />
               </p>
-              {auth ? (
-                <div
-                  className="flex ml-2  cursor-pointer"
-                  onClick={() => setSession(true)}
-                >
-                  <p className="text-sm">Đăng nhập</p>
-                </div>
-              ) : (
-                <div
-                  className="flex ml-2 cursor-pointer "
-                  onClick={() => {
-                    localStorage.removeItem("token");
-                    localStorage.removeItem("refreshToken");
-                    localStorage.removeItem("expiration");
-                    setAuth(true);
-                  }}
-                >
-                  <p className="text-sm">Đăng xuất</p>
-                </div>
-              )}
             </div>
           </div>
         </div>
@@ -184,14 +164,15 @@ const Header = () => {
             onClick={async () => {
               const userName = localStorage.getItem("userName");
               const token = localStorage.getItem("token");
-              const res = await http.get("User/Logout", {
-                params: { username: userName },
+              const res = await http.get(`User/Logout/${userName}`, {
                 headers: { Authorization: "Bearer " + token },
               });
-              // localStorage.removeItem("token");
-              // localStorage.removeItem("refreshToken");
-              // localStorage.removeItem("expiration");
-              // setAuth(true);
+              if (res.data.message) {
+                localStorage.removeItem("token");
+                localStorage.removeItem("refreshToken");
+                localStorage.removeItem("expiration");
+                window.location.reload();
+              }
             }}
           >
             <p className="text-sm">Đăng xuất</p>

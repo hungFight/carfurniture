@@ -29,11 +29,13 @@
 }
 
 .description {
+  word-break: break-all;
   img,
   iframe {
     display: none;
   }
   p {
     font-size: 14px;
+    word-break: break-all;
   }
 }

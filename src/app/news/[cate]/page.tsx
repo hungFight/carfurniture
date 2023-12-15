@@ -5,6 +5,8 @@ import styles from "@/app/styleHomePage.module.scss";
 import Link from "next/link";
 import http from "@/utils/http";
 import moment from "moment";
+import { MdSkipPrevious } from "react-icons/md";
+import { BiSkipNext } from "react-icons/bi";
 
 const page = (props: { params: { cate: string } }) => {
   const [pageIndex, setPageIndex] = useState<number>(0);
@@ -55,6 +57,8 @@ const page = (props: { params: { cate: string } }) => {
   const handleClick = () => {
     getNews(props.params.cate, 1, search);
   };
+  const [additionalPage, setAdditionalPage] = useState<number>(1);
+
   return (
     <div className="w-full md:w-[60%] p-3">
       <div className="w-full mb-4">
@@ -67,28 +71,47 @@ const page = (props: { params: { cate: string } }) => {
       </div>
       <div className="w-full">
         <div className="w-full h-fit flex justify-center pb-1 border-b mb-1">
-          {Array.from({ length: pageIndex }, (_, index) => index + 1).map(
-            (p) => (
-              <div
-                key={p}
-                className="flex w-auto h-fit"
-                onClick={() => {
-                  if (p !== pageChoice) {
-                    getNews(props.params.cate, p);
-                    setPageChoice(p);
-                  }
-                }}
-              >
-                <p
-                  className={`mx-1 px-[5px] hover:bg-[#d2d5d8] border border-[#2b2b2b] rounded-[5px]  ${
-                    pageChoice === p ? "bg-[#d2d5d8]" : ""
-                  } cursor-pointer`}
-                >
-                  {p}
-                </p>
-              </div>
-            )
-          )}
+          {pageIndex > 1 &&
+            Array.from({ length: pageIndex }, (_, index) => index + 1).map(
+              (p) => (
+                <div key={p} className="flex w-auto h-fit">
+                  {additionalPage > 1 && additionalPage === p && (
+                    <div
+                      onClick={() =>
+                        setAdditionalPage((pre) => (pre - 1 < 1 ? 1 : pre - 1))
+                      }
+                      className="flex items-center cursor-pointer text-[22px] px-1 py-[2px]  mr-2 bg-[#22b3bf] text-white"
+                    >
+                      <MdSkipPrevious />
+                    </div>
+                  )}
+                  {p > additionalPage * 5 ? (
+                    <div
+                      onClick={() => setAdditionalPage((pre) => pre + 1)}
+                      className="flex items-center text-[22px]  cursor-pointer  px-1 py-[2px]  ml-2 bg-[#22b3bf] text-white"
+                    >
+                      <BiSkipNext />
+                    </div>
+                  ) : (
+                    (additionalPage - 1) * (pageIndex - 5) < p && (
+                      <p
+                        onClick={() => {
+                          if (p !== pageChoice) {
+                            getNews(props.params.cate, p);
+                            setPageChoice(p);
+                          }
+                        }}
+                        className={`mx-1 px-[6px] hover:bg-[#d2d5d8] border border-[#2b2b2b]   ${
+                          pageChoice === p ? "bg-[#d2d5d8]" : ""
+                        } cursor-pointer`}
+                      >
+                        {p}
+                      </p>
+                    )
+                  )}
+                </div>
+              )
+            )}
         </div>
         {!loading ? (
           data.map((n) => (
@@ -96,9 +119,9 @@ const page = (props: { params: { cate: string } }) => {
               key={n.id}
               href={`/[slug]`}
               as={`${props.params.cate}/${n.name}/${n.id}`}
-              className="w-full flex flex-wrap md:flex-nowrap mb-4"
+              className="w-full flex flex-wrap min-[420px]:flex-nowrap mb-4"
             >
-              <div className="min-w-full h-[130px] md:min-w-[250px] md:h-[155px] xl:min-w-[350px] xl:h-[210px] mr-3 md:mr-5">
+              <div className="min-w-full h-[130px] min-[420px]:min-w-[250px] md:h-[155px] xl:min-w-[350px] xl:h-[210px] mr-3 md:mr-5">
                 <img
                   src={n.urlImage[0]?.image}
                   alt={n.urlImage[0]?.path}
@@ -106,7 +129,17 @@ const page = (props: { params: { cate: string } }) => {
                 />
               </div>
               <div className="h-fit">
-                <h3 className="text-base md:text-[17px] font-bold">{n.name}</h3>
+                <h3
+                  className="text-base md:text-[17px] font-bold overflow-hidden"
+                  style={{
+                    display: "-webkit-box",
+                    WebkitLineClamp: 2,
+                    WebkitBoxOrient: "vertical",
+                    wordBreak: "break-all",
+                  }}
+                >
+                  {n.name}
+                </h3>
                 <p className="text-xs mt-1">
                   {moment(n.create_Date).format("DD/MM/YYYY HH:MM:SS")}
                 </p>
