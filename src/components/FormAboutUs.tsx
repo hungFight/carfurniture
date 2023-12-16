@@ -45,7 +45,6 @@ const FormAboutUs: React.FC<{ title: string; onClick: () => void }> = ({
         google_map: data.location,
       });
       onClick();
-      console.log(res.data, "update");
     }
   };
   return (

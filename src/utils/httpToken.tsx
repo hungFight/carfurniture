@@ -1,10 +1,9 @@
-"use client";
 import axios, { AxiosInstance } from "axios";
 import https from "https";
 import { jwtDecode } from "jwt-decode";
 import http from "./http";
 const instanceAxios = axios.create({
-  baseURL: "https://localhost:7028/api/",
+  baseURL: process.env.DB_URL_SERVER,
   headers: {
     // "Content-Type": "application/json",
     Accept: "application/json",

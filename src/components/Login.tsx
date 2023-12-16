@@ -62,7 +62,7 @@ const Login: React.FC<{
           code: code,
         });
         if (res.data?.message) {
-          setMassage(res.data?.message);
+          setMassage("Confirm successfully");
         } else {
           setMassage("confirm code invalid");
         }
@@ -78,7 +78,7 @@ const Login: React.FC<{
     >
       {changePass !== null ? (
         <div
-          className="w-[350px] flex flex-wrap items-center bg-[#4184a5] justify-center px-3 py-5 rounded-[5px]"
+          className="w-[400px] flex flex-wrap items-center bg-[#4184a5] justify-center px-7 py-5 rounded-[5px]"
           onClick={(e) => e.stopPropagation()}
         >
           <h3 className="text-base w-full text-center font-bold text-white mb-3">
@@ -92,12 +92,7 @@ const Login: React.FC<{
             onChange={(e) => setChangePass(e.target.value)}
             className="w-full px-3 py-2 rounded-[5px] mb-3 border-[2px] border-[#308db4]"
           />
-          <p
-            className="text-white mt-2 text-base cursor-pointer w-full"
-            onClick={() => setChangePass(null)}
-          >
-            Đăng nhập
-          </p>
+
           {code !== null && (
             <input
               type="text"
@@ -107,6 +102,12 @@ const Login: React.FC<{
               className="w-full px-3 py-2 rounded-[5px] mb-3 border-[2px] border-[#308db4]"
             />
           )}
+          <p
+            className="text-white mt-2 text-base cursor-pointer w-full"
+            onClick={() => setChangePass(null)}
+          >
+            Đăng nhập
+          </p>
           <p className="text-sm w-full text-center text-[#71fb71] m-1">
             {message}
           </p>

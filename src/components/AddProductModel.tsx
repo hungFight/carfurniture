@@ -79,7 +79,6 @@ const AddProductModel: React.FC<{
   const [image, setImage] = useState<string[]>(
     upCate?.urlImage.map((f) => f.image) ?? []
   );
-  console.log(product);
   const handleUploadFIle = (e: any) => {
     const files = e.target.files;
     console.log(files, "files");

@@ -64,7 +64,6 @@ const AddGuideModel: React.FC<{
   console.log(product);
   const checkRef = useRef<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
-  console.log(newsUp, "newsUp");
 
   const [componentDisabled, setComponentDisabled] = useState<boolean>(true);
   const handleUploadFIle = (e: any) => {
@@ -145,7 +144,7 @@ const AddGuideModel: React.FC<{
       <form
         onSubmit={handleSubmit}
         encType="multipart/form-data"
-        className="w-full h-full p-5 overflow-auto z-50 sm:w-[640px] flex justify-center flex-wrap  fixed top-1/2 right-1/2 left-1/2 translate-x-[-50%] translate-y-[-50%] bg-white"
+        className="w-full h-full p-5 overflow-auto z-50 sm:w-[640px] block justify-center flex-wrap  fixed top-1/2 right-1/2 left-1/2 translate-x-[-50%] translate-y-[-50%] bg-white"
       >
         <h3 className="w-full p-3 text-center relative">
           {title}
@@ -156,7 +155,7 @@ const AddGuideModel: React.FC<{
             <IoCloseCircleOutline />
           </div>
         </h3>
-        <div className="w-full my-2 flex items-center flex-wrap">
+        <div className="w-full my-2 flex items-center flex-wrap  h-fit my-3">
           <label className="text-base mr-3" htmlFor="productFile">
             Tải ảnh hưỡng dẫn:
           </label>
@@ -174,7 +173,7 @@ const AddGuideModel: React.FC<{
             </div>
           )}
         </div>
-        <div className="w-full my-2 flex items-center">
+        <div className="w-full my-2 flex items-center h-fit my-3">
           <label className="text-base mr-3" htmlFor="productName">
             Tiêu đề:
           </label>
@@ -188,7 +187,7 @@ const AddGuideModel: React.FC<{
             placeholder="Tiêu đề"
           />
         </div>{" "}
-        <div className={`w-full my-2 flex items-center  flex-wrap `}>
+        <div className={`w-full my-2 flex items-center  flex-wrap  h-fit my-3`}>
           <h3 className="text-base mr-3 w-full">Content:</h3>
           <ReactQuill
             className="w-full"
@@ -202,7 +201,7 @@ const AddGuideModel: React.FC<{
         {/* <div
 
         ></div> */}
-        <div className="flex justify-around items-center w-full">
+        <div className="flex justify-around items-center w-full h-fit my-3">
           <div
             className="text-sm px-3 py-1 hover:text-[#0074da] cursor-pointer"
             onClick={() => setPre(true)}

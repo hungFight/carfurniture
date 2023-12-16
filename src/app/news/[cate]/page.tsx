@@ -39,7 +39,7 @@ const page = (props: { params: { cate: string } }) => {
     } else {
       const res = await http.post("Blog/GetPaginationProduct", {
         pageIndex: index,
-        pageSize: 6,
+        pageSize: 1,
         search_CategoryName: cate,
       });
       setPageIndex(res.data.totalPageIndex);
@@ -58,7 +58,8 @@ const page = (props: { params: { cate: string } }) => {
     getNews(props.params.cate, 1, search);
   };
   const [additionalPage, setAdditionalPage] = useState<number>(1);
-
+  let managerIndex = false;
+  let isIndex = false;
   return (
     <div className="w-full md:w-[60%] p-3">
       <div className="w-full mb-4">
@@ -73,44 +74,55 @@ const page = (props: { params: { cate: string } }) => {
         <div className="w-full h-fit flex justify-center pb-1 border-b mb-1">
           {pageIndex > 1 &&
             Array.from({ length: pageIndex }, (_, index) => index + 1).map(
-              (p) => (
-                <div key={p} className="flex w-auto h-fit">
-                  {additionalPage > 1 && additionalPage === p && (
-                    <div
-                      onClick={() =>
-                        setAdditionalPage((pre) => (pre - 1 < 1 ? 1 : pre - 1))
-                      }
-                      className="flex items-center cursor-pointer text-[22px] px-1 py-[2px]  mr-2 bg-[#22b3bf] text-white"
-                    >
-                      <MdSkipPrevious />
-                    </div>
-                  )}
-                  {p > additionalPage * 5 ? (
-                    <div
-                      onClick={() => setAdditionalPage((pre) => pre + 1)}
-                      className="flex items-center text-[22px]  cursor-pointer  px-1 py-[2px]  ml-2 bg-[#22b3bf] text-white"
-                    >
-                      <BiSkipNext />
-                    </div>
-                  ) : (
-                    (additionalPage - 1) * (pageIndex - 5) < p && (
-                      <p
-                        onClick={() => {
-                          if (p !== pageChoice) {
-                            getNews(props.params.cate, p);
-                            setPageChoice(p);
-                          }
-                        }}
-                        className={`mx-1 px-[6px] hover:bg-[#d2d5d8] border border-[#2b2b2b]   ${
-                          pageChoice === p ? "bg-[#d2d5d8]" : ""
-                        } cursor-pointer`}
+              (p) => {
+                if (p > additionalPage * 5 && !isIndex) {
+                  isIndex = true;
+                  managerIndex = true;
+                } else {
+                  managerIndex = false;
+                }
+                return (
+                  <div key={p} className="flex w-auto h-fit">
+                    {additionalPage > 1 && additionalPage === p && (
+                      <div
+                        onClick={() =>
+                          setAdditionalPage((pre) =>
+                            pre - 1 < 1 ? 1 : pre - 1
+                          )
+                        }
+                        className="flex items-center cursor-pointer text-[22px] px-1 py-[2px]  mr-2 bg-[#22b3bf] text-white"
                       >
-                        {p}
-                      </p>
-                    )
-                  )}
-                </div>
-              )
+                        <MdSkipPrevious />
+                      </div>
+                    )}
+                    {managerIndex && p > additionalPage * 5 ? (
+                      <div
+                        onClick={() => setAdditionalPage((pre) => pre + 1)}
+                        className="flex items-center text-[22px]  cursor-pointer  px-1 py-[2px]  ml-2 bg-[#22b3bf] text-white"
+                      >
+                        <BiSkipNext />
+                      </div>
+                    ) : (
+                      (additionalPage - 1) * (pageIndex - 5) < p &&
+                      !isIndex && (
+                        <p
+                          onClick={() => {
+                            if (p !== pageChoice) {
+                              getNews(props.params.cate, p);
+                              setPageChoice(p);
+                            }
+                          }}
+                          className={`mx-1 px-[6px] hover:bg-[#d2d5d8] border border-[#2b2b2b]   ${
+                            pageChoice === p ? "bg-[#d2d5d8]" : ""
+                          } cursor-pointer`}
+                        >
+                          {p}
+                        </p>
+                      )
+                    )}
+                  </div>
+                );
+              }
             )}
         </div>
         {!loading ? (

@@ -117,7 +117,6 @@ const page = () => {
   const router = useRouter();
   const [add, setAdd] = useState<string>("");
   const [pre, setPre] = useState<boolean>(false);
-  console.log(productUp, "productUp", add);
   const [login, setLogin] = useState<boolean>(false);
   const [addCate, setAddCate] = useState<boolean>(false);
   const [aboutUs, setAboutUs] = useState<boolean>(false);
@@ -129,6 +128,7 @@ const page = () => {
     categoryId: 0,
     categoryName: "",
   });
+  const [additionalPage, setAdditionalPage] = useState<number>(1);
   const [loading, setLoading] = useState("");
   const [routs, setRouts] = useState(["Quản trị"]);
   const [nameRout, setNameRout] = useState("");
@@ -181,9 +181,8 @@ const page = () => {
     }
   }, [dataCate, categoryType]);
   async function fetCateName(name: string, index = 1, search?: string) {
-    console.log("name here", name);
     setLoadingSearch(true);
-
+    setAdditionalPage(1);
     setLoadingDirect(true);
     try {
       const axio = httpToken(token, refreshToken);
@@ -244,6 +243,8 @@ const page = () => {
 
   const handleRount = (vl: string) => {
     // change rout
+    setNameRout(vl);
+    setPageIndex(0);
     if (routs.length >= 2) {
       routs[1] = vl;
       setRouts(routs.filter((r, index) => index !== 2));
@@ -293,8 +294,6 @@ const page = () => {
         setLogin(true);
       }
     }
-
-    console.log("directory", id);
   };
   const handleSearch = (e: any) => {
     setSearch(e.target.value);
@@ -325,7 +324,11 @@ const page = () => {
     }
     return false;
   };
-  const [additionalPage, setAdditionalPage] = useState<number>(1);
+  let managerIndex = false;
+  let isIndex = false;
+  let managerIndex2 = false;
+  let isIndex2 = false;
+
   return (
     <div className="flex flex-wrap ">
       {login && (
@@ -449,187 +452,209 @@ const page = () => {
                   Array.from(
                     { length: pageIndex },
                     (_, index) => index + 1
-                  ).map((p) => (
-                    <div key={p} className="flex w-auto h-fit">
-                      {additionalPage > 1 && additionalPage === p && (
-                        <div
-                          onClick={() =>
-                            setAdditionalPage((pre) =>
-                              pre - 1 < 1 ? 1 : pre - 1
-                            )
-                          }
-                          className="flex items-center cursor-pointer text-[22px] px-1 py-[2px]  mr-2 bg-[#22b3bf] text-white"
-                        >
-                          <MdSkipPrevious />
-                        </div>
-                      )}
-                      {p > additionalPage * 5 ? (
-                        <div
-                          onClick={() => setAdditionalPage((pre) => pre + 1)}
-                          className="flex items-center text-[22px]  cursor-pointer  px-1 py-[2px]  ml-2 bg-[#22b3bf] text-white"
-                        >
-                          <BiSkipNext />
-                        </div>
-                      ) : (
-                        (additionalPage - 1) * (pageIndex - 5) < p && (
-                          <p
-                            onClick={() => {
-                              if (p !== pageChoice) {
-                                fetCateName(routs[1], p);
-                                setPageChoice(p);
-                              }
-                            }}
-                            className={`mx-1 px-[6px] hover:bg-[#d2d5d8] border border-[#2b2b2b]   ${
-                              pageChoice === p ? "bg-[#d2d5d8]" : ""
-                            } cursor-pointer`}
+                  ).map((p) => {
+                    if (p > additionalPage * 5 && !isIndex) {
+                      isIndex = true;
+                      managerIndex = true;
+                    } else {
+                      managerIndex = false;
+                    }
+                    return (
+                      <div key={p} className="flex w-auto h-fit">
+                        {additionalPage > 1 && additionalPage === p && (
+                          <div
+                            onClick={() =>
+                              setAdditionalPage((pre) =>
+                                pre - 1 < 1 ? 1 : pre - 1
+                              )
+                            }
+                            className="flex items-center cursor-pointer text-[22px] px-1 py-[2px]  mr-2 bg-[#22b3bf] text-white"
                           >
-                            {p}
-                          </p>
-                        )
-                      )}
-                    </div>
-                  ))}
+                            <MdSkipPrevious />
+                          </div>
+                        )}
+                        {managerIndex && p > additionalPage * 5 ? (
+                          <div
+                            onClick={() => setAdditionalPage((pre) => pre + 1)}
+                            className="flex items-center text-[22px]  cursor-pointer  px-1 py-[2px]  ml-2 bg-[#22b3bf] text-white"
+                          >
+                            <BiSkipNext />
+                          </div>
+                        ) : (
+                          (additionalPage - 1) * (pageIndex - 5) < p &&
+                          !isIndex && (
+                            <p
+                              onClick={() => {
+                                if (p !== pageChoice) {
+                                  fetCateName(routs[1], p);
+                                  setPageChoice(p);
+                                }
+                              }}
+                              className={`mx-1 px-[6px] hover:bg-[#d2d5d8] border border-[#2b2b2b]   ${
+                                pageChoice === p ? "bg-[#d2d5d8]" : ""
+                              } cursor-pointer`}
+                            >
+                              {p}
+                            </p>
+                          )
+                        )}
+                      </div>
+                    );
+                  })}
               </div>
-              {dataProducts.map((p) => (
-                <Link
-                  key={p.id}
-                  href="/[slug]"
-                  as={`products/${routs[1]}/${p.name}/${p.id}`}
-                  className=" relative w-[250px] p-1 border shadow-[0_0_3px_#7a7a7a] hover:shadow-[0_0_10px] mb-4 mx-3 cursor-pointer"
-                >
-                  <div
-                    className="absolute right-1 cursor-pointer top-0 text-sm w-auto px-3 py-1  bg-white z-10 shadow-[0_0_2px_#999999]"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      e.preventDefault();
-                      setProductUp({
-                        Id: p.id,
-                        Name: p.name,
-                        Price: String(p.price),
-                        Description: p.description,
-                        Discount: String(p.price_After),
-                        categoryId: cate.categoryId,
-                        categoryName: cate.categoryName,
-                        FormCollection: p.urlImage[0]?.image,
-                        path: p.urlImage[0]?.path,
-                        urlImage: p.urlImage,
-                        UrlShoppe: p.urlShoppe,
-                      });
-                      setAdd(routs[1]);
-                    }}
+              {dataProducts.length > 0 ? (
+                dataProducts.map((p) => (
+                  <Link
+                    key={p.id}
+                    href="/[slug]"
+                    as={`products/${routs[1]}/${p.name}/${p.id}`}
+                    className=" relative w-[250px] p-1 border shadow-[0_0_3px_#7a7a7a] hover:shadow-[0_0_10px] mb-4 mx-3 cursor-pointer"
                   >
-                    Update
-                  </div>
-                  <div className="w-full h-[240px]">
-                    <img
-                      src={p.urlImage[0]?.image}
-                      alt={p.urlImage[0]?.path}
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                  <div className={`mt-1 ${styles.containerProductTag}`}>
-                    <h3
-                      className={`font-bold text-sm md:text-base ${styles.nameTag}`}
-                    >
-                      {p.name}
-                    </h3>
-                    <div className="w-full mt-1 md:mt-2 flex items-center border-b border-solid">
-                      <p className="text-[13px] md:text-[14px] font-medium text-[crimson]">
-                        {p.price.toLocaleString("en-US").replace(/,/g, ".")}đ
-                      </p>
-                      {p.price_After && (
-                        <p className="text-[10px] md:text-[11px] mt-[5px] ml-2 line-through">
-                          {p.price_After
-                            .toLocaleString("en-US")
-                            .replace(/,/g, ".")}
-                          đ
-                        </p>
-                      )}
-                    </div>
                     <div
-                      className={`text-[13px] h-[38px] md:text-[14px] mt-2 md:mt-3 ${styles.desTag}`}
-                      dangerouslySetInnerHTML={{ __html: p.description }}
-                    ></div>
-                  </div>
-                  <div className="my-2 flex items-center justify-center relative">
-                    <p
-                      className="absolute text-sm text-[crimson] top-[5px] left-[10px] "
-                      style={{ color: "crimson !important" }}
-                      onClick={async (e) => {
+                      className="absolute right-1 cursor-pointer top-0 text-sm w-auto px-3 py-1  bg-white z-10 shadow-[0_0_2px_#999999]"
+                      onClick={(e) => {
                         e.stopPropagation();
-                        const isD = window.confirm("Bạn có muốn xoá không?");
-                        if (isD) {
-                          setLoading(String(p.id));
-                          const del = await http.delete(
-                            `Product/Delete/${p.id}`
-                          );
-                          if (productUp) setProductUp(undefined);
-                          fetCateName(nameRout);
-                          setLoading("");
-                        }
+                        e.preventDefault();
+                        setProductUp({
+                          Id: p.id,
+                          Name: p.name,
+                          Price: String(p.price),
+                          Description: p.description,
+                          Discount: String(p.price_After),
+                          categoryId: cate.categoryId,
+                          categoryName: cate.categoryName,
+                          FormCollection: p.urlImage[0]?.image,
+                          path: p.urlImage[0]?.path,
+                          urlImage: p.urlImage,
+                          UrlShoppe: p.urlShoppe,
+                        });
+                        setAdd(routs[1]);
                       }}
                     >
-                      {loading === String(p.id) ? "deleting..." : "delete"}
-                    </p>
-                    <button className="text-sm shadow-[0_0_2px_#4a8cbf] border-[#4a8cbf] border-[1px] p-1 pr-3 rounded-md">
-                      View more
-                    </button>
-                    <a
-                      href={p.urlShoppe}
-                      target="_blank"
-                      className="absolute top-[5px] text-[crimson] right-[30px] "
-                      style={{ color: "crimson !important" }}
-                    >
-                      <SiShopee />
-                    </a>
-                  </div>
-                </Link>
-              ))}
-              <div className="w-full h-fit flex justify-center pb-1 border-t mt-3">
+                      Update
+                    </div>
+                    <div className="w-full h-[240px]">
+                      <img
+                        src={p.urlImage[0]?.image}
+                        alt={p.urlImage[0]?.path}
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                    <div className={`mt-1 ${styles.containerProductTag}`}>
+                      <h3
+                        className={`font-bold text-sm md:text-base ${styles.nameTag}`}
+                      >
+                        {p.name}
+                      </h3>
+                      <div className="w-full mt-1 md:mt-2 flex items-center border-b border-solid">
+                        <p className="text-[13px] md:text-[14px] font-medium text-[crimson]">
+                          {p.price.toLocaleString("en-US").replace(/,/g, ".")}đ
+                        </p>
+                        {p.price_After && (
+                          <p className="text-[10px] md:text-[11px] mt-[5px] ml-2 line-through">
+                            {p.price_After
+                              .toLocaleString("en-US")
+                              .replace(/,/g, ".")}
+                            đ
+                          </p>
+                        )}
+                      </div>
+                      <div
+                        className={`text-[13px] h-[38px] md:text-[14px] mt-2 md:mt-3 ${styles.desTag}`}
+                        dangerouslySetInnerHTML={{ __html: p.description }}
+                      ></div>
+                    </div>
+                    <div className="my-2 flex items-center justify-center relative">
+                      <p
+                        className="absolute text-sm text-[crimson] top-[5px] left-[10px] "
+                        style={{ color: "crimson !important" }}
+                        onClick={async (e) => {
+                          e.stopPropagation();
+                          const isD = window.confirm("Bạn có muốn xoá không?");
+                          if (isD) {
+                            setLoading(String(p.id));
+                            const del = await http.delete(
+                              `Product/Delete/${p.id}`
+                            );
+                            if (productUp) setProductUp(undefined);
+                            fetCateName(nameRout);
+                            setLoading("");
+                          }
+                        }}
+                      >
+                        {loading === String(p.id) ? "deleting..." : "delete"}
+                      </p>
+                      <button className="text-sm shadow-[0_0_2px_#4a8cbf] border-[#4a8cbf] border-[1px] p-1 pr-3 rounded-md">
+                        View more
+                      </button>
+                      <a
+                        href={p.urlShoppe}
+                        target="_blank"
+                        className="absolute top-[5px] text-[crimson] right-[30px] "
+                        style={{ color: "crimson !important" }}
+                      >
+                        <SiShopee />
+                      </a>
+                    </div>
+                  </Link>
+                ))
+              ) : (
+                <p>Không có sản phẩm nào</p>
+              )}
+              <div className="w-full h-fit flex justify-center pb-1 border-t pt-2 mt-3">
                 {pageIndex > 1 &&
                   Array.from(
                     { length: pageIndex },
                     (_, index) => index + 1
-                  ).map((p) => (
-                    <div key={p} className="flex w-auto h-fit">
-                      {additionalPage > 1 && additionalPage === p && (
-                        <div
-                          onClick={() =>
-                            setAdditionalPage((pre) =>
-                              pre - 1 < 1 ? 1 : pre - 1
-                            )
-                          }
-                          className="flex items-center cursor-pointer text-[22px] px-1 py-[2px]  mr-2 bg-[#22b3bf] text-white"
-                        >
-                          <MdSkipPrevious />
-                        </div>
-                      )}
-                      {p > additionalPage * 5 ? (
-                        <div
-                          onClick={() => setAdditionalPage((pre) => pre + 1)}
-                          className="flex items-center text-[22px]  cursor-pointer  px-1 py-[2px]  ml-2 bg-[#22b3bf] text-white"
-                        >
-                          <BiSkipNext />
-                        </div>
-                      ) : (
-                        (additionalPage - 1) * (pageIndex - 5) < p && (
-                          <p
-                            onClick={() => {
-                              if (p !== pageChoice) {
-                                fetCateName(routs[1], p);
-                                setPageChoice(p);
-                              }
-                            }}
-                            className={`mx-1 px-[6px] hover:bg-[#d2d5d8] border border-[#2b2b2b]   ${
-                              pageChoice === p ? "bg-[#d2d5d8]" : ""
-                            } cursor-pointer`}
+                  ).map((p) => {
+                    if (p > additionalPage * 5 && !isIndex2) {
+                      isIndex2 = true;
+                      managerIndex2 = true;
+                    } else {
+                      managerIndex2 = false;
+                    }
+                    return (
+                      <div key={p} className="flex w-auto h-fit">
+                        {additionalPage > 1 && additionalPage === p && (
+                          <div
+                            onClick={() =>
+                              setAdditionalPage((pre) =>
+                                pre - 1 < 1 ? 1 : pre - 1
+                              )
+                            }
+                            className="flex items-center cursor-pointer text-[22px] px-1 py-[2px]  mr-2 bg-[#22b3bf] text-white"
                           >
-                            {p}
-                          </p>
-                        )
-                      )}
-                    </div>
-                  ))}
+                            <MdSkipPrevious />
+                          </div>
+                        )}
+                        {managerIndex2 && p > additionalPage * 5 ? (
+                          <div
+                            onClick={() => setAdditionalPage((pre) => pre + 1)}
+                            className="flex items-center text-[22px]  cursor-pointer  px-1 py-[2px]  ml-2 bg-[#22b3bf] text-white"
+                          >
+                            <BiSkipNext />
+                          </div>
+                        ) : (
+                          (additionalPage - 1) * (pageIndex - 5) < p &&
+                          !isIndex2 && (
+                            <p
+                              onClick={() => {
+                                if (p !== pageChoice) {
+                                  fetCateName(routs[1], p);
+                                  setPageChoice(p);
+                                }
+                              }}
+                              className={`mx-1 px-[6px] hover:bg-[#d2d5d8] border border-[#2b2b2b]   ${
+                                pageChoice === p ? "bg-[#d2d5d8]" : ""
+                              } cursor-pointer`}
+                            >
+                              {p}
+                            </p>
+                          )
+                        )}
+                      </div>
+                    );
+                  })}
               </div>
             </>
           ) : categoryType === news ? (
@@ -639,165 +664,187 @@ const page = () => {
                   Array.from(
                     { length: pageIndex },
                     (_, index) => index + 1
-                  ).map((p) => (
-                    <div key={p} className="flex w-auto h-fit">
-                      {additionalPage > 1 && additionalPage === p && (
-                        <div
-                          onClick={() =>
-                            setAdditionalPage((pre) =>
-                              pre - 1 < 1 ? 1 : pre - 1
-                            )
-                          }
-                          className="flex items-center cursor-pointer text-[22px] px-1 py-[2px]  mr-2 bg-[#22b3bf] text-white"
-                        >
-                          <MdSkipPrevious />
-                        </div>
-                      )}
-                      {p > additionalPage * 5 ? (
-                        <div
-                          onClick={() => setAdditionalPage((pre) => pre + 1)}
-                          className="flex items-center text-[22px]  cursor-pointer  px-1 py-[2px]  ml-2 bg-[#22b3bf] text-white"
-                        >
-                          <BiSkipNext />
-                        </div>
-                      ) : (
-                        (additionalPage - 1) * (pageIndex - 5) < p && (
-                          <p
-                            onClick={() => {
-                              if (p !== pageChoice) {
-                                fetCateName(routs[1], p);
-                                setPageChoice(p);
-                              }
-                            }}
-                            className={`mx-1 px-[6px] hover:bg-[#d2d5d8] border border-[#2b2b2b]   ${
-                              pageChoice === p ? "bg-[#d2d5d8]" : ""
-                            } cursor-pointer`}
+                  ).map((p) => {
+                    if (p > additionalPage * 5 && !isIndex) {
+                      isIndex = true;
+                      managerIndex = true;
+                    } else {
+                      managerIndex = false;
+                    }
+                    return (
+                      <div key={p} className="flex w-auto h-fit">
+                        {additionalPage > 1 && additionalPage === p && (
+                          <div
+                            onClick={() =>
+                              setAdditionalPage((pre) =>
+                                pre - 1 < 1 ? 1 : pre - 1
+                              )
+                            }
+                            className="flex items-center cursor-pointer text-[22px] px-1 py-[2px]  mr-2 bg-[#22b3bf] text-white"
                           >
-                            {p}
-                          </p>
-                        )
-                      )}
-                    </div>
-                  ))}
+                            <MdSkipPrevious />
+                          </div>
+                        )}
+                        {managerIndex && p > additionalPage * 5 ? (
+                          <div
+                            onClick={() => setAdditionalPage((pre) => pre + 1)}
+                            className="flex items-center text-[22px]  cursor-pointer  px-1 py-[2px]  ml-2 bg-[#22b3bf] text-white"
+                          >
+                            <BiSkipNext />
+                          </div>
+                        ) : (
+                          (additionalPage - 1) * (pageIndex - 5) < p &&
+                          !isIndex && (
+                            <p
+                              onClick={() => {
+                                if (p !== pageChoice) {
+                                  fetCateName(routs[1], p);
+                                  setPageChoice(p);
+                                }
+                              }}
+                              className={`mx-1 px-[6px] hover:bg-[#d2d5d8] border border-[#2b2b2b]   ${
+                                pageChoice === p ? "bg-[#d2d5d8]" : ""
+                              } cursor-pointer`}
+                            >
+                              {p}
+                            </p>
+                          )
+                        )}
+                      </div>
+                    );
+                  })}
               </div>
-              {dataNews.map((bl) => (
-                <Link
-                  href="/[slug]"
-                  as={`news/${routs[1]}/${bl.name}/${bl.id}`}
-                  className="w-full flex flex-wrap md:flex-nowrap  mb-4 relative"
-                  key={bl.id}
-                  onClick={() => {
-                    setNewsUp(bl);
-                    setPre(true);
-                  }}
-                >
-                  <div
-                    className="absolute left-[83px] cursor-pointer top-0 text-sm w-auto px-3 py-1  bg-white z-10 shadow-[0_0_2px_#999999]"
-                    onClick={async (e) => {
-                      e.preventDefault();
-                      e.stopPropagation();
-                      const isD = window.confirm("Bạn có muốn xoá không?");
-                      if (isD) {
-                        setLoading(String(bl.id));
-                        const del = await http.delete(`Blog/Delete/${bl.id}`);
-                        fetCateName(nameRout);
-                        if (newsUp) setNewsUp(undefined);
-                        setLoading("");
-                      }
-                    }}
-                  >
-                    {loading === String(bl.id) ? "deleting..." : "delete"}
-                  </div>
-                  <div
-                    className="absolute left-1 cursor-pointer top-0 text-sm w-auto px-3 py-1  bg-white z-10 shadow-[0_0_2px_#999999]"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      e.stopPropagation();
+              {dataNews.length > 0 ? (
+                dataNews.map((bl) => (
+                  <Link
+                    href="/[slug]"
+                    as={`news/${routs[1]}/${bl.name}/${bl.id}`}
+                    className="w-full flex flex-wrap md:flex-nowrap  mb-4 relative"
+                    key={bl.id}
+                    onClick={() => {
                       setNewsUp(bl);
-                      setAdd(routs[1]);
+                      setPre(true);
                     }}
                   >
-                    Update
-                  </div>
-                  <div className="min-w-full h-[130px] md:min-w-[250px] md:h-[155px]  mr-3 md:mr-5">
-                    <img
-                      src={bl.urlImage[0]?.image}
-                      alt={bl.urlImage[0]?.path}
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                  <div className="h-fit">
-                    <h3
-                      className="text-base md:text-[17px] font-bold overflow-hidden"
-                      style={{
-                        display: "-webkit-box",
-                        WebkitLineClamp: 2,
-                        WebkitBoxOrient: "vertical",
-                        wordBreak: "break-all",
+                    <div
+                      className="absolute left-[83px] cursor-pointer top-0 text-sm w-auto px-3 py-1  bg-white z-10 shadow-[0_0_2px_#999999]"
+                      onClick={async (e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        const isD = window.confirm("Bạn có muốn xoá không?");
+                        if (isD) {
+                          setLoading(String(bl.id));
+                          const del = await http.delete(`Blog/Delete/${bl.id}`);
+                          fetCateName(nameRout);
+                          if (newsUp) setNewsUp(undefined);
+                          setLoading("");
+                        }
                       }}
                     >
-                      {bl.name}
-                    </h3>
-                    <p className="text-xs mt-1">
-                      {moment(bl.create_Date).format("DD/MM/YYYY HH:MM:SS")}
-                    </p>
+                      {loading === String(bl.id) ? "deleting..." : "delete"}
+                    </div>
                     <div
-                      className={`text-sm md:text-base  mt-2 overflow-hidden ${styles.description}`}
-                      style={{
-                        display: "-webkit-box",
-                        WebkitLineClamp: 4,
-                        WebkitBoxOrient: "vertical",
+                      className="absolute left-1 cursor-pointer top-0 text-sm w-auto px-3 py-1  bg-white z-10 shadow-[0_0_2px_#999999]"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        setNewsUp(bl);
+                        setAdd(routs[1]);
                       }}
-                      dangerouslySetInnerHTML={{ __html: bl.content }}
-                    ></div>
-                  </div>
-                </Link>
-              ))}
-              <div className="w-full h-fit flex justify-center pb-1 border-t mt-3">
+                    >
+                      Update
+                    </div>
+                    <div className="min-w-full h-[130px] md:min-w-[250px] md:h-[155px]  mr-3 md:mr-5">
+                      <img
+                        src={bl.urlImage[0]?.image}
+                        alt={bl.urlImage[0]?.path}
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                    <div className="h-fit">
+                      <h3
+                        className="text-base md:text-[17px] font-bold overflow-hidden"
+                        style={{
+                          display: "-webkit-box",
+                          WebkitLineClamp: 2,
+                          WebkitBoxOrient: "vertical",
+                          wordBreak: "break-all",
+                        }}
+                      >
+                        {bl.name}
+                      </h3>
+                      <p className="text-xs mt-1">
+                        {moment(bl.create_Date).format("DD/MM/YYYY HH:MM:SS")}
+                      </p>
+                      <div
+                        className={`text-sm md:text-base  mt-2 overflow-hidden ${styles.description}`}
+                        style={{
+                          display: "-webkit-box",
+                          WebkitLineClamp: 4,
+                          WebkitBoxOrient: "vertical",
+                        }}
+                        dangerouslySetInnerHTML={{ __html: bl.content }}
+                      ></div>
+                    </div>
+                  </Link>
+                ))
+              ) : (
+                <p>Không có Blog nào</p>
+              )}
+              <div className="w-full pt-2 h-fit flex justify-center pb-1 border-t mt-3">
                 {pageIndex > 1 &&
                   Array.from(
                     { length: pageIndex },
                     (_, index) => index + 1
-                  ).map((p) => (
-                    <div key={p} className="flex w-auto h-fit">
-                      {additionalPage > 1 && additionalPage === p && (
-                        <div
-                          onClick={() =>
-                            setAdditionalPage((pre) =>
-                              pre - 1 < 1 ? 1 : pre - 1
-                            )
-                          }
-                          className="flex items-center cursor-pointer text-[22px] px-1 py-[2px]  mr-2 bg-[#22b3bf] text-white"
-                        >
-                          <MdSkipPrevious />
-                        </div>
-                      )}
-                      {p > additionalPage * 5 ? (
-                        <div
-                          onClick={() => setAdditionalPage((pre) => pre + 1)}
-                          className="flex items-center text-[22px]  cursor-pointer  px-1 py-[2px]  ml-2 bg-[#22b3bf] text-white"
-                        >
-                          <BiSkipNext />
-                        </div>
-                      ) : (
-                        (additionalPage - 1) * (pageIndex - 5) < p && (
-                          <p
-                            onClick={() => {
-                              if (p !== pageChoice) {
-                                fetCateName(routs[1], p);
-                                setPageChoice(p);
-                              }
-                            }}
-                            className={`mx-1 px-[6px] hover:bg-[#d2d5d8] border border-[#2b2b2b]   ${
-                              pageChoice === p ? "bg-[#d2d5d8]" : ""
-                            } cursor-pointer`}
+                  ).map((p) => {
+                    if (p > additionalPage * 5 && !isIndex2) {
+                      isIndex2 = true;
+                      managerIndex2 = true;
+                    } else {
+                      managerIndex2 = false;
+                    }
+                    return (
+                      <div key={p} className="flex w-auto h-fit">
+                        {additionalPage > 1 && additionalPage === p && (
+                          <div
+                            onClick={() =>
+                              setAdditionalPage((pre) =>
+                                pre - 1 < 1 ? 1 : pre - 1
+                              )
+                            }
+                            className="flex items-center cursor-pointer text-[22px] px-1 py-[2px]  mr-2 bg-[#22b3bf] text-white"
                           >
-                            {p}
-                          </p>
-                        )
-                      )}
-                    </div>
-                  ))}
+                            <MdSkipPrevious />
+                          </div>
+                        )}
+                        {managerIndex2 && p > additionalPage * 5 ? (
+                          <div
+                            onClick={() => setAdditionalPage((pre) => pre + 1)}
+                            className="flex items-center text-[22px]  cursor-pointer  px-1 py-[2px]  ml-2 bg-[#22b3bf] text-white"
+                          >
+                            <BiSkipNext />
+                          </div>
+                        ) : (
+                          (additionalPage - 1) * (pageIndex - 5) < p &&
+                          !isIndex2 && (
+                            <p
+                              onClick={() => {
+                                if (p !== pageChoice) {
+                                  fetCateName(routs[1], p);
+                                  setPageChoice(p);
+                                }
+                              }}
+                              className={`mx-1 px-[6px] hover:bg-[#d2d5d8] border border-[#2b2b2b]   ${
+                                pageChoice === p ? "bg-[#d2d5d8]" : ""
+                              } cursor-pointer`}
+                            >
+                              {p}
+                            </p>
+                          )
+                        )}
+                      </div>
+                    );
+                  })}
               </div>
             </>
           ) : (
@@ -807,162 +854,184 @@ const page = () => {
                   Array.from(
                     { length: pageIndex },
                     (_, index) => index + 1
-                  ).map((p) => (
-                    <div key={p} className="flex w-auto h-fit">
-                      {additionalPage > 1 && additionalPage === p && (
-                        <div
-                          onClick={() =>
-                            setAdditionalPage((pre) =>
-                              pre - 1 < 1 ? 1 : pre - 1
-                            )
-                          }
-                          className="flex items-center cursor-pointer text-[22px] px-1 py-[2px]  mr-2 bg-[#22b3bf] text-white"
-                        >
-                          <MdSkipPrevious />
-                        </div>
-                      )}
-                      {p > additionalPage * 5 ? (
-                        <div
-                          onClick={() => setAdditionalPage((pre) => pre + 1)}
-                          className="flex items-center text-[22px]  cursor-pointer  px-1 py-[2px]  ml-2 bg-[#22b3bf] text-white"
-                        >
-                          <BiSkipNext />
-                        </div>
-                      ) : (
-                        (additionalPage - 1) * (pageIndex - 5) < p && (
-                          <p
-                            onClick={() => {
-                              if (p !== pageChoice) {
-                                fetCateName(routs[1], p);
-                                setPageChoice(p);
-                              }
-                            }}
-                            className={`mx-1 px-[6px] hover:bg-[#d2d5d8] border border-[#2b2b2b]   ${
-                              pageChoice === p ? "bg-[#d2d5d8]" : ""
-                            } cursor-pointer`}
+                  ).map((p) => {
+                    if (p > additionalPage * 5 && !isIndex) {
+                      isIndex = true;
+                      managerIndex = true;
+                    } else {
+                      managerIndex = false;
+                    }
+                    return (
+                      <div key={p} className="flex w-auto h-fit">
+                        {additionalPage > 1 && additionalPage === p && (
+                          <div
+                            onClick={() =>
+                              setAdditionalPage((pre) =>
+                                pre - 1 < 1 ? 1 : pre - 1
+                              )
+                            }
+                            className="flex items-center cursor-pointer text-[22px] px-1 py-[2px]  mr-2 bg-[#22b3bf] text-white"
                           >
-                            {p}
-                          </p>
-                        )
-                      )}
-                    </div>
-                  ))}
+                            <MdSkipPrevious />
+                          </div>
+                        )}
+                        {managerIndex && p > additionalPage * 5 ? (
+                          <div
+                            onClick={() => setAdditionalPage((pre) => pre + 1)}
+                            className="flex items-center text-[22px]  cursor-pointer  px-1 py-[2px]  ml-2 bg-[#22b3bf] text-white"
+                          >
+                            <BiSkipNext />
+                          </div>
+                        ) : (
+                          (additionalPage - 1) * (pageIndex - 5) < p &&
+                          !isIndex && (
+                            <p
+                              onClick={() => {
+                                if (p !== pageChoice) {
+                                  fetCateName(routs[1], p);
+                                  setPageChoice(p);
+                                }
+                              }}
+                              className={`mx-1 px-[6px] hover:bg-[#d2d5d8] border border-[#2b2b2b]   ${
+                                pageChoice === p ? "bg-[#d2d5d8]" : ""
+                              } cursor-pointer`}
+                            >
+                              {p}
+                            </p>
+                          )
+                        )}
+                      </div>
+                    );
+                  })}
               </div>
-              {dataGuid.map((g) => (
-                <Link
-                  href="/[slug]"
-                  as={`guide/${routs[1]}/${g.name}/${g.id}`}
-                  className="w-full flex flex-wrap md:flex-nowrap  mb-4 relative"
-                  key={g.id}
-                >
-                  <div
-                    className="absolute left-[83px] cursor-pointer top-0 text-sm w-auto px-3 py-1  bg-white z-10 shadow-[0_0_2px_#999999]"
-                    onClick={async (e) => {
-                      e.stopPropagation();
-                      e.preventDefault();
+              {dataGuid.length > 0 ? (
+                dataGuid.map((g) => (
+                  <Link
+                    href="/[slug]"
+                    as={`guide/${routs[1]}/${g.name}/${g.id}`}
+                    className="w-full flex flex-wrap md:flex-nowrap  mb-4 relative"
+                    key={g.id}
+                  >
+                    <div
+                      className="absolute left-[83px] cursor-pointer top-0 text-sm w-auto px-3 py-1  bg-white z-10 shadow-[0_0_2px_#999999]"
+                      onClick={async (e) => {
+                        e.stopPropagation();
+                        e.preventDefault();
 
-                      const isD = window.confirm("Bạn có muốn xoá không?");
-                      if (isD && g.id) {
-                        setLoading(String(g.id));
-                        const del = await http.delete(`Guide/Delete/${g.id}`);
-                        fetCateName(nameRout);
-                        if (newsUp) setNewsUp(undefined);
-                        setLoading("");
-                      }
-                    }}
-                  >
-                    {loading === String(g.id) ? "deleting..." : "delete"}
-                  </div>
-                  <div
-                    className="absolute left-1 cursor-pointer top-0 text-sm w-auto px-3 py-1  bg-white z-10 shadow-[0_0_2px_#999999]"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      e.stopPropagation();
-                      setGuideUp(g);
-                      setAdd(routs[1]);
-                    }}
-                  >
-                    Update
-                  </div>
-                  <div className="min-w-full h-[130px] md:min-w-[250px] md:h-[155px] xl:min-w-[350px] xl:h-[210px] mr-3 md:mr-5">
-                    <img
-                      src={g.urlImage[0]?.image}
-                      alt={g.urlImage[0]?.path}
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                  <div className="">
-                    <h3
-                      className="text-base md:text-[17px] font-bold overflow-hidden"
-                      style={{
-                        display: "-webkit-box",
-                        WebkitLineClamp: 2,
-                        WebkitBoxOrient: "vertical",
-                        wordBreak: "break-all",
+                        const isD = window.confirm("Bạn có muốn xoá không?");
+                        if (isD && g.id) {
+                          setLoading(String(g.id));
+                          const del = await http.delete(`Guide/Delete/${g.id}`);
+                          fetCateName(nameRout);
+                          if (newsUp) setNewsUp(undefined);
+                          setLoading("");
+                        }
                       }}
                     >
-                      {g.name}
-                    </h3>
-                    <p className="text-xs mt-1">
-                      {moment(g.create_Date).format("DD/MM/YYYY HH:MM:SS")}
-                    </p>
+                      {loading === String(g.id) ? "deleting..." : "delete"}
+                    </div>
                     <div
-                      className={`text-sm md:text-base  mt-2 overflow-hidden ${styles.description}`}
-                      style={{
-                        display: "-webkit-box",
-                        WebkitLineClamp: 4,
-                        WebkitBoxOrient: "vertical",
+                      className="absolute left-1 cursor-pointer top-0 text-sm w-auto px-3 py-1  bg-white z-10 shadow-[0_0_2px_#999999]"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        setGuideUp(g);
+                        setAdd(routs[1]);
                       }}
-                      dangerouslySetInnerHTML={{ __html: g.content }}
-                    ></div>
-                  </div>
-                </Link>
-              ))}
-              <div className="w-full h-fit flex justify-center pb-1 border-t mt-3">
+                    >
+                      Update
+                    </div>
+                    <div className="min-w-full h-[130px] md:min-w-[250px] md:h-[155px] xl:min-w-[350px] xl:h-[210px] mr-3 md:mr-5">
+                      <img
+                        src={g.urlImage[0]?.image}
+                        alt={g.urlImage[0]?.path}
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                    <div className="">
+                      <h3
+                        className="text-base md:text-[17px] font-bold overflow-hidden"
+                        style={{
+                          display: "-webkit-box",
+                          WebkitLineClamp: 2,
+                          WebkitBoxOrient: "vertical",
+                          wordBreak: "break-all",
+                        }}
+                      >
+                        {g.name}
+                      </h3>
+                      <p className="text-xs mt-1">
+                        {moment(g.create_Date).format("DD/MM/YYYY HH:MM:SS")}
+                      </p>
+                      <div
+                        className={`text-sm md:text-base  mt-2 overflow-hidden ${styles.description}`}
+                        style={{
+                          display: "-webkit-box",
+                          WebkitLineClamp: 4,
+                          WebkitBoxOrient: "vertical",
+                        }}
+                        dangerouslySetInnerHTML={{ __html: g.content }}
+                      ></div>
+                    </div>
+                  </Link>
+                ))
+              ) : (
+                <p>Không có guide nào</p>
+              )}
+              <div className="w-full  h-fit flex justify-center pb-1 border-t mt-3 pt-2">
                 {pageIndex > 1 &&
                   Array.from(
                     { length: pageIndex },
                     (_, index) => index + 1
-                  ).map((p) => (
-                    <div key={p} className="flex w-auto h-fit">
-                      {additionalPage > 1 && additionalPage === p && (
-                        <div
-                          onClick={() =>
-                            setAdditionalPage((pre) =>
-                              pre - 1 < 1 ? 1 : pre - 1
-                            )
-                          }
-                          className="flex items-center cursor-pointer text-[22px] px-1 py-[2px]  mr-2 bg-[#22b3bf] text-white"
-                        >
-                          <MdSkipPrevious />
-                        </div>
-                      )}
-                      {p > additionalPage * 5 ? (
-                        <div
-                          onClick={() => setAdditionalPage((pre) => pre + 1)}
-                          className="flex items-center text-[22px]  cursor-pointer  px-1 py-[2px]  ml-2 bg-[#22b3bf] text-white"
-                        >
-                          <BiSkipNext />
-                        </div>
-                      ) : (
-                        (additionalPage - 1) * (pageIndex - 5) < p && (
-                          <p
-                            onClick={() => {
-                              if (p !== pageChoice) {
-                                fetCateName(routs[1], p);
-                                setPageChoice(p);
-                              }
-                            }}
-                            className={`mx-1 px-[6px] hover:bg-[#d2d5d8] border border-[#2b2b2b]   ${
-                              pageChoice === p ? "bg-[#d2d5d8]" : ""
-                            } cursor-pointer`}
+                  ).map((p) => {
+                    if (p > additionalPage * 5 && !isIndex2) {
+                      isIndex2 = true;
+                      managerIndex2 = true;
+                    } else {
+                      managerIndex2 = false;
+                    }
+                    return (
+                      <div key={p} className="flex w-auto h-fit">
+                        {additionalPage > 1 && additionalPage === p && (
+                          <div
+                            onClick={() =>
+                              setAdditionalPage((pre) =>
+                                pre - 1 < 1 ? 1 : pre - 1
+                              )
+                            }
+                            className="flex items-center cursor-pointer text-[22px] px-1 py-[2px]  mr-2 bg-[#22b3bf] text-white"
                           >
-                            {p}
-                          </p>
-                        )
-                      )}
-                    </div>
-                  ))}
+                            <MdSkipPrevious />
+                          </div>
+                        )}
+                        {managerIndex2 && p > additionalPage * 5 ? (
+                          <div
+                            onClick={() => setAdditionalPage((pre) => pre + 1)}
+                            className="flex items-center text-[22px]  cursor-pointer  px-1 py-[2px]  ml-2 bg-[#22b3bf] text-white"
+                          >
+                            <BiSkipNext />
+                          </div>
+                        ) : (
+                          (additionalPage - 1) * (pageIndex - 5) < p &&
+                          !isIndex2 && (
+                            <p
+                              onClick={() => {
+                                if (p !== pageChoice) {
+                                  fetCateName(routs[1], p);
+                                  setPageChoice(p);
+                                }
+                              }}
+                              className={`mx-1 px-[6px] hover:bg-[#d2d5d8] border border-[#2b2b2b]   ${
+                                pageChoice === p ? "bg-[#d2d5d8]" : ""
+                              } cursor-pointer`}
+                            >
+                              {p}
+                            </p>
+                          )
+                        )}
+                      </div>
+                    );
+                  })}
               </div>
             </>
           )}
@@ -979,7 +1048,7 @@ const page = () => {
               setAdd("");
             }}
             cateId={cate.categoryId}
-            cateName={cate.categoryName}
+            cateName={nameRout}
           />
         ) : categoryType === news ? (
           <AddNewsModel
@@ -991,7 +1060,7 @@ const page = () => {
             setNewsUp={setNewsUp}
             fet={fetCateName}
             cateId={cate.categoryId}
-            cateName={cate.categoryName}
+            cateName={nameRout}
           />
         ) : (
           <AddGuideModel
@@ -1003,7 +1072,7 @@ const page = () => {
             setNewsUp={setGuideUp}
             fet={fetCateName}
             cateId={cate.categoryId}
-            cateName={cate.categoryName}
+            cateName={nameRout}
           />
         )
       ) : (

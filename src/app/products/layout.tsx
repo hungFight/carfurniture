@@ -19,7 +19,6 @@ export default async function RootLayout({
   children: React.ReactNode;
 }) {
   const data: { categoryName: string; categoryId: number }[] = await getData();
-  console.log("producc", data);
   const newData = data.map((r) => ({
     categoryId: r.categoryId,
     categoryName: r.categoryName,

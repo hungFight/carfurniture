@@ -5,13 +5,9 @@ import styles from "@/components/styleComponent.module.scss";
 
 const getProduct = async (detailed: string) => {
   const res = await http.get(`Blog/GetByID/${detailed}`);
-  console.log(res.data, "res news");
-
   return res.data;
 };
 const page = async (props: { params: { detailed: string[] | string } }) => {
-  console.log(props, "props news");
-
   const data:
     | {
         blog: {

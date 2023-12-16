@@ -6,6 +6,8 @@ import { FaPhone } from "react-icons/fa6";
 import { AiOutlineMail } from "react-icons/ai";
 import { PiMessengerLogoLight } from "react-icons/pi";
 import http from "@/utils/http";
+import Link from "next/link";
+import styles from "./styleComponent.module.scss";
 const containerStyle = {
   width: "400px",
   height: "400px",
@@ -29,6 +31,9 @@ const Map = () => {
   useEffect(() => {
     fet();
   }, []);
+  const token = localStorage.getItem("token") ?? "";
+  const refreshToken = localStorage.getItem("refreshToken") ?? "";
+  const expire = localStorage.getItem("expiration") ?? "";
 
   return (
     <div className="flex  text-white md:relative right-[76px] justify-center w-fit flex-wrap ">
@@ -83,6 +88,38 @@ const Map = () => {
           </a>
         </h3>
       </div>
+      <a
+        href={`tel:${data?.phone}`}
+        className={`fixed bottom-5 left-2 flex items-center cursor-pointer ${styles.hover}`}
+      >
+        <div className="w-[50px] h-[50px] rounded-full bg-[#5BB006] flex items-center justify-center z-10 text-white">
+          <FaPhone />
+        </div>
+        <h3 className="text-[15px]  bg-[#0099e6] rounded-[20px] font-semibold py-1 px-[11px] pl-[34px] relative right-[29px] text-white">
+          {data?.phone}
+        </h3>
+      </a>
+      <a
+        href={data?.url_Mess}
+        className={`fixed bottom-[78px] left-2 flex items-center cursor-pointer ${styles.hover}`}
+      >
+        <div className="w-[50px] h-[50px] text-[31px] rounded-full bg-[#1c8ff3] flex items-center justify-center z-10 text-white">
+          <PiMessengerLogoLight />
+        </div>
+        <h3 className="text-[15px]  bg-[#155994] rounded-[20px] font-semibold py-1 px-[11px] pl-[34px] relative right-[29px] text-white">
+          Messenger
+        </h3>
+      </a>
+      {token && refreshToken && expire && (
+        <Link
+          href="/admin"
+          className="fixed bottom-[35px] right-[35px] flex items-center  cursor-pointer"
+        >
+          <h3 className="text-[15px] text-center bg-[#0099e6] rounded-[20px] font-semibold py-1 px-[11px]  text-white">
+            Admin
+          </h3>
+        </Link>
+      )}
     </div>
   );
 };

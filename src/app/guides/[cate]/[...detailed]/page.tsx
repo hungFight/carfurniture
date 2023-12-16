@@ -23,7 +23,6 @@ const page = async (props: { params: { detailed: string[] | string } }) => {
     typeof props.params.detailed === "string"
       ? []
       : await getProduct(props.params.detailed[1]);
-  console.log(props, "props news");
 
   return (
     <div className="w-full min-[1000px]:flex justify-center">
