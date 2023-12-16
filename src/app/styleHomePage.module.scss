@@ -27,7 +27,12 @@
     border-bottom: 1px solid rgb(138, 138, 138);
   }
 }
-
+.news .hh3 {
+  background-image: linear-gradient(13deg, black, #bc2020, green, transparent);
+  padding: 5px;
+  border-radius: 5px;
+  color: white;
+}
 .description {
   word-break: break-all;
   img,

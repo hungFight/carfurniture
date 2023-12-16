@@ -1082,7 +1082,7 @@ const page = () => {
         <FormAboutUs title="About us" onClick={() => setAboutUs(false)} />
       )}
       <div
-        className="w-fit fixed bg-[#0099e6] bottom-[80px] z-10 left-[52px] rounded-[5px] cursor-pointer font-medium px-3 py-1 text-white"
+        className="w-fit fixed bg-[#0099e6] bottom-[88px] z-10 right-3 rounded-[5px] cursor-pointer font-medium px-3 py-1 text-white"
         onClick={() => setAboutUs(true)}
       >
         About us

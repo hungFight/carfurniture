@@ -106,7 +106,7 @@ export default function Home() {
     } else {
       const res = await http.post("Product/GetPaginationProduct", {
         pageIndex: index,
-        pageSize: 1,
+        pageSize: 8,
         search_CategoryName: caseChose.product?.categoryName,
       });
       setPageIndex(res.data.totalPageIndex);
@@ -296,11 +296,13 @@ export default function Home() {
               )}{" "}
             </div>
           </div>{" "}
-          <div className="flex mt-3 flex-wrap max-h-[785px] h-auto overflow-hidden border-b">
+          <div className="flex mt-3 flex-wrap justify-between max-h-[785px] h-auto overflow-hidden border-b">
             <div
-              className={`w-1/2 h-fit flex flex-wrap justify-around ${styles.news}`}
+              className={`w-[49%] h-fit flex flex-wrap justify-around ${styles.news}`}
             >
-              <h3 className="text-base w-full font-semibold text-center my-5">
+              <h3
+                className={`text-base w-full font-semibold text-center my-5 ${styles.hh3}`}
+              >
                 Tin tuc
               </h3>
               <div className="flex flex-wrap justify-around">
@@ -340,15 +342,17 @@ export default function Home() {
               </div>
             </div>{" "}
             <div
-              className={`w-1/2 h-fit flex flex-wrap justify-around ${styles.news}`}
+              className={`w-[49%] h-fit flex flex-wrap justify-around ${styles.news}`}
             >
-              <h3 className="text-base w-full font-semibold text-center my-5">
+              <h3
+                className={`text-base w-full font-semibold text-center my-5 ${styles.hh3}`}
+              >
                 Huong dan
               </h3>
               <div className="flex flex-wrap justify-around">
                 {dataGuid.map((n) => (
                   <Link
-                    href={`guide/${caseChose.product?.categoryName}/${n.name}/${n.id}`}
+                    href={`guides/${caseChose.product?.categoryName}/${n.name}/${n.id}`}
                     key={n.id}
                     className="w-[200px] xl:w-[250px] p-1 border shadow-[0_0_3px_#7a7a7a] hover:shadow-[0_0_10px] mb-4 cursor-pointer mr-2"
                   >
