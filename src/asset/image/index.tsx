@@ -1,4 +1,4 @@
-import logo from "./lamborghini-aventador-sports-car-cool-black-car-wallpaper-preview.jpg";
+import logo from "./z4880973171734_cd11690afd244384f1715168eeb65fcd (2).jpg";
 import slideOneOne from "./silde/1/1.jpg";
 import slideOneTwo from "./silde/1/2.jpg";
 import slideTwoOne from "./silde/2/1.jpg";
