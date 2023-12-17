@@ -59,7 +59,6 @@ export default function Home() {
   const [loadingType, setLoadingType] = useState<boolean>(false);
   const fetS = async () => {
     setDataList([]);
-    setLoadingType(true);
     const resT = await http.get("CategoryType/GetAll");
 
     const resCatePr = await http.get<
@@ -76,7 +75,6 @@ export default function Home() {
       news: resCateNews.data[0],
       guide: resCateGuide.data[0],
     });
-    fetSDataProduct();
     setDataList(
       resCatePr.data.map((r) => ({ id: r.categoryId, name: r.categoryName }))
     );
@@ -92,7 +90,6 @@ export default function Home() {
       search_CategoryName: caseChose.guide?.categoryName,
     });
     setDataGuid(resGuide.data.data);
-    setLoadingType(false);
   };
   const fetSDataProduct = async (index: number = 1, name?: string) => {
     if (name) {
@@ -104,6 +101,9 @@ export default function Home() {
       setDataProducts(res.data.data);
       setLoading(false);
     } else {
+      console.log(caseChose, "cases");
+      setLoadingType(true);
+
       const res = await http.post("Product/GetPaginationProduct", {
         pageIndex: index,
         pageSize: 8,
@@ -111,17 +111,21 @@ export default function Home() {
       });
       setPageIndex(res.data.totalPageIndex);
       setDataProducts(res.data.data);
+      setLoadingType(false);
     }
   };
   useEffect(() => {
     fetS();
   }, []);
+  useEffect(() => {
+    fetSDataProduct();
+  }, [caseChose]);
   const handle = (v: number) => {
     const cases = dataList
       .filter((r) => r.id === v)
       .map((r) => ({ categoryId: r.id, categoryName: r.name }))[0];
+
     setCaseChose({ ...caseChose, product: cases });
-    fetSDataProduct();
   };
 
   const handleSearch = (e: any) => {
@@ -175,7 +179,7 @@ export default function Home() {
                 loading={loading}
               />
             </div>
-            <div className="w-full h-fit flex justify-center pb-1 border-b mt-2">
+            <div className="w-full h-fit flex justify-center pb-1 border-b mt-[25px]">
               {pageIndex > 1 &&
                 Array.from({ length: pageIndex }, (_, index) => index + 1).map(
                   (p) => {
@@ -296,14 +300,14 @@ export default function Home() {
               )}{" "}
             </div>
           </div>{" "}
-          <div className="flex mt-3 flex-wrap justify-between max-h-[785px] h-auto overflow-hidden border-b">
+          <div className="flex mt-3 flex-wrap justify-between h-auto overflow-hidden border-b">
             <div
               className={`w-[49%] h-fit flex flex-wrap justify-around ${styles.news}`}
             >
               <h3
                 className={`text-base w-full font-semibold text-center my-5 ${styles.hh3}`}
               >
-                Tin tuc
+                Tin tức
               </h3>
               <div className="flex flex-wrap justify-around">
                 {dataNews.map((n) => (
@@ -345,9 +349,9 @@ export default function Home() {
               className={`w-[49%] h-fit flex flex-wrap justify-around ${styles.news}`}
             >
               <h3
-                className={`text-base w-full font-semibold text-center my-5 ${styles.hh3}`}
+                className={`text-base w-full font-semibold text-center my-5 ${styles.hh4}`}
               >
-                Huong dan
+                Hưỡng dẫn
               </h3>
               <div className="flex flex-wrap justify-around">
                 {dataGuid.map((n) => (

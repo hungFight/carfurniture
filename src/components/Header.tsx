@@ -10,6 +10,7 @@ import Login from "./Login";
 import moment from "moment";
 const Header = () => {
   const [session, setSession] = useState<boolean>(false);
+  const [active, setActive] = useState<string>("");
   const [firstCate, setFirstCate] = useState<{
     product: string;
     news: string;
@@ -20,11 +21,11 @@ const Header = () => {
     getData();
     if (typeof window !== "undefined") {
       // your code
-      const token = localStorage.getItem("token") ?? "";
-      const refreshToken = localStorage.getItem("refreshToken") ?? "";
-      const expire = localStorage.getItem("expiration") ?? "";
+      const token = window.localStorage.getItem("token") ?? "";
+      const refreshToken = window.localStorage.getItem("refreshToken") ?? "";
+      const expire = window.localStorage.getItem("expiration") ?? "";
       console.log(moment(expire).format("YYYY-MM-DD HH:mm:ss"), "time");
-
+      setActive(window.location.pathname);
       if (!token || !refreshToken || !expire) setAuth(true);
     }
   }, []);
@@ -40,7 +41,7 @@ const Header = () => {
       guide: res3.data[0]?.categoryName,
     });
   };
-  const active = window.location.pathname;
+
   console.log(active.indexOf("news"), "active");
   const [onTab, setOnTab] = useState<boolean>(false);
   return (
@@ -51,13 +52,13 @@ const Header = () => {
           onClick={() => setOnTab(false)}
         >
           <div
-            className="h-full  w-[80%] shadow-[0_0_3px_#4e4e4e] bg-[#f3f3f3] "
+            className="h-full  w-[80%] shadow-[0_0_3px_#4e4e4e] bg-white "
             onClick={(e) => e.stopPropagation()}
           >
             <div className=" w-full flex flex-wrap mt-[15px]">
               <Link
                 href="/"
-                className={`header_home w-full text-[#3a3b3b]  text-sm sm:text-base mx-4 max-sm:my-1 whitespace-pre-wrap font-medium cursor-pointer hover:text-[#42aaea] ${
+                className={`header_home w-full text-[#3a3b3b]  my-[2px] text-sm sm:text-base mx-4 max-sm:my-1 whitespace-pre-wrap font-medium cursor-pointer hover:text-[#42aaea] ${
                   !(active.indexOf("products") > 0) &&
                   !(active.indexOf("news") > 0) &&
                   !(active.indexOf("guides") > 0)
@@ -80,7 +81,7 @@ const Header = () => {
                 href={`/news/${firstCate.news}`}
                 className={`header_home w-full text-[#3a3b3b] ${
                   active.indexOf("news") > 0 ? "text-[#42aaea]" : ""
-                } text-sm sm:text-base mx-4 max-sm:my-1 whitespace-pre-wrap font-medium cursor-pointer hover:text-[#42aaea]`}
+                } text-sm sm:text-base mx-4 max-sm:my-1 whitespace-pre-wrap my-[2px] font-medium cursor-pointer hover:text-[#42aaea]`}
                 onClick={(e: any) => {
                   if (document) {
                     const hear = document?.querySelectorAll(".header_home");
@@ -97,7 +98,7 @@ const Header = () => {
                 href={`/products/${firstCate.product}`}
                 className={`header_home w-full text-[#3a3b3b] ${
                   active.indexOf("products") > 0 ? "text-[#42aaea]" : ""
-                }  text-sm sm:text-base mx-4 max-sm:my-1 whitespace-pre-wrap font-medium cursor-pointer hover:text-[#42aaea]`}
+                }  text-sm sm:text-base mx-4 max-sm:my-1 whitespace-pre-wrap my-[2px] font-medium cursor-pointer hover:text-[#42aaea]`}
                 onClick={(e: any) => {
                   if (document) {
                     const hear = document?.querySelectorAll(".header_home");
@@ -114,7 +115,7 @@ const Header = () => {
                 href={`/guides/${firstCate.guide}`}
                 className={`header_home w-full  ${
                   active.indexOf("guides") > 0 ? "text-[#42aaea]" : ""
-                } text-[#3a3b3b] text-sm sm:text-base mx-4 max-sm:my-1 whitespace-pre-wrap font-medium cursor-pointer hover:text-[#42aaea]`}
+                } text-[#3a3b3b] text-sm sm:text-base mx-4 max-sm:my-1 my-[2px] whitespace-pre-wrap font-medium cursor-pointer hover:text-[#42aaea]`}
                 onClick={(e: any) => {
                   if (document) {
                     const hear = document?.querySelectorAll(".header_home");
@@ -127,12 +128,15 @@ const Header = () => {
               >
                 Hưỡng dẫn
               </Link>
-              <p
+              <div
                 onClick={() => setOnTab(false)}
                 className="header_home w-full flex  text-[#3a3b3b] text-sm sm:text-base mx-4 max-sm:my-1 whitespace-pre-wrap font-medium cursor-pointer hover:text-[#42aaea]"
               >
-                Ẩn thanh Tab <IoMdClose />
-              </p>
+                Ẩn thanh Tab{" "}
+                <div className="flex items-center">
+                  <IoMdClose />
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -162,16 +166,18 @@ const Header = () => {
           <div
             className="flex max-sm:absolute max-sm:top-[5px] max-sm:right-11 cursor-pointer "
             onClick={async () => {
-              const userName = localStorage.getItem("userName");
-              const token = localStorage.getItem("token");
-              const res = await http.get(`User/Logout/${userName}`, {
-                headers: { Authorization: "Bearer " + token },
-              });
-              if (res.data.message) {
-                localStorage.removeItem("token");
-                localStorage.removeItem("refreshToken");
-                localStorage.removeItem("expiration");
-                window.location.reload();
+              if (typeof window !== "undefined") {
+                const userName = window.localStorage.getItem("userName");
+                const token = window.localStorage.getItem("token");
+                const res = await http.get(`User/Logout/${userName}`, {
+                  headers: { Authorization: "Bearer " + token },
+                });
+                if (res.data.message) {
+                  window.localStorage.removeItem("token");
+                  localStorage.removeItem("refreshToken");
+                  localStorage.removeItem("expiration");
+                  window.location.reload();
+                }
               }
             }}
           >

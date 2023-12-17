@@ -1,6 +1,6 @@
 import React from "react";
 
-const Routing: React.FC<{ routs?: string[] }> = ({ routs }) => {
+const Routing: React.FC<{ routs: (string | undefined)[] }> = ({ routs }) => {
   return (
     <div className="flex w-fit ">
       <a href="/" className="whitespace-nowrap">

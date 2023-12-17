@@ -1,7 +1,6 @@
 import http from "@/utils/http";
 import type { Metadata } from "next";
 import dynamic from "next/dynamic";
-import { Inter } from "next/font/google";
 
 const RoutListing = dynamic(() => import("@/components/Items/RoutListing"));
 export const metadata: Metadata = {

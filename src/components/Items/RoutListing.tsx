@@ -37,16 +37,25 @@ const RoutListing: React.FC<{
         info_in_AboutUs: [{ url_Mess: string; phone: string }];
       }[]
   >([]);
-  const [hasSeen, setHasSeen] = useState<number[]>(() =>
-    JSON.parse(localStorage.getItem("product") ?? JSON.stringify([]))
-  );
+  const [hasSeen, setHasSeen] = useState<number[]>(() => {
+    if (typeof window !== "undefined") {
+      return JSON.parse(
+        window.localStorage.getItem("product") ?? JSON.stringify([])
+      );
+    }
+  });
   const pathname = usePathname();
-  const [routs, setRouts] = useState([
-    title,
-    window?.location.pathname.split(`/`)[2]
-      ? decodeURIComponent(window.location.pathname.split(`/`)[2])
-      : defaultR,
-  ]);
+  const [routs, setRouts] = useState(() => {
+    if (typeof window !== "undefined") {
+      return [
+        title,
+        window?.location.pathname.split(`/`)[2]
+          ? decodeURIComponent(window.location.pathname.split(`/`)[2])
+          : defaultR,
+      ];
+    }
+    return [];
+  });
   useEffect(() => {
     const getProduct = async () => {
       if (hasSeen.length === 1) {
@@ -92,6 +101,7 @@ const RoutListing: React.FC<{
     }
     setLoad(!load);
   };
+  const f = routs[1] ?? "";
   return (
     <div className={`px-5 w-full ${routs[3] ? "" : "md:w-[400px]"} `}>
       <div className="w-full my-3 mb-4">
@@ -103,7 +113,7 @@ const RoutListing: React.FC<{
             <div className="w-full">
               <Listing
                 onClick={handleRount}
-                choice={routs[1]}
+                choice={f}
                 category={category}
                 data={cate ?? []}
                 default={currentPath ?? defaultR}

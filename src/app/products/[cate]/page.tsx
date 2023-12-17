@@ -2,8 +2,6 @@
 import InputSearch from "@/components/Items/InputSearch";
 import React, { useEffect, useState } from "react";
 import styles from "../../styleHomePage.module.scss";
-import { SiShopee } from "react-icons/si";
-import dynamic from "next/dynamic";
 import Link from "next/link";
 import http from "@/utils/http";
 import { BiSkipNext } from "react-icons/bi";
@@ -14,6 +12,7 @@ const page = (props: { params: { cate: string } }) => {
   const [loadingSearch, setLoadingSearch] = useState<boolean>(false);
   const [pageIndex, setPageIndex] = useState<number>(0);
   const [pageChoice, setPageChoice] = useState<number>(1);
+  const [additionalPage, setAdditionalPage] = useState<number>(1);
 
   const [data, setData] = useState<
     {
@@ -26,12 +25,10 @@ const page = (props: { params: { cate: string } }) => {
       urlImage: { image: string; path: string }[];
     }[]
   >();
-  useEffect(() => {
-    getProduct(props.params.cate);
-  }, []);
+
   const getProduct = async (cate: string, index = 1, name?: string) => {
     if (decodeURIComponent(cate) === "Đã xem") {
-      if (localStorage) {
+      if (typeof localStorage !== "undefined") {
         const hasSeen: number[] =
           JSON.parse(localStorage.getItem("product") ?? JSON.stringify([])) ??
           [];
@@ -77,29 +74,27 @@ const page = (props: { params: { cate: string } }) => {
           }
         }
       }
+    }
+    if (name) {
+      setLoading(true);
+      const res = await http.post("Product/GetPaginationProduct", {
+        pageIndex: index,
+        pageSize: 6,
+        search_Name: name,
+      });
+      setLoading(false);
+      setPageIndex(res.data.totalPageIndex);
+      setData(res.data.data);
     } else {
-      if (name) {
-        setLoading(true);
-
-        const res = await http.post("Product/GetPaginationProduct", {
-          pageIndex: index,
-          pageSize: 6,
-          search_Name: name,
-        });
-        setLoading(false);
-        setPageIndex(res.data.totalPageIndex);
-        setData(res.data.data);
-      } else {
-        setLoadingSearch(true);
-        const res = await http.post("Product/GetPaginationProduct", {
-          pageIndex: index,
-          pageSize: 1,
-          search_CategoryName: decodeURIComponent(cate),
-        });
-        setPageIndex(res.data.totalPageIndex);
-        setLoadingSearch(false);
-        setData(res.data.data);
-      }
+      setLoadingSearch(true);
+      const res = await http.post("Product/GetPaginationProduct", {
+        pageIndex: index,
+        pageSize: 1,
+        search_CategoryName: decodeURIComponent(cate),
+      });
+      setPageIndex(res.data.totalPageIndex);
+      setLoadingSearch(false);
+      setData(res.data.data);
     }
   };
   console.log(search, "props data");
@@ -109,12 +104,14 @@ const page = (props: { params: { cate: string } }) => {
   const handleAdd = () => {
     getProduct(props.params.cate, 1, search);
   };
-  const [additionalPage, setAdditionalPage] = useState<number>(1);
+  useEffect(() => {
+    getProduct(props.params.cate);
+  }, []);
   let managerIndex = false;
   let isIndex = false;
   return (
     <>
-      <div className="w-full min-[1200px]:w-[60%] p-3">
+      <div className="w-full  min-[800px]:w-[49%] min-[1020px]:w-[60%] p-3">
         {decodeURIComponent(props.params.cate) !== "Đã xem" && (
           <div className="w-full mb-4">
             <InputSearch
@@ -189,17 +186,19 @@ const page = (props: { params: { cate: string } }) => {
                   as={`${props.params.cate}/${p.name}/${p.id}`}
                   className="w-[200px] m-3 md:w-[250px] p-1 border shadow-[0_0_3px_#7a7a7a] hover:shadow-[0_0_10px] mb-4 cursor-pointer"
                   onClick={() => {
-                    const h: number[] = JSON.parse(
-                      localStorage.getItem("product") ?? JSON.stringify([])
-                    );
-                    console.log(h, "hhhh");
+                    if (typeof localStorage !== "undefined") {
+                      const h: number[] = JSON.parse(
+                        localStorage.getItem("product") ?? JSON.stringify([])
+                      );
+                      console.log(h, "hhhh");
 
-                    if (h.some((m) => m !== p.id) || !h.length) {
-                      console.log(h, "hhhh voooo");
+                      if (h.some((m) => m !== p.id) || !h.length) {
+                        console.log(h, "hhhh voooo");
 
-                      h.unshift(p.id);
-                      const newH = h.filter((s, index) => index !== 2);
-                      localStorage.setItem("product", JSON.stringify(newH));
+                        h.unshift(p.id);
+                        const newH = h.filter((s, index) => index !== 2);
+                        localStorage.setItem("product", JSON.stringify(newH));
+                      }
                     }
                   }}
                 >
@@ -242,13 +241,13 @@ const page = (props: { params: { cate: string } }) => {
                     <button className="text-sm shadow-[0_0_2px_#4a8cbf] border-[#4a8cbf] border-[1px] p-1 pr-3 rounded-md">
                       View more
                     </button>
-                    <a
+                    {/* <a
                       href={p.urlShoppe}
-                      className="absolute top-[5px] right-[10px] md:right-[40px]"
+                      className="absolute top-[5px] right-[10px] md:right-[40px] text-[crimson]"
                       style={{ color: "crimson !important" }}
                     >
                       <SiShopee />
-                    </a>
+                    </a> */}
                   </div>
                 </Link>
               ))

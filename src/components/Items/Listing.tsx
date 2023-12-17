@@ -14,8 +14,8 @@ const Listing: React.FC<{
   Tag?: any;
   menu?: string;
   loading?: boolean;
-  handleDeleteDirectory: (id: number) => Promise<void>;
-  handleUpdateDirectory: (id: number, name: string) => Promise<boolean>;
+  handleDeleteDirectory?: (id: number) => Promise<void>;
+  handleUpdateDirectory?: (id: number, name: string) => Promise<boolean>;
   del?: boolean;
   category?: string;
 }> = ({
@@ -79,11 +79,13 @@ const Listing: React.FC<{
                           className="text-xs px-2 py-1 border bg-[#1e7ccd] text-white cursor-pointer rounded-[5px]"
                           onClick={async (e) => {
                             e.stopPropagation();
-                            const ok = await handleUpdateDirectory(
-                              r.categoryId,
-                              updateText
-                            );
-                            if (ok) setUpdate(null);
+                            if (handleUpdateDirectory) {
+                              const ok = await handleUpdateDirectory(
+                                r.categoryId,
+                                updateText
+                              );
+                              if (ok) setUpdate(null);
+                            }
                           }}
                         >
                           update
@@ -112,8 +114,8 @@ const Listing: React.FC<{
                             const isOk = window.confirm(
                               "Are you sure you want to delete?"
                             );
-                            if (isOk) await handleDeleteDirectory(r.categoryId);
-                            await handleDeleteDirectory(r.categoryId);
+                            if (isOk && handleDeleteDirectory)
+                              await handleDeleteDirectory(r.categoryId);
                           }}
                         >
                           <IoClose />
@@ -137,7 +139,7 @@ const Listing: React.FC<{
                 <Tag
                   href={`/[slug]`}
                   as={`/${defaultR}/${r.categoryName}`}
-                  className={`w-full  text-sm md:text-base cursor-pointer  ${
+                  className={`w-full  text-sm md:text-base cursor-pointer hover:text-[#0087ff] ${
                     choice === r.categoryName ? "text-[#0087ff]" : ""
                   }`}
                   onClick={() => onClick(r.categoryName)}
@@ -157,11 +159,13 @@ const Listing: React.FC<{
                     className="text-xs px-2 py-1 border bg-[#1e7ccd] text-white cursor-pointer rounded-[5px]"
                     onClick={async (e) => {
                       e.stopPropagation();
-                      const ok = await handleUpdateDirectory(
-                        r.categoryId,
-                        updateText
-                      );
-                      if (ok) setUpdate(null);
+                      if (handleUpdateDirectory) {
+                        const ok = await handleUpdateDirectory(
+                          r.categoryId,
+                          updateText
+                        );
+                        if (ok) setUpdate(null);
+                      }
                     }}
                   >
                     update
@@ -190,7 +194,8 @@ const Listing: React.FC<{
                       const isOk = window.confirm(
                         "Are you sure you want to delete?"
                       );
-                      if (isOk) await handleDeleteDirectory(r.categoryId);
+                      if (isOk && handleDeleteDirectory)
+                        await handleDeleteDirectory(r.categoryId);
                     }}
                   >
                     <IoClose />

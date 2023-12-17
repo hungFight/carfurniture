@@ -1,4 +1,3 @@
-"use client";
 import InputSearch from "@/components/Items/InputSearch";
 import Listing from "@/components/Items/Listing";
 import Routing from "@/components/Items/Routing";

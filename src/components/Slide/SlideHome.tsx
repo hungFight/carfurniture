@@ -96,14 +96,14 @@ export default function SlideHome() {
         texts.push(
           index !== 0 ? (
             <p
-              key={index}
+              key={index + text}
               className={`${styles.animationSlideText} text-[10px] md:text-sm xl:text-[15px] relative top-[-10px] ml-2 mb-1 bg-[aliceblue] xl:bg-inherit w-fit px-[8px] py-[2px] rounded-[5px] `}
             >
               {text}
             </p>
           ) : (
             <h3
-              key={index}
+              key={index + text}
               className={`text-xs md:text-base xl:text-lg font-semibold mb-3 bg-[#d4a8fa] xl:bg-inherit px-[10px] py-[2px] rounded-[5px] w-fit`}
             >
               {text}
@@ -123,106 +123,100 @@ export default function SlideHome() {
     {
       id: 0,
       element: (
-        <SwiperSlide key={0}>
-          <div className="w-full h-[450px]  flex relative flex-wrap sm:flex-nowrap">
-            <div className="xl:w-[40%] w-[100%] sm:w-[60%] relative">
-              <div className="absolute right-[50%] left-[50%] top-[20%] sm:top-[91px]  sm:left-[69%] md:left-[58%] translate-x-[-50%] w-[340px] sm:w-[465px]">
-                {renderedTexts}
-              </div>
+        <div className="w-full h-[450px]  flex relative flex-wrap sm:flex-nowrap">
+          <div className="xl:w-[40%] w-[100%] sm:w-[60%] relative">
+            <div className="absolute right-[50%] left-[50%] top-[20%] sm:top-[91px]  sm:left-[69%] md:left-[58%] translate-x-[-50%] w-[340px] sm:w-[465px]">
+              {renderedTexts}
             </div>
-            <div className="sm:w-5/12 w-full xl:w-[60%]   flex justify-start overflow-hidden relative z-10">
+          </div>
+          <div className="sm:w-5/12 w-full xl:w-[60%]   flex justify-start overflow-hidden relative z-10">
+            <div
+              className={` w-full sm:w-auto h-full  sm:flex-wrap  xl:flex-nowrap absolute top-0 right-0 p-5  flex  items-center`}
+            >
               <div
-                className={` w-full sm:w-auto h-full  sm:flex-wrap  xl:flex-nowrap absolute top-0 right-0 p-5  flex  items-center`}
+                className={`${styles.slideImageOneChild1} h-full sm:h-1/2 w-4/5 min-w-1/2 xl:w-full xl:h-[80%] p-[20px] relative`}
               >
-                <div
-                  className={`${styles.slideImageOneChild1} h-full sm:h-1/2 w-4/5 min-w-1/2 xl:w-full xl:h-[80%] mr-10 py-2 relative`}
-                >
-                  <Image
-                    src={Images.slideOneOne}
-                    alt="mazdashop.vn"
-                    className={`${styles.slideOneOne} w-full h-full object-cover rounded-md`}
-                  />
-                </div>
-                <div
-                  className={`${styles.slideImageOneChild2} h-full sm:h-1/2 w-4/5 min-w-1/2 xl:w-full xl:h-[80%] mr-10 py-2 relative`}
-                >
-                  <Image
-                    src={Images.slideOneTwo}
-                    alt="mazdashop.vn"
-                    className={`${styles.slideOneOne} w-full h-full object-cover rounded-md`}
-                  />
-                </div>
+                <Image
+                  src={Images.slideOneOne}
+                  alt="mazdashop.vn"
+                  className={`${styles.slideOneOne} w-full h-full object-cover rounded-md`}
+                />
+              </div>
+              <div
+                className={`${styles.slideImageOneChild2} h-full sm:h-1/2 w-4/5 min-w-1/2 xl:w-full xl:h-[80%] p-[20px] relative`}
+              >
+                <Image
+                  src={Images.slideOneTwo}
+                  alt="mazdashop.vn"
+                  className={`${styles.slideOneOne} w-full h-full object-cover rounded-md`}
+                />
               </div>
             </div>
           </div>
-        </SwiperSlide>
+        </div>
       ),
     },
     {
       id: 1,
       element: (
-        <SwiperSlide key={1}>
-          <div className="w-full h-[450px]  flex relative flex-wrap sm:flex-nowrap">
-            <div className="xl:w-[40%] w-[100%] sm:w-[60%] relative">
-              <div className="absolute right-[50%] left-[50%] top-[20%] sm:top-[91px]  sm:left-[69%] md:left-[58%] translate-x-[-50%] w-[340px] sm:w-[465px]">
-                {renderedTexts}
-              </div>
+        <div className="w-full h-[450px]  flex relative flex-wrap sm:flex-nowrap">
+          <div className="xl:w-[40%] w-[100%] sm:w-[60%] relative">
+            <div className="absolute right-[50%] left-[50%] top-[20%] sm:top-[91px]  sm:left-[69%] md:left-[58%] translate-x-[-50%] w-[340px] sm:w-[465px]">
+              {renderedTexts}
             </div>
-            <div className="sm:w-5/12 w-full xl:w-[60%]   flex justify-start overflow-hidden relative z-10">
+          </div>
+          <div className="sm:w-5/12 w-full xl:w-[60%]   flex justify-start overflow-hidden relative z-10">
+            <div
+              className={` w-full sm:w-auto h-full  sm:flex-wrap  xl:flex-nowrap absolute top-0 right-0 p-5  flex  items-center`}
+            >
               <div
-                className={` w-full sm:w-auto h-full  sm:flex-wrap  xl:flex-nowrap absolute top-0 right-0 p-5  flex  items-center`}
+                className={`${styles.slideImageOneChild1} h-full sm:h-1/2 w-4/5 min-w-1/2 xl:w-full xl:h-[80%] p-[20px] relative`}
               >
-                <div
-                  className={`${styles.slideImageOneChild1} h-full sm:h-1/2 w-4/5 min-w-1/2 xl:w-full xl:h-[80%] mr-10 py-2 relative`}
-                >
-                  <Image
-                    src={Images.slideTwoOne}
-                    alt="mazdashop.vn"
-                    className={`${styles.slideOneOne} w-full h-full object-cover rounded-md`}
-                  />
-                </div>
-                <div
-                  className={`${styles.slideImageOneChild2} h-full sm:h-1/2 w-4/5 min-w-1/2 xl:w-full xl:h-[80%] mr-10 py-2 relative`}
-                >
-                  <Image
-                    src={Images.slideTwoTwo}
-                    alt="mazdashop.vn"
-                    className={`${styles.slideOneOne} w-full h-full object-cover rounded-md`}
-                  />
-                </div>
+                <Image
+                  src={Images.slideTwoOne}
+                  alt="mazdashop.vn"
+                  className={`${styles.slideOneOne} w-full h-full object-cover rounded-md`}
+                />
+              </div>
+              <div
+                className={`${styles.slideImageOneChild2} h-full sm:h-1/2 w-4/5 min-w-1/2 xl:w-full xl:h-[80%] p-[20px] relative`}
+              >
+                <Image
+                  src={Images.slideTwoTwo}
+                  alt="mazdashop.vn"
+                  className={`${styles.slideOneOne} w-full h-full object-cover rounded-md`}
+                />
               </div>
             </div>
           </div>
-        </SwiperSlide>
+        </div>
       ),
     },
     {
       id: 2,
       element: (
-        <SwiperSlide key={2}>
-          <div className="w-full h-[450px]  flex relative flex-wrap md:flex-nowrap">
-            <div className="w-full md:w-[60%] xl:w-1/2 relative">
-              <div className="absolute top-[48px] md:top-[91px] right-[50%] left-[70%] md:left-[50%] translate-x-[-50%] w-[465px]">
-                {renderedTexts}
-              </div>
+        <div className="w-full h-[450px]  flex relative flex-wrap md:flex-nowrap">
+          <div className="w-full md:w-[60%] xl:w-1/2 relative">
+            <div className="absolute top-[48px] md:top-[91px] right-[50%] left-[70%] md:left-[50%] translate-x-[-50%] w-[465px]">
+              {renderedTexts}
             </div>
-            <div className="w-full md:w-[40%] xl:w-1/2 flex justify-center md:justify-start overflow-hidden relative z-10">
+          </div>
+          <div className="w-full md:w-[40%] xl:w-1/2 flex justify-center md:justify-start overflow-hidden relative z-10">
+            <div
+              className={` marker:w-full h-full absolute top-0 xl:right-[115px] p-5  flex flex-wrap items-center`}
+            >
               <div
-                className={` marker:w-full h-full absolute top-0 xl:right-[115px] p-5  flex flex-wrap items-center`}
+                className={`${styles.slideImageOneChild1} min-w-full w-full h-[95%] mr-10 py-2 relative`}
               >
-                <div
-                  className={`${styles.slideImageOneChild1} min-w-full w-full h-[95%] mr-10 py-2 relative`}
-                >
-                  <Image
-                    src={Images.slideThreeOne}
-                    alt="mazdashop.vn"
-                    className={`${styles.slideOneOne} w-full h-full object-cover rounded-md`}
-                  />
-                </div>
+                <Image
+                  src={Images.slideThreeOne}
+                  alt="mazdashop.vn"
+                  className={`${styles.slideOneOne} w-full h-full object-cover rounded-md`}
+                />
               </div>
             </div>
           </div>
-        </SwiperSlide>
+        </div>
       ),
     },
     {
@@ -302,9 +296,9 @@ export default function SlideHome() {
       >
         {sildeData.map((r, index) => {
           if (r.id === change.current) {
-            return r.element;
+            return <SwiperSlide key={r.id}>{r.element}</SwiperSlide>;
           }
-          return <SwiperSlide key={r.id + index}></SwiperSlide>;
+          return <SwiperSlide key={r.id + index + Math.random()}></SwiperSlide>;
         })}
       </Swiper>
     </div>

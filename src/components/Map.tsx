@@ -23,6 +23,7 @@ const Map = () => {
     url_Mess: string;
     google_map: string;
   }>();
+  const [cc, setCc] = useState(false);
   const fet = async () => {
     const res = await http.get<(typeof data)[]>("AboutUs/GetAll");
     console.log(res, "data");
@@ -30,10 +31,11 @@ const Map = () => {
   };
   useEffect(() => {
     fet();
+    const token = localStorage.getItem("token") ?? "";
+    const refreshToken = localStorage.getItem("refreshToken") ?? "";
+    const expire = localStorage.getItem("expiration") ?? "";
+    if (token && refreshToken && expire) setCc(true);
   }, []);
-  const token = localStorage.getItem("token") ?? "";
-  const refreshToken = localStorage.getItem("refreshToken") ?? "";
-  const expire = localStorage.getItem("expiration") ?? "";
 
   return (
     <div className="flex  text-white md:relative right-[76px] justify-center w-fit flex-wrap ">
@@ -46,9 +48,9 @@ const Map = () => {
           loading="lazy"
         ></iframe>
       </div>
-      <div className="">
-        <h3 className="font-bold text-base mb-2">Liên hệ</h3>
-        <h3 className="font-semibold mb-1 text-[14px] opacity-[0.7]">
+      <div className="mt-2">
+        <h3 className="font-bold text-[14px] sm:text-base sm:mb-2">Liên hệ</h3>
+        <h3 className="font-semibold mb-1 text-[13px] sm:text-[14px] opacity-[0.7]">
           {data?.name}
         </h3>
         <h3 className="font-semibold mb-[8px] text-[12px] w-fit flex opacity-[0.7]">
@@ -90,32 +92,32 @@ const Map = () => {
       </div>
       <a
         href={`tel:${data?.phone}`}
-        className={`fixed bottom-5 left-2 flex items-center cursor-pointer ${styles.hover}`}
+        className={`fixed bottom-[10px] md:bottom-5 left-2 flex items-center cursor-pointer ${styles.hover}`}
       >
-        <div className="w-[50px] h-[50px] rounded-full bg-[#5BB006] flex items-center justify-center z-10 text-white">
+        <div className="w-[35px] h-[35px] md:w-[50px] md:h-[50px] rounded-full bg-[#5BB006] flex items-center justify-center z-10 text-white">
           <FaPhone />
         </div>
-        <h3 className="text-[15px]  bg-[#0099e6] rounded-[20px] font-semibold py-1 px-[11px] pl-[34px] relative right-[29px] text-white">
+        <h3 className="text-[12px] md:text-[15px]  bg-[#0099e6] rounded-[20px] font-semibold py-1 px-[11px] pl-[34px] relative right-[29px] text-white">
           {data?.phone}
         </h3>
       </a>
       <a
         href={data?.url_Mess}
-        className={`fixed bottom-[78px] left-2 flex items-center cursor-pointer ${styles.hover}`}
+        className={`fixed bottom-[50px] md:bottom-[78px] left-2 flex items-center cursor-pointer ${styles.hover}`}
       >
-        <div className="w-[50px] h-[50px] text-[31px] rounded-full bg-[#1c8ff3] flex items-center justify-center z-10 text-white">
+        <div className="w-[35px] h-[35px] md:w-[50px] md:h-[50px]  rounded-full bg-[#1c8ff3] flex items-center justify-center z-10 text-white">
           <PiMessengerLogoLight />
         </div>
-        <h3 className="text-[15px]  bg-[#155994] rounded-[20px] font-semibold py-1 px-[11px] pl-[34px] relative right-[29px] text-white">
+        <h3 className="text-[12px] md:text-[15px]  bg-[#155994] rounded-[20px] font-semibold py-1 px-[11px] pl-[34px] relative right-[29px] text-white">
           Messenger
         </h3>
       </a>
-      {token && refreshToken && expire && (
+      {cc && (
         <Link
           href="/admin"
           className="fixed bottom-[35px] right-[35px] flex items-center  cursor-pointer"
         >
-          <h3 className="text-[15px] text-center bg-[#0099e6] rounded-[20px] font-semibold py-1 px-[11px]  text-white">
+          <h3 className="text-[12px] md:text-[15px] text-center bg-[#0099e6] rounded-[20px] font-semibold py-1 px-[11px]  text-white">
             Admin
           </h3>
         </Link>

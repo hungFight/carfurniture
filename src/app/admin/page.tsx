@@ -27,10 +27,6 @@ const AddProductModel = dynamic(() => import("@/components/AddProductModel"));
 
 const page = () => {
   // your code
-  const token = localStorage.getItem("token") ?? "";
-  const refreshToken = localStorage.getItem("refreshToken") ?? "";
-  const expire = localStorage.getItem("expiration") ?? "";
-  if (!token || !refreshToken || !expire) redirect("/");
 
   const [search, setSearch] = useState<string>("");
   const [pageIndex, setPageIndex] = useState<number>(0);
@@ -135,12 +131,17 @@ const page = () => {
   const [load, setLoad] = useState(false);
   const fet = async () => {
     try {
-      const axio = httpToken(token, refreshToken);
-      setLoadingType(true);
-      const res = await axio.get<typeof dataCate>("CategoryType/GetAll");
-      setCategory(res.data[0].id);
-      setDataCate(res.data);
-      setLoadingType(false);
+      if (typeof window !== "undefined") {
+        const token = window.localStorage.getItem("token") ?? "";
+        const refreshToken = window.localStorage.getItem("refreshToken") ?? "";
+        const expire = window.localStorage.getItem("expiration") ?? "";
+        const axio = httpToken(token, refreshToken);
+        setLoadingType(true);
+        const res = await axio.get<typeof dataCate>("CategoryType/GetAll");
+        setCategory(res.data[0].id);
+        setDataCate(res.data);
+        setLoadingType(false);
+      }
     } catch (error) {
       const err = error as AxiosError;
       if (err.response?.status === 400) {
@@ -152,17 +153,22 @@ const page = () => {
   const fetS = async () => {
     setDataList([]);
     try {
-      const axio = httpToken(token, refreshToken);
-      const which = dataCate.filter((c) => c.id === categoryType)[0]?.name;
-      const resCate = await axio.get<
-        { categoryName: string; categoryId: number }[]
-      >(`Category/GetAll/${which}`);
-      setNameRout(resCate.data[0]?.categoryName ?? "");
-      setCate({
-        categoryId: resCate.data[0]?.categoryId,
-        categoryName: resCate.data[0]?.categoryName ?? "",
-      });
-      setDataList(resCate.data);
+      if (typeof localStorage !== "undefined") {
+        const token = localStorage.getItem("token") ?? "";
+        const refreshToken = localStorage.getItem("refreshToken") ?? "";
+        const expire = localStorage.getItem("expiration") ?? "";
+        const axio = httpToken(token, refreshToken);
+        const which = dataCate.filter((c) => c.id === categoryType)[0]?.name;
+        const resCate = await axio.get<
+          { categoryName: string; categoryId: number }[]
+        >(`Category/GetAll/${which}`);
+        setNameRout(resCate.data[0]?.categoryName ?? "");
+        setCate({
+          categoryId: resCate.data[0]?.categoryId,
+          categoryName: resCate.data[0]?.categoryName ?? "",
+        });
+        setDataList(resCate.data);
+      }
     } catch (error) {
       const err = error as AxiosError;
       if (err.response?.status === 400) {
@@ -172,6 +178,12 @@ const page = () => {
   };
 
   useEffect(() => {
+    if (typeof localStorage !== "undefined") {
+      const token = localStorage.getItem("token") ?? "";
+      const refreshToken = localStorage.getItem("refreshToken") ?? "";
+      const expire = localStorage.getItem("expiration") ?? "";
+      if (!token || !refreshToken || !expire) redirect("/");
+    }
     fet();
   }, []);
 
@@ -182,44 +194,48 @@ const page = () => {
   }, [dataCate, categoryType]);
   async function fetCateName(name: string, index = 1, search?: string) {
     setLoadingSearch(true);
-    setAdditionalPage(1);
     setLoadingDirect(true);
     try {
-      const axio = httpToken(token, refreshToken);
+      if (typeof window !== "undefined") {
+        const token = window.localStorage.getItem("token") ?? "";
+        const refreshToken = window.localStorage.getItem("refreshToken") ?? "";
+        const expire = window.localStorage.getItem("expiration") ?? "";
+        const axio = httpToken(token, refreshToken);
 
-      if (categoryType === product) {
-        const res = await axio.post("Product/GetPaginationProduct", {
-          pageIndex: index,
-          pageSize: 1,
-          search_CategoryName: name,
-          search_Name: search,
-        });
-        setPageIndex(res.data.totalPageIndex);
-        setDataProducts(res.data.data);
-      } else {
-        setDataProducts([]);
-      }
-      if (categoryType === news) {
-        const res = await axio.post("Blog/GetPaginationProduct", {
-          pageIndex: index,
-          pageSize: 1,
-          search_Name: search,
-          search_CategoryName: name,
-        });
-        setPageIndex(res.data.totalPageIndex);
-        setDataNews(res.data.data);
-      } else {
-        setDataNews([]);
-      }
-      if (categoryType === guide) {
-        const res = await axio.post("Guide/GetPaginationProduct", {
-          pageIndex: index,
-          pageSize: 1,
-          search_Name: search,
-          search_CategoryName: name,
-        });
-        setPageIndex(res.data.totalPageIndex);
-        setDataGuid(res.data.data);
+        if (categoryType === product) {
+          const res = await axio.post("Product/GetPaginationProduct", {
+            pageIndex: index,
+            pageSize: 1,
+            search_CategoryName: name,
+            search_Name: search,
+          });
+          setPageIndex(res.data.totalPageIndex);
+          setDataProducts(res.data.data);
+        } else {
+          setDataProducts([]);
+        }
+        if (categoryType === news) {
+          const res = await axio.post("Blog/GetPaginationProduct", {
+            pageIndex: index,
+            pageSize: 1,
+            search_Name: search,
+            search_CategoryName: name,
+          });
+          setPageIndex(res.data.totalPageIndex);
+          setDataNews(res.data.data);
+        } else {
+          setDataNews([]);
+        }
+        if (categoryType === guide) {
+          const res = await axio.post("Guide/GetPaginationProduct", {
+            pageIndex: index,
+            pageSize: 1,
+            search_Name: search,
+            search_CategoryName: name,
+          });
+          setPageIndex(res.data.totalPageIndex);
+          setDataGuid(res.data.data);
+        }
       }
     } catch (error) {
       const err = error as AxiosError;
@@ -244,6 +260,8 @@ const page = () => {
   const handleRount = (vl: string) => {
     // change rout
     setNameRout(vl);
+    setAdditionalPage(1);
+
     setPageIndex(0);
     if (routs.length >= 2) {
       routs[1] = vl;
@@ -257,22 +275,28 @@ const page = () => {
 
   const chooseCate = (id: number) => {
     setCategory(id);
+    setAdditionalPage(1);
     setAddCate(false);
   };
 
   const [nameCate, setNameCate] = useState("");
   const handleAddCate = async () => {
     try {
-      const axio = httpToken(token, refreshToken);
+      if (typeof window !== "undefined") {
+        const token = window.localStorage.getItem("token") ?? "";
+        const refreshToken = window.localStorage.getItem("refreshToken") ?? "";
+        const expire = window.localStorage.getItem("expiration") ?? "";
+        const axio = httpToken(token, refreshToken);
 
-      if (nameCate) {
-        const res = await axio.post<typeof dataCate>("Category/Create", {
-          Name: nameCate,
-          categoryTypeId: categoryType,
-        });
-        setAddCate(false);
-        setNameCate("");
-        if (res.data) fetS();
+        if (nameCate) {
+          const res = await axio.post<typeof dataCate>("Category/Create", {
+            Name: nameCate,
+            categoryTypeId: categoryType,
+          });
+          setAddCate(false);
+          setNameCate("");
+          if (res.data) fetS();
+        }
       }
     } catch (error) {
       const err = error as AxiosError;
@@ -283,10 +307,15 @@ const page = () => {
   };
   const handleDeleteDirectory = async (id: number) => {
     try {
-      const axio = httpToken(token, refreshToken);
-      const res = await axio.delete(`Category/Delete/${id}`);
-      if (res.data?.mess) {
-        fetS();
+      if (typeof window !== "undefined") {
+        const token = window.localStorage.getItem("token") ?? "";
+        const refreshToken = window.localStorage.getItem("refreshToken") ?? "";
+        const expire = window.localStorage.getItem("expiration") ?? "";
+        const axio = httpToken(token, refreshToken);
+        const res = await axio.delete(`Category/Delete/${id}`);
+        if (res.data?.mess) {
+          fetS();
+        }
       }
     } catch (error) {
       const err = error as AxiosError;
@@ -303,19 +332,23 @@ const page = () => {
   };
   const handleUpdateDirectory = async (id: number, name: string) => {
     try {
-      const axio = httpToken(token, refreshToken);
-      const res = await axio.put(`Category/Update`, {
-        Id: id,
-        Name: name,
-        CategoryTypeId: categoryType,
-      });
-      setDataList((pre) =>
-        pre.map((r) => {
-          if (r.categoryId === id) r.categoryName = name;
-          return r;
-        })
-      );
-      return true;
+      if (typeof window !== "undefined") {
+        const token = window.localStorage.getItem("token") ?? "";
+        const refreshToken = window.localStorage.getItem("refreshToken") ?? "";
+        const axio = httpToken(token, refreshToken);
+        const res = await axio.put(`Category/Update`, {
+          Id: id,
+          Name: name,
+          CategoryTypeId: categoryType,
+        });
+        setDataList((pre) =>
+          pre.map((r) => {
+            if (r.categoryId === id) r.categoryName = name;
+            return r;
+          })
+        );
+        return true;
+      }
     } catch (error) {
       const err = error as AxiosError;
       if (err.response?.status === 400) {
@@ -343,10 +376,12 @@ const page = () => {
             <button
               className="text-white mt-2 text-base cursor-pointer w-full border-[2px]"
               onClick={() => {
-                localStorage.removeItem("token");
-                localStorage.removeItem("refreshToken");
-                localStorage.removeItem("expiration");
-                window.location.href = "/";
+                if (typeof window !== "undefined") {
+                  window.localStorage.removeItem("token");
+                  window.localStorage.removeItem("refreshToken");
+                  window.localStorage.removeItem("expiration");
+                  window.location.href = "/";
+                }
               }}
             >
               Thoát khỏi session
@@ -569,16 +604,21 @@ const page = () => {
                         className="absolute text-sm text-[crimson] top-[5px] left-[10px] "
                         style={{ color: "crimson !important" }}
                         onClick={async (e) => {
+                          e.preventDefault();
                           e.stopPropagation();
-                          const isD = window.confirm("Bạn có muốn xoá không?");
-                          if (isD) {
-                            setLoading(String(p.id));
-                            const del = await http.delete(
-                              `Product/Delete/${p.id}`
+                          if (typeof window !== "undefined") {
+                            const isD = window.confirm(
+                              "Bạn có muốn xoá không?"
                             );
-                            if (productUp) setProductUp(undefined);
-                            fetCateName(nameRout);
-                            setLoading("");
+                            if (isD) {
+                              setLoading(String(p.id));
+                              const del = await http.delete(
+                                `Product/Delete/${p.id}`
+                              );
+                              if (productUp) setProductUp(undefined);
+                              fetCateName(nameRout);
+                              setLoading("");
+                            }
                           }
                         }}
                       >
@@ -731,13 +771,17 @@ const page = () => {
                       onClick={async (e) => {
                         e.preventDefault();
                         e.stopPropagation();
-                        const isD = window.confirm("Bạn có muốn xoá không?");
-                        if (isD) {
-                          setLoading(String(bl.id));
-                          const del = await http.delete(`Blog/Delete/${bl.id}`);
-                          fetCateName(nameRout);
-                          if (newsUp) setNewsUp(undefined);
-                          setLoading("");
+                        if (typeof window !== "undefined") {
+                          const isD = window.confirm("Bạn có muốn xoá không?");
+                          if (isD) {
+                            setLoading(String(bl.id));
+                            const del = await http.delete(
+                              `Blog/Delete/${bl.id}`
+                            );
+                            fetCateName(nameRout);
+                            if (newsUp) setNewsUp(undefined);
+                            setLoading("");
+                          }
                         }
                       }}
                     >
@@ -918,13 +962,17 @@ const page = () => {
                         e.stopPropagation();
                         e.preventDefault();
 
-                        const isD = window.confirm("Bạn có muốn xoá không?");
-                        if (isD && g.id) {
-                          setLoading(String(g.id));
-                          const del = await http.delete(`Guide/Delete/${g.id}`);
-                          fetCateName(nameRout);
-                          if (newsUp) setNewsUp(undefined);
-                          setLoading("");
+                        if (typeof window !== "undefined") {
+                          const isD = window.confirm("Bạn có muốn xoá không?");
+                          if (isD && g.id) {
+                            setLoading(String(g.id));
+                            const del = await http.delete(
+                              `Guide/Delete/${g.id}`
+                            );
+                            fetCateName(nameRout);
+                            if (newsUp) setNewsUp(undefined);
+                            setLoading("");
+                          }
                         }
                       }}
                     >
