@@ -3,7 +3,7 @@ import https from "https";
 import { jwtDecode } from "jwt-decode";
 import http from "./http";
 const instanceAxios = axios.create({
-  baseURL: process.env.DB_URL_SERVER,
+  baseURL: process.env.DB_URL,
   headers: {
     // "Content-Type": "application/json",
     Accept: "application/json",

@@ -242,7 +242,7 @@ export default function Home() {
                     dataProducts.map((r, index) => (
                       <Link
                         href="/[slug]"
-                        as={`products/${caseChose.product?.categoryName}/${r.name}/${r.id}`}
+                        as={`product/${caseChose.product?.categoryName}/${r.name}/${r.id}`}
                         key={r.id}
                         className={`w-[200px] ${
                           dataProducts.length === index + 1 ? "" : "mr-4"

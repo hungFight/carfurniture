@@ -14,6 +14,7 @@ const Image: React.FC<{
   return (
     <div className="h-[100px] mt-3">
       <Swiper
+        pagination={true}
         modules={[Pagination]}
         className="mySwiper h-full"
         spaceBetween={15}
