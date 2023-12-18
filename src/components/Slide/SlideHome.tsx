@@ -97,14 +97,14 @@ export default function SlideHome() {
           index !== 0 ? (
             <p
               key={index + text}
-              className={`${styles.animationSlideText} text-[10px] md:text-sm xl:text-[15px] relative top-[-10px] ml-2 mb-1 bg-[aliceblue] xl:bg-inherit w-fit px-[8px] py-[2px] rounded-[5px] `}
+              className={`${styles.animationSlideText} text-[10px] w-max md:text-sm  relative top-[-10px] ml-2 mb-1 bg-[aliceblue] xl:bg-inherit  px-[8px] py-[2px] rounded-[5px] `}
             >
               {text}
             </p>
           ) : (
             <h3
               key={index + text}
-              className={`text-xs md:text-base xl:text-lg font-semibold mb-3 bg-[#d4a8fa] xl:bg-inherit px-[10px] py-[2px] rounded-[5px] w-fit`}
+              className={`text-xs md:text-base xl:text-lg font-semibold mb-3  w-max xl:bg-inherit px-[10px] py-[2px] rounded-[5px] `}
             >
               {text}
             </h3>
@@ -124,17 +124,17 @@ export default function SlideHome() {
       id: 0,
       element: (
         <div className="w-full h-[450px]  flex relative flex-wrap sm:flex-nowrap">
-          <div className="xl:w-[40%] w-[100%] sm:w-[60%] relative">
-            <div className="absolute right-[50%] left-[50%] top-[20%] sm:top-[91px]  sm:left-[69%] md:left-[58%] translate-x-[-50%] w-[340px] sm:w-[465px]">
+          <div className="xl:w-[52%] w-[100%] sm:w-[60%] relative">
+            <div className="absolute right-[50%] left-[48%] top-[20%] sm:top-[91px]  sm:left-[69%] md:left-[58%] translate-x-[-50%] w-[340px] sm:w-[465px]">
               {renderedTexts}
             </div>
           </div>
-          <div className="sm:w-5/12 w-full xl:w-[60%]   flex justify-start overflow-hidden relative z-10">
+          <div className="sm:w-5/12 w-full xl:w-[52%]   flex justify-start overflow-hidden relative z-10">
             <div
-              className={` w-full sm:w-auto h-full  sm:flex-wrap  xl:flex-nowrap absolute top-0 right-0 p-5  flex  items-center`}
+              className={` w-full h-[90%]  sm:flex-wrap  xl:flex-nowrap absolute top-0 right-0 p-5  flex  items-center`}
             >
               <div
-                className={`${styles.slideImageOneChild1} h-full sm:h-1/2 w-4/5 min-w-1/2 xl:w-full xl:h-[80%] p-[20px] relative`}
+                className={`${styles.slideImageOneChild1} h-full sm:h-[65%] w-4/5 min-w-1/2 xl:w-full  p-[9px] relative`}
               >
                 <Image
                   src={Images.slideOneOne}
@@ -143,7 +143,7 @@ export default function SlideHome() {
                 />
               </div>
               <div
-                className={`${styles.slideImageOneChild2} h-full sm:h-1/2 w-4/5 min-w-1/2 xl:w-full xl:h-[80%] p-[20px] relative`}
+                className={`${styles.slideImageOneChild2} h-full sm:h-[65%] w-4/5 min-w-1/2 xl:w-full  p-[9px] relative`}
               >
                 <Image
                   src={Images.slideOneTwo}
@@ -160,14 +160,14 @@ export default function SlideHome() {
       id: 1,
       element: (
         <div className="w-full h-[450px]  flex relative flex-wrap sm:flex-nowrap">
-          <div className="xl:w-[40%] w-[100%] sm:w-[60%] relative">
-            <div className="absolute right-[50%] left-[50%] top-[20%] sm:top-[91px]  sm:left-[69%] md:left-[58%] translate-x-[-50%] w-[340px] sm:w-[465px]">
+          <div className="xl:w-[52%] w-[100%] sm:w-[60%] relative">
+            <div className="absolute right-[50%] left-[42%] top-[20%] sm:top-[91px]  sm:left-[69%] md:left-[52%] translate-x-[-50%] w-[340px] sm:w-[465px]">
               {renderedTexts}
             </div>
           </div>
-          <div className="sm:w-5/12 w-full xl:w-[60%]   flex justify-start overflow-hidden relative z-10">
+          <div className="sm:w-5/12 w-full xl:w-[49%]   flex justify-start overflow-hidden relative z-10">
             <div
-              className={` w-full sm:w-auto h-full  sm:flex-wrap  xl:flex-nowrap absolute top-0 right-0 p-5  flex  items-center`}
+              className={` w-full sm:w-auto h-full xl:h-[90%]  sm:flex-wrap  xl:flex-nowrap absolute top-0 right-0 p-5  flex  items-center`}
             >
               <div
                 className={`${styles.slideImageOneChild1} h-full sm:h-1/2 w-4/5 min-w-1/2 xl:w-full xl:h-[80%] p-[20px] relative`}
@@ -287,6 +287,9 @@ export default function SlideHome() {
         pagination={true}
         modules={[Pagination]}
         className="mySwiper"
+        autoplay={{
+          delay: 2500,
+        }}
         onSlideChange={(e: any) =>
           setChange({ ...change, current: e.activeIndex })
         }

@@ -1,6 +1,5 @@
 "use client";
 import React, { useState, useCallback, useEffect, useRef } from "react";
-import { GoogleMap, useJsApiLoader, Marker } from "@react-google-maps/api";
 import { MdLocationOn } from "react-icons/md";
 import { FaPhone } from "react-icons/fa6";
 import { AiOutlineMail } from "react-icons/ai";
