@@ -275,6 +275,7 @@ const page = () => {
 
   const chooseCate = (id: number) => {
     setCategory(id);
+    setPageIndex(0);
     setAdditionalPage(1);
     setAddCate(false);
   };
@@ -542,7 +543,7 @@ const page = () => {
                   <Link
                     key={p.id}
                     href="/[slug]"
-                    as={`products/${routs[1]}/${p.name}/${p.id}`}
+                    as={`product/${routs[1]}/${p.name}/${p.id}`}
                     className=" relative w-[250px] p-1 border shadow-[0_0_3px_#7a7a7a] hover:shadow-[0_0_10px] mb-4 mx-3 cursor-pointer"
                   >
                     <div

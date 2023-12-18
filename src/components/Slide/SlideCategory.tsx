@@ -21,9 +21,7 @@ const SlideSwiper: React.FC<{
       <div className="w-full bg-[aliceblue] ">
         <Swiper
           slidesPerView={3}
-          pagination={{
-            dynamicBullets: true,
-          }}
+          pagination={true}
           breakpoints={{
             0: {
               slidesPerView: 3,

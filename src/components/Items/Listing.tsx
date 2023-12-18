@@ -38,7 +38,7 @@ const Listing: React.FC<{
     <div className="w-full">
       <div className="w-full md:w-[80%] max-[768px]:flex ">
         <div className="w-full p-2 relative mb-10 font-medium rounded-[30px] whitespace-nowrap text-base border border-black text-center">
-          Danh muc {menu}
+          Danh mục {menu}
           <div
             className="w-full h-full flex items-center justify-end absolute top-0 right-0 min-[768px]:hidden pr-3"
             onClick={() => setOnTap(!onTap)}
@@ -138,7 +138,7 @@ const Listing: React.FC<{
               {!(update === r.categoryId) ? (
                 <Tag
                   href={`/[slug]`}
-                  as={`/${defaultR}/${r.categoryName}`}
+                  as={`${r.categoryName}`}
                   className={`w-full  text-sm md:text-base cursor-pointer hover:text-[#0087ff] ${
                     choice === r.categoryName ? "text-[#0087ff]" : ""
                   }`}

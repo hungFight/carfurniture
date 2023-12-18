@@ -6,6 +6,7 @@ import Link from "next/link";
 import http from "@/utils/http";
 import { BiSkipNext } from "react-icons/bi";
 import { MdSkipPrevious } from "react-icons/md";
+import { SiShopee } from "react-icons/si";
 const page = (props: { params: { cate: string } }) => {
   const [search, setSearch] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
@@ -241,13 +242,16 @@ const page = (props: { params: { cate: string } }) => {
                     <button className="text-sm shadow-[0_0_2px_#4a8cbf] border-[#4a8cbf] border-[1px] p-1 pr-3 rounded-md">
                       View more
                     </button>
-                    {/* <a
-                      href={p.urlShoppe}
+                    <div
                       className="absolute top-[5px] right-[10px] md:right-[40px] text-[crimson]"
                       style={{ color: "crimson !important" }}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        window.open(p.urlShoppe, "_blank");
+                      }}
                     >
                       <SiShopee />
-                    </a> */}
+                    </div>
                   </div>
                 </Link>
               ))

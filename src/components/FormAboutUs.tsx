@@ -24,6 +24,7 @@ const FormAboutUs: React.FC<{ title: string; onClick: () => void }> = ({
     location: "",
   });
   const dataF = useRef<typeof data>();
+  const [loading, setLoading] = useState<boolean>(false);
   const fet = async () => {
     const res = await http.get<(typeof data)[]>("AboutUs/GetAll");
     console.log(res, "data");
@@ -35,6 +36,7 @@ const FormAboutUs: React.FC<{ title: string; onClick: () => void }> = ({
   }, []);
   const handleUpdate = async () => {
     if (JSON.stringify(dataF.current) !== JSON.stringify(data) && data) {
+      setLoading(true);
       const res = await http.put<(typeof data)[]>("AboutUs/Update", {
         Id: data.id,
         Name: data.name,
@@ -44,6 +46,8 @@ const FormAboutUs: React.FC<{ title: string; onClick: () => void }> = ({
         Url_Mess: data?.url_Mess,
         google_map: data.location,
       });
+      setLoading(false);
+
       onClick();
     }
   };
@@ -168,7 +172,7 @@ const FormAboutUs: React.FC<{ title: string; onClick: () => void }> = ({
             className=" text-sm h-fit rounded-[5px] border-[#4a8cbf] border-[1px] px-3 py-1 mt-5 cursor-pointer"
             onClick={handleUpdate}
           >
-            Update
+            {loading ? "Updating..." : "Update"}
           </button>
         </div>
       </div>

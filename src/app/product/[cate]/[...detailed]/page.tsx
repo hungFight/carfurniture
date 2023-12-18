@@ -32,9 +32,9 @@ const page = async (props: { params: { detailed: string[] | string } }) => {
       ? undefined
       : await getProduct(props.params.detailed[1]);
   return (
-    <div className="w-full min-[1000px]:flex justify-center">
+    <div className="w-full min-[1000px]:flex justify-start">
       {data && (
-        <div className="w-full min-[1200px]:w-[1200px] relative mt-15 border-t p-5">
+        <div className="w-full min-[1000px]:w-[1000px] relative mt-15 border-t p-5">
           <div>
             <div className="min-[1000px]:flex">
               <div
@@ -76,36 +76,39 @@ const page = async (props: { params: { detailed: string[] | string } }) => {
                   )}
                 </div>
                 <div className="mt-3 flex ">
-                  <a
-                    href={"https://www.facebook.com/"}
-                    target="_blank"
-                    className="w-fit mr-2 my-2 text-sm text-white py-2 px-5 rounded-[20px] bg-slate-700 flex items-center"
-                  >
+                  <div className="w-fit mr-2 relative my-2 text-sm text-white py-2 px-5 rounded-[20px] bg-slate-700 flex items-center">
+                    <a
+                      href={data.info_in_AboutUs[0]?.url_Mess}
+                      target="_blank"
+                      className="absolute z-10 w-full h-full left-0 top-0"
+                    ></a>
                     <div className="flex text-[20px] text-[#4993de] mr-2">
                       <PiMessengerLogoLight />
                     </div>{" "}
                     Messenger
-                  </a>
-                  <a
-                    href={`tel:${data.info_in_AboutUs[0]?.phone}`}
-                    className="w-fit mr-2 my-2 text-sm text-white py-2 px-5 rounded-[20px] bg-slate-700 flex items-center"
-                  >
+                  </div>
+                  <div className="w-fit relative mr-2 my-2 text-sm text-white py-2 px-5 rounded-[20px] bg-slate-700 flex items-center">
+                    <a
+                      href={`tel:${data.info_in_AboutUs[0]?.phone}`}
+                      className="absolute z-10 w-full h-full left-0 top-0"
+                    ></a>
                     <div className="flex text-[20px] text-[#57eb57] mr-2">
                       <CiPhone />
                     </div>{" "}
                     {data.info_in_AboutUs[0]?.phone}
-                  </a>
-                  <a
-                    href={data.product.urlShoppe}
-                    target="_blank"
-                    className="w-fit mr-2 my-2 text-sm text-white py-2 px-5 rounded-[20px] flex items-center bg-slate-700"
-                  >
+                  </div>
+                  <div className="w-fit relative mr-2 my-2 text-sm text-white py-2 px-5 rounded-[20px] flex items-center bg-slate-700">
+                    <a
+                      href={data.product.urlShoppe}
+                      target="_blank"
+                      className="absolute z-10 w-full h-full left-0 top-0"
+                    ></a>
                     <div className="flex text-[#ff6f6f] text-[20px] mr-2">
                       {" "}
                       <SiShopee />
                     </div>{" "}
                     Shoppe
-                  </a>
+                  </div>
                 </div>
               </div>
             </div>

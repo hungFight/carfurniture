@@ -26,7 +26,8 @@ export default async function RootLayout({
   return (
     <div className="flex flex-wrap">
       <RoutListing
-        currentPath="news"
+        currentPath="Tin tức"
+        category="news"
         title="Tin tức"
         defaultR="Đã xem"
         cate={data.map((r) => ({

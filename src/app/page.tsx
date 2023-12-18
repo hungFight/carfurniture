@@ -237,64 +237,75 @@ export default function Home() {
           <div>
             <div className="w-full flex flex-wrap mt-7 px-1 justify-center">
               {!loadingType ? (
-                dataProducts.map((r, index) => (
-                  <Link
-                    href="/[slug]"
-                    as={`products/${caseChose.product?.categoryName}/${r.name}/${r.id}`}
-                    key={r.id}
-                    className={`w-[200px] ${
-                      dataProducts.length === index + 1 ? "" : "mr-4"
-                    } md:w-[300px] p-1 border shadow-[0_0_3px_#7a7a7a] hover:shadow-[0_0_10px] mb-4 cursor-pointer`}
-                  >
-                    <div className="w-full h-[200px] md:h-[280px]">
-                      <img
-                        src={r.urlImage[0]?.image}
-                        alt={r.urlImage[0]?.path}
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
-                    <div className={`mt-1 ${styles.containerProductTag}`}>
-                      <h3
-                        className={`font-bold text-sm md:text-base ${styles.nameTag}`}
+                <>
+                  {dataProducts.length > 0 ? (
+                    dataProducts.map((r, index) => (
+                      <Link
+                        href="/[slug]"
+                        as={`products/${caseChose.product?.categoryName}/${r.name}/${r.id}`}
+                        key={r.id}
+                        className={`w-[200px] ${
+                          dataProducts.length === index + 1 ? "" : "mr-4"
+                        } md:w-[300px] p-1 border shadow-[0_0_3px_#7a7a7a] hover:shadow-[0_0_10px] mb-4 cursor-pointer`}
                       >
-                        {r.name}
-                      </h3>
-                      <div className="w-full mt-1 md:mt-2 flex items-center border-b border-solid">
-                        <p className="text-[13px] md:text-[14px] font-medium text-[crimson]">
-                          {r.price.toLocaleString("en-US").replace(/,/g, ".")}
-                        </p>
-                        {r.price_After && (
-                          <p className="text-[10px] md:text-[11px] mt-[5px] ml-2 line-through">
-                            {r.price_After
-                              .toLocaleString("en-US")
-                              .replace(/,/g, ".")}
-                          </p>
-                        )}
-                      </div>
-                      <div
-                        className={`text-sm md:text-base h-[45px]  mt-2 overflow-hidden ${styles.description}`}
-                        style={{
-                          display: "-webkit-box",
-                          WebkitLineClamp: 2,
-                          WebkitBoxOrient: "vertical",
-                        }}
-                        dangerouslySetInnerHTML={{ __html: r.description }}
-                      ></div>
-                    </div>
-                    <div className="my-2 flex items-center justify-center relative">
-                      <button className="text-sm shadow-[0_0_2px_#4a8cbf] border-[#4a8cbf] border-[1px] p-1 pr-3 rounded-md">
-                        View more
-                      </button>
-                      <a
-                        href={r.urlShoppe}
-                        className="absolute top-[5px] right-[10px] md:right-[40px] text-[crimson]"
-                        style={{ color: "crimson !important" }}
-                      >
-                        <SiShopee />
-                      </a>
-                    </div>
-                  </Link>
-                ))
+                        <div className="w-full h-[200px] md:h-[280px]">
+                          <img
+                            src={r.urlImage[0]?.image}
+                            alt={r.urlImage[0]?.path}
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                        <div className={`mt-1 ${styles.containerProductTag}`}>
+                          <h3
+                            className={`font-bold text-sm md:text-base ${styles.nameTag}`}
+                          >
+                            {r.name}
+                          </h3>
+                          <div className="w-full mt-1 md:mt-2 flex items-center border-b border-solid">
+                            <p className="text-[13px] md:text-[14px] font-medium text-[crimson]">
+                              {r.price
+                                .toLocaleString("en-US")
+                                .replace(/,/g, ".")}
+                            </p>
+                            {r.price_After && (
+                              <p className="text-[10px] md:text-[11px] mt-[5px] ml-2 line-through">
+                                {r.price_After
+                                  .toLocaleString("en-US")
+                                  .replace(/,/g, ".")}
+                              </p>
+                            )}
+                          </div>
+                          <div
+                            className={`text-sm md:text-base h-[45px]  mt-2 overflow-hidden ${styles.description}`}
+                            style={{
+                              display: "-webkit-box",
+                              WebkitLineClamp: 2,
+                              WebkitBoxOrient: "vertical",
+                            }}
+                            dangerouslySetInnerHTML={{ __html: r.description }}
+                          ></div>
+                        </div>
+                        <div className="my-2 flex items-center justify-center relative">
+                          <button className="text-sm shadow-[0_0_2px_#4a8cbf] border-[#4a8cbf] border-[1px] p-1 pr-3 rounded-md">
+                            View more
+                          </button>
+                          <div
+                            className="absolute text-[22px] top-[5px] right-[10px] md:right-[40px] text-[crimson]"
+                            style={{ color: "crimson !important" }}
+                            onClick={(e) => {
+                              e.preventDefault();
+                              window.open(r.urlShoppe, "_blank");
+                            }}
+                          >
+                            <SiShopee />
+                          </div>
+                        </div>
+                      </Link>
+                    ))
+                  ) : (
+                    <p>Không có sản phẩm nào</p>
+                  )}
+                </>
               ) : (
                 <p>Loading...</p>
               )}{" "}

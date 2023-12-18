@@ -9,16 +9,10 @@ export const metadata: Metadata = {
 };
 const getData = async () => {
   const resT = await http.get("CategoryType/GetAll");
-  const res = await http.get(`Category/GetAll/${resT.data[0].name}`);
-  return res.data;
-};
-export default async function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
-  const data: { categoryName: string; categoryId: number }[] = await getData();
-  const newData = data.map((r) => ({
+  const res = await http.get<{ categoryName: string; categoryId: number }[]>(
+    `Category/GetAll/${resT.data[0].name}`
+  );
+  const newData = res.data.map((r) => ({
     categoryId: r.categoryId,
     categoryName: r.categoryName,
   }));
@@ -26,14 +20,23 @@ export default async function RootLayout({
     categoryId: 9999,
     categoryName: "Đã xem",
   });
+  return newData;
+};
+export default async function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  const data = await getData();
+
   return (
     <div className="flex flex-wrap">
       <RoutListing
-        currentPath="products"
+        currentPath="Sản phẩm"
         title="Sản phẩm"
         category="product"
         defaultR={data[0].categoryName}
-        cate={newData}
+        cate={data}
       />
       {children}
     </div>

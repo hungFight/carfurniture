@@ -284,11 +284,8 @@ export default function SlideHome() {
   return (
     <div className={`w-[100%] ${styles.bk}`}>
       <Swiper
-        navigation={true}
-        pagination={{
-          dynamicBullets: true,
-        }}
-        modules={[Pagination, Navigation]}
+        pagination={true}
+        modules={[Pagination]}
         className="mySwiper"
         onSlideChange={(e: any) =>
           setChange({ ...change, current: e.activeIndex })

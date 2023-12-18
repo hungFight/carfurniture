@@ -8,6 +8,7 @@ import { IoMdClose } from "react-icons/io";
 import http from "@/utils/http";
 import Login from "./Login";
 import moment from "moment";
+import { usePathname } from "next/navigation";
 const Header = () => {
   const [session, setSession] = useState<boolean>(false);
   const [active, setActive] = useState<string>("");
@@ -17,6 +18,7 @@ const Header = () => {
     guide: string;
   }>({ product: "", news: "", guide: "" });
   const [auth, setAuth] = useState<boolean>(false);
+  const pathname = usePathname();
   useEffect(() => {
     getData();
     if (typeof window !== "undefined") {
@@ -29,6 +31,11 @@ const Header = () => {
       if (!token || !refreshToken || !expire) setAuth(true);
     }
   }, []);
+  useEffect(() => {
+    if (active) {
+      setActive(window.location.pathname);
+    }
+  }, [pathname]);
   const getData = async () => {
     const res = await http.get("CategoryType/GetAll");
 
@@ -59,9 +66,9 @@ const Header = () => {
               <Link
                 href="/"
                 className={`header_home w-full text-[#3a3b3b]  my-[2px] text-sm sm:text-base mx-4 max-sm:my-1 whitespace-pre-wrap font-medium cursor-pointer hover:text-[#42aaea] ${
-                  !(active.indexOf("products") > 0) &&
+                  !(active.indexOf("product") > 0) &&
                   !(active.indexOf("news") > 0) &&
-                  !(active.indexOf("guides") > 0)
+                  !(active.indexOf("guide") > 0)
                     ? "text-[#42aaea]"
                     : ""
                 }`}
@@ -95,9 +102,9 @@ const Header = () => {
                 Tin tức
               </Link>
               <Link
-                href={`/products/${firstCate.product}`}
+                href={`/product/${firstCate.product}`}
                 className={`header_home w-full text-[#3a3b3b] ${
-                  active.indexOf("products") > 0 ? "text-[#42aaea]" : ""
+                  active.indexOf("product") > 0 ? "text-[#42aaea]" : ""
                 }  text-sm sm:text-base mx-4 max-sm:my-1 whitespace-pre-wrap my-[2px] font-medium cursor-pointer hover:text-[#42aaea]`}
                 onClick={(e: any) => {
                   if (document) {
@@ -112,7 +119,7 @@ const Header = () => {
                 Danh sách sản phẩm
               </Link>
               <Link
-                href={`/guides/${firstCate.guide}`}
+                href={`/guide/${firstCate.guide}`}
                 className={`header_home w-full  ${
                   active.indexOf("guides") > 0 ? "text-[#42aaea]" : ""
                 } text-[#3a3b3b] text-sm sm:text-base mx-4 max-sm:my-1 my-[2px] whitespace-pre-wrap font-medium cursor-pointer hover:text-[#42aaea]`}
@@ -188,9 +195,9 @@ const Header = () => {
           <Link
             href="/"
             className={`header_home text-[#3a3b3b] ${
-              !(active.indexOf("products") > 0) &&
+              !(active.indexOf("product") > 0) &&
               !(active.indexOf("news") > 0) &&
-              !(active.indexOf("guides") > 0)
+              !(active.indexOf("guide") > 0)
                 ? "text-[#42aaea]"
                 : ""
             } text-sm sm:text-base mx-4 max-sm:my-1 w-max whitespace-pre-wrap font-medium cursor-pointer hover:text-[#42aaea]`}
@@ -224,9 +231,9 @@ const Header = () => {
             Tin tức
           </Link>
           <Link
-            href={`/products/${firstCate.product}`}
+            href={`/product/${firstCate.product}`}
             className={`header_home text-[#3a3b3b] ${
-              active.indexOf("products") > 0 ? "text-[#42aaea]" : ""
+              active.indexOf("product") > 0 ? "text-[#42aaea]" : ""
             }  text-sm sm:text-base mx-4 max-sm:my-1 w-max whitespace-pre-wrap font-medium cursor-pointer hover:text-[#42aaea]`}
             onClick={(e: any) => {
               if (document) {
@@ -241,9 +248,9 @@ const Header = () => {
             Danh sách sản phẩm
           </Link>
           <Link
-            href={`/guides/${firstCate.guide}`}
+            href={`/guide/${firstCate.guide}`}
             className={`header_home ${
-              active.indexOf("guides") > 0 ? "text-[#42aaea]" : ""
+              active.indexOf("guide") > 0 ? "text-[#42aaea]" : ""
             } text-[#3a3b3b] text-sm sm:text-base mx-4 max-sm:my-1 w-max whitespace-pre-wrap font-medium cursor-pointer hover:text-[#42aaea]`}
             onClick={(e: any) => {
               if (document) {

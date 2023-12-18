@@ -5,7 +5,7 @@ import Routing from "@/components/Items/Routing";
 import Image from "next/image";
 import styles from "../../app/styleHomePage.module.scss";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import http from "@/utils/http";
@@ -20,7 +20,7 @@ const RoutListing: React.FC<{
         categoryName: string;
         categoryId: number;
       }[];
-  category?: string;
+  category: string;
 }> = ({ currentPath, title, defaultR, cate, dataList, category }) => {
   const [dataHasSeen, setDataHasSeen] = useState<
     | {
@@ -37,26 +37,22 @@ const RoutListing: React.FC<{
         info_in_AboutUs: [{ url_Mess: string; phone: string }];
       }[]
   >([]);
-  const [hasSeen, setHasSeen] = useState<number[]>(() => {
-    if (typeof window !== "undefined") {
-      return JSON.parse(
-        window.localStorage.getItem("product") ?? JSON.stringify([])
-      );
-    }
-  });
   const pathname = usePathname();
-  const [routs, setRouts] = useState(() => {
-    if (typeof window !== "undefined") {
-      return [
-        title,
-        window?.location.pathname.split(`/`)[2]
-          ? decodeURIComponent(window.location.pathname.split(`/`)[2])
-          : defaultR,
-      ];
-    }
-    return [];
-  });
+  const rr = useRef<boolean>(false);
+  const [routs, setRouts] = useState<string[]>([]);
   useEffect(() => {
+    const d: any = [
+      title,
+      window.location.pathname.split(`/`)[2]
+        ? decodeURIComponent(window.location.pathname.split(`/`)[2])
+        : defaultR,
+    ];
+    console.log(d, "routDD", window.location.pathname.split(`/`));
+    setRouts(d);
+    rr.current = true;
+    const hasSeen: number[] = JSON.parse(
+      window.localStorage.getItem("product") ?? JSON.stringify([])
+    );
     const getProduct = async () => {
       if (hasSeen.length === 1) {
         const re1 = await http.get(`Product/GetByID/${hasSeen[0]}`);
@@ -71,26 +67,29 @@ const RoutListing: React.FC<{
     getProduct();
   }, []);
   useEffect(() => {
-    if (!window.location.pathname.split(`${currentPath}/`)[1])
-      setRouts((pre) => pre.filter((r, index) => index !== 1));
-    if (pathname.split(routs[1] ?? "")[1]) {
-      if (window.location.pathname.split(`/`)[3]) {
-        console.log("vooooo 333");
+    console.log("vooooo 22", routs);
+    routs[0] = title;
+    if (routs.length > 1 || rr.current) {
+      if (!window.location.pathname.split(`${currentPath}/`)[1])
+        setRouts((pre) => pre.filter((r, index) => index !== 1));
+      if (pathname.split(routs[1] ?? "")[1]) {
+        if (window.location.pathname.split(`/`)[2]) {
+          console.log("vooooo 333");
+          routs[1] = decodeURIComponent(window.location.pathname.split(`/`)[2]);
+          routs[2] = decodeURIComponent(window.location.pathname.split(`/`)[3]);
+          setRouts(routs);
+        }
 
+        setLoad(!load);
+      } else {
+        console.log("vooooo 11c");
         routs[1] = decodeURIComponent(window.location.pathname.split(`/`)[2]);
-        routs[2] = decodeURIComponent(window.location.pathname.split(`/`)[3]);
-        setRouts(routs);
+        setRouts(routs.filter((r, index) => index !== 2));
+        setLoad(!load);
       }
-
-      setLoad(!load);
-    } else {
-      console.log("vooooo 11c");
-      routs[1] = decodeURIComponent(window.location.pathname.split(`/`)[2]);
-      setRouts(routs.filter((r, index) => index !== 2));
-      setLoad(!load);
+      console.log("vooo", pathname.split(routs[1] ?? ""));
     }
-    console.log("vooo", pathname.split(routs[1] ?? ""));
-  }, [pathname]);
+  }, [pathname, rr.current]);
   const [load, setLoad] = useState(false);
   const handleRount = (vl: string) => {
     if (routs.length >= 2) {
@@ -102,13 +101,19 @@ const RoutListing: React.FC<{
     setLoad(!load);
   };
   const f = routs[1] ?? "";
+  console.log(routs, "routs", f);
+
   return (
     <div className={`px-5 w-full ${routs[3] ? "" : "md:w-[400px]"} `}>
       <div className="w-full my-3 mb-4">
         <Routing routs={routs} />
       </div>
       {!routs[2] && (
-        <div className="w-full flex mb-15 flex-wrap md:flex-nowrap">
+        <div
+          className={`w-full mb-15 flex-wrap md:flex-nowrap ${
+            routs.length > 0 ? "flex" : "hidden"
+          }`}
+        >
           <div className="w-full md:w-[350px]  mb-5 md:border-r mr-2">
             <div className="w-full">
               <Listing
@@ -121,7 +126,7 @@ const RoutListing: React.FC<{
             </div>
           </div>
           <h3 className="w-full md:hidden text-center border-b">
-            {routs[1]} {currentPath}
+            {currentPath} {routs[1]}
           </h3>
         </div>
       )}

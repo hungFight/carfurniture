@@ -1,9 +1,11 @@
 .mySwiper {
   position: unset !important;
   padding: 8px !important;
+  .swiper-pagination {
+    bottom: -4px !important;
+  }
 }
-.pagination {
-}
+
 .containerProductTag {
   .nameTag,
   .desTag {

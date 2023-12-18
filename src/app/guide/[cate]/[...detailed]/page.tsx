@@ -25,8 +25,8 @@ const page = async (props: { params: { detailed: string[] | string } }) => {
       : await getProduct(props.params.detailed[1]);
 
   return (
-    <div className="w-full min-[1000px]:flex justify-center">
-      <div className="w-full min-[1200px]:w-[1200px] relative mt-15 border-t p-5">
+    <div className="w-full min-[1000px]:flex justify-start">
+      <div className="w-full min-[1000px]:w-[1000px] relative mt-15 border-t p-5">
         <div>
           <div className="w-fill min-[520px]:w-[500px] h-[260px] min-[520px]:h-[300px]">
             <img
