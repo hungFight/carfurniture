@@ -1,7 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
     env: {
-        DB_URL_SERVER: 'https://localhost:7028/api/',
+        DB_URL: process.env.DB_URL_SERVER,
     },
 }
 

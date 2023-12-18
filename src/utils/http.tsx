@@ -6,7 +6,7 @@ class Http {
   instance: AxiosInstance;
   constructor() {
     this.instance = axios.create({
-      baseURL: process.env.DB_URL_SERVER,
+      baseURL: process.env.DB_URL,
       headers: {
         // "Content-Type": "application/json",
         Accept: "application/json",
