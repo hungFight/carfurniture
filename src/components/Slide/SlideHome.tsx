@@ -9,7 +9,7 @@ import "swiper/css/pagination";
 import "swiper/css/navigation";
 
 // import required modules
-import { Pagination, Navigation } from "swiper/modules";
+import { Autoplay, Pagination, Navigation } from "swiper/modules";
 import Image from "next/image";
 import { Images } from "@/asset/image";
 import styles from "./styleSlide.module.scss";
@@ -134,7 +134,7 @@ export default function SlideHome() {
               className={` w-full h-[90%]  sm:flex-wrap  xl:flex-nowrap absolute top-0 right-0 p-5  flex  items-center`}
             >
               <div
-                className={`${styles.slideImageOneChild1} h-full sm:h-[65%] w-4/5 min-w-1/2 xl:w-full  p-[9px] relative`}
+                className={`${styles.slideImageOneChild1} h-full sm:h-[55%] xl:h-[75.5%] w-4/5 min-w-1/2 xl:w-full  p-[9px] relative`}
               >
                 <Image
                   src={Images.slideOneOne}
@@ -143,7 +143,7 @@ export default function SlideHome() {
                 />
               </div>
               <div
-                className={`${styles.slideImageOneChild2} h-full sm:h-[65%] w-4/5 min-w-1/2 xl:w-full  p-[9px] relative`}
+                className={`${styles.slideImageOneChild2} h-full sm:h-[55%] xl:h-[75.5%] w-4/5 min-w-1/2 xl:w-full  p-[9px] relative`}
               >
                 <Image
                   src={Images.slideOneTwo}
@@ -170,7 +170,7 @@ export default function SlideHome() {
               className={` w-full sm:w-auto h-full xl:h-[90%]  sm:flex-wrap  xl:flex-nowrap absolute top-0 right-0 p-5  flex  items-center`}
             >
               <div
-                className={`${styles.slideImageOneChild1} h-full sm:h-1/2 w-4/5 min-w-1/2 xl:w-full xl:h-[80%] p-[20px] relative`}
+                className={`${styles.slideImageOneChild1} h-full sm:h-1/2 w-4/5 min-w-1/2 xl:w-full xl:h-[80%] p-[9px] relative`}
               >
                 <Image
                   src={Images.slideTwoOne}
@@ -179,7 +179,7 @@ export default function SlideHome() {
                 />
               </div>
               <div
-                className={`${styles.slideImageOneChild2} h-full sm:h-1/2 w-4/5 min-w-1/2 xl:w-full xl:h-[80%] p-[20px] relative`}
+                className={`${styles.slideImageOneChild2} h-full sm:h-1/2 w-4/5 min-w-1/2 xl:w-full xl:h-[80%] p-[9px] relative`}
               >
                 <Image
                   src={Images.slideTwoTwo}
@@ -285,11 +285,13 @@ export default function SlideHome() {
     <div className={`w-[100%] ${styles.bk}`}>
       <Swiper
         pagination={true}
-        modules={[Pagination]}
+        modules={[Autoplay, Pagination, Navigation]}
         className="mySwiper"
         autoplay={{
           delay: 2500,
+          disableOnInteraction: false,
         }}
+        navigation={true}
         onSlideChange={(e: any) =>
           setChange({ ...change, current: e.activeIndex })
         }

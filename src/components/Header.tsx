@@ -179,12 +179,10 @@ const Header = () => {
                 const res = await http.get(`User/Logout/${userName}`, {
                   headers: { Authorization: "Bearer " + token },
                 });
-                if (res.data.message) {
-                  window.localStorage.removeItem("token");
-                  localStorage.removeItem("refreshToken");
-                  localStorage.removeItem("expiration");
-                  window.location.reload();
-                }
+                window.localStorage.removeItem("token");
+                localStorage.removeItem("refreshToken");
+                localStorage.removeItem("expiration");
+                window.location.reload();
               }
             }}
           >

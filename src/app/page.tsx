@@ -96,6 +96,7 @@ export default function Home() {
       setLoading(true);
       const res = await http.post("Product/GetPaginationProduct", {
         search_Name: name,
+        search_CategoryName: caseChose.product?.categoryName,
       });
       setPageIndex(res.data.totalPageIndex);
       setDataProducts(res.data.data);
@@ -138,7 +139,7 @@ export default function Home() {
   let managerIndex = false;
   let isIndex = false;
   return (
-    <div className="w-full 2xl:w-[1519px]">
+    <div className="w-full  ">
       <SlideHome />
       <div className="w-full h-40 bg-black flex flex-wrap">
         <div className="w-full pt-1 sm:w-[40%] sm:p-3 h-fit sm:h-full flex items-center justify-center">

@@ -82,6 +82,7 @@ const page = (props: { params: { cate: string } }) => {
         pageIndex: index,
         pageSize: 6,
         search_Name: name,
+        search_CategoryName: decodeURIComponent(cate),
       });
       setLoading(false);
       setPageIndex(res.data.totalPageIndex);
@@ -229,7 +230,7 @@ const page = (props: { params: { cate: string } }) => {
                       )}
                     </div>
                     <div
-                      className={`text-sm md:text-base h-[38px]  mt-2 overflow-hidden ${styles.description}`}
+                      className={`text-sm md:text-base h-[43px]  mt-2 overflow-hidden ${styles.description}`}
                       style={{
                         display: "-webkit-box",
                         WebkitLineClamp: 1,

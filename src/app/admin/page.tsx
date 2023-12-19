@@ -628,14 +628,16 @@ const page = () => {
                       <button className="text-sm shadow-[0_0_2px_#4a8cbf] border-[#4a8cbf] border-[1px] p-1 pr-3 rounded-md">
                         View more
                       </button>
-                      <a
-                        href={p.urlShoppe}
-                        target="_blank"
+                      <div
                         className="absolute top-[5px] text-[crimson] right-[30px] "
                         style={{ color: "crimson !important" }}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          window.open(p.urlShoppe, "_blank");
+                        }}
                       >
                         <SiShopee />
-                      </a>
+                      </div>
                     </div>
                   </Link>
                 ))

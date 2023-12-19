@@ -8,6 +8,12 @@ import { PiMessengerLogoLight } from "react-icons/pi";
 import { CiPhone } from "react-icons/ci";
 import { SiShopee } from "react-icons/si";
 import http from "@/utils/http";
+import Image from "@/app/product/[cate]/[...detailed]/Image";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Pagination } from "swiper/modules";
+// Import Swiper styles
+import "swiper/css";
+import "swiper/css/pagination";
 const AddProductModel: React.FC<{
   title: string;
   onClick: () => void;
@@ -287,11 +293,41 @@ const AddProductModel: React.FC<{
           <div className="w-full min-[1200px]:w-[1200px] relative mt-15 border-t p-5">
             <div>
               <div className="min-[1000px]:flex">
-                <div className="w-full h-[300px] min-[600px]:w-[500px]  ">
-                  {image.map((url) => (
-                    <img src={url} className="w-full h-full" />
-                  ))}
+                <div
+                  className={`w-full ${
+                    image?.length > 1 ? "h-[470px] " : "h-[350px] "
+                  } min-[600px]:w-[500px]`}
+                >
+                  <div className="w-full h-[350px] min-[600px]:w-[500px]  ">
+                    <img
+                      src={image[0]}
+                      alt={image[0]}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  {image.length > 1 && (
+                    <div className="h-[100px] mt-3">
+                      <Swiper
+                        pagination={true}
+                        modules={[Pagination]}
+                        className="mySwiper h-full"
+                        spaceBetween={15}
+                        slidesPerView={5}
+                      >
+                        {image.map((f) => (
+                          <SwiperSlide key={f}>
+                            <img
+                              src={f}
+                              alt={f}
+                              className="w-full h-full object-cover"
+                            />
+                          </SwiperSlide>
+                        ))}
+                      </Swiper>
+                    </div>
+                  )}
                 </div>
+
                 <div className="mt-1 min-[1000px]:ml-3 ">
                   <h3
                     className={`font-bold text-sm md:text-base ${styles.nameTag}`}
