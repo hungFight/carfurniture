@@ -288,7 +288,7 @@ export default function SlideHome() {
         modules={[Autoplay, Pagination, Navigation]}
         className="mySwiper"
         autoplay={{
-          delay: 2500,
+          delay: 5000,
           disableOnInteraction: false,
         }}
         navigation={true}

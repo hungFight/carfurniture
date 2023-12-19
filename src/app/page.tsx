@@ -141,7 +141,7 @@ export default function Home() {
   return (
     <div className="w-full  ">
       <SlideHome />
-      <div className="w-full h-40 bg-black flex flex-wrap">
+      <div className="w-full h-40 bg-[#212322] flex flex-wrap">
         <div className="w-full pt-1 sm:w-[40%] sm:p-3 h-fit sm:h-full flex items-center justify-center">
           <p className="text-white">
             Các úng dụng và phần mềm hỗ trợ khác như ...
