@@ -161,7 +161,7 @@ export default function Home() {
       <div className=" w-full mb-[100px] flex justify-center">
         <div className="w-full sm:w-[90%] ">
           <div className="w-full mt-2 mb-1">
-            <h3 className="w-full pl-1 font-semibold text-base xl:text-lg">
+            <h3 className="w-full pl-1 font-semibold text-base xl:text-lg text-center">
               Danh sách sản phẩm
             </h3>
             <SlideCategory

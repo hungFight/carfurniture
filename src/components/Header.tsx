@@ -61,11 +61,12 @@ const Header = () => {
           <div
             className="h-full  w-[80%] shadow-[0_0_3px_#4e4e4e] bg-white "
             onClick={(e) => e.stopPropagation()}
+            style={{ fontFamily: "'Mazda patrick', sans-serif !important" }}
           >
             <div className=" w-full flex flex-wrap mt-[15px]">
               <Link
                 href="/"
-                className={`header_home w-full text-[#3a3b3b]  my-[2px] text-sm sm:text-base mx-4 max-sm:my-1 whitespace-pre-wrap font-medium cursor-pointer hover:text-[#42aaea] ${
+                className={`header_home w-full text-[#3a3b3b]   my-[2px] text-sm sm:text-base mx-4 max-sm:my-1 whitespace-pre-wrap font-medium cursor-pointer hover:text-[#42aaea] ${
                   !(active.indexOf("product") > 0) &&
                   !(active.indexOf("news") > 0) &&
                   !(active.indexOf("guide") > 0)
@@ -189,7 +190,10 @@ const Header = () => {
             <p className="text-sm">Đăng xuất</p>
           </div>
         )}
-        <div className="hidden md:flex w-full max-sm:pl-[78px] max-sm:flex-wrap max-sm:justify-start sm:w-auto sm:absolute -bottom-11 left-[19%] md:left-[30%] justify-around sm:mt-3">
+        <div
+          style={{ fontFamily: "Mazda patrick, sans-serif !important" }}
+          className="hidden md:flex w-full max-sm:pl-[78px] max-sm:flex-wrap max-sm:justify-start sm:w-auto sm:absolute -bottom-11 left-[19%] md:left-[30%] justify-around sm:mt-3"
+        >
           <Link
             href="/"
             className={`header_home text-[#3a3b3b] ${

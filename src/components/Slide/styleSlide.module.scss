@@ -18,7 +18,11 @@
 }
 
 .animationSlideText {
+  font-family: "Mazda type", sans-serif;
   animation: animationSlideText 0.2s linear forwards;
+}
+.animationSlideTextH3 {
+  font-family: "Mazda type", sans-serif;
 }
 @keyframes animationSlideText {
   100% {

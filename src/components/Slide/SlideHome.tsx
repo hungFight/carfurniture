@@ -104,7 +104,7 @@ export default function SlideHome() {
           ) : (
             <h3
               key={index + text}
-              className={`text-xs md:text-base xl:text-lg font-semibold mb-3  w-max xl:bg-inherit px-[10px] py-[2px] rounded-[5px] `}
+              className={`${styles.animationSlideTextH3} text-xs md:text-base xl:text-lg font-semibold mb-3  w-max xl:bg-inherit px-[10px] py-[2px] rounded-[5px] `}
             >
               {text}
             </h3>
