@@ -7,12 +7,14 @@ import { PiMessengerLogoLight } from "react-icons/pi";
 import http from "@/utils/http";
 import Link from "next/link";
 import styles from "./styleComponent.module.scss";
+import { useCookies } from "next-client-cookies";
 const containerStyle = {
   width: "400px",
   height: "400px",
 };
 
 const Map = () => {
+  const cookies = useCookies();
   const [data, setData] = useState<{
     id: number;
     name: string;
@@ -30,10 +32,9 @@ const Map = () => {
   };
   useEffect(() => {
     fet();
-    const token = localStorage.getItem("token") ?? "";
-    const refreshToken = localStorage.getItem("refreshToken") ?? "";
-    const expire = localStorage.getItem("expiration") ?? "";
-    if (token && refreshToken && expire) setCc(true);
+    const token = cookies.get("token") ?? "";
+    const refreshToken = cookies.get("refreshToken") ?? "";
+    if (token && refreshToken) setCc(true);
   }, []);
 
   return (
@@ -116,7 +117,7 @@ const Map = () => {
           href="/admin"
           className="fixed bottom-[35px] right-[35px] flex items-center  cursor-pointer"
         >
-          <h3 className="text-[12px] md:text-[15px] text-center bg-[#0099e6] rounded-[20px] font-semibold py-1 px-[11px]  text-white">
+          <h3 className="text-[12px] md:text-[15px] text-center bg-[#0099e6] rounded-[10px] font-semibold py-2 px-[15px]  text-white">
             Admin
           </h3>
         </Link>

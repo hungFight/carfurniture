@@ -1,12 +1,15 @@
 "use client";
+import { cookies } from "next/headers";
 import http from "@/utils/http";
 import { redirect, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { IoEyeOffOutline } from "react-icons/io5";
 import { MdOutlineRemoveRedEye } from "react-icons/md";
+import { useCookies } from "next-client-cookies";
 const Login: React.FC<{
   setSession: React.Dispatch<React.SetStateAction<boolean>>;
 }> = ({ setSession }) => {
+  const cookies = useCookies();
   const [changePass, setChangePass] = useState<string | null>(null);
   const [account, setAccount] = useState<{
     userName: string;
@@ -30,10 +33,17 @@ const Login: React.FC<{
       });
 
       if (res.data) {
-        localStorage.setItem("token", res.data.token);
-        localStorage.setItem("refreshToken", res.data.refreshToken);
-        localStorage.setItem("expiration", res.data.expiration);
-        localStorage.setItem("userName", account.userName);
+        cookies.set("token", res.data.token, {
+          path: "/",
+          secure: false,
+          sameSite: "strict",
+        });
+        cookies.set("refreshToken", res.data.refreshToken, {
+          path: "/",
+          secure: false,
+          sameSite: "strict",
+        });
+
         window.location.reload();
         setSession(false);
       } else {

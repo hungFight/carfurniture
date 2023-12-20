@@ -17,7 +17,9 @@ const SlideSwiper: React.FC<{
   loading?: boolean;
 }> = ({ data, onClick, active, loading }) => {
   return (
-    <div className={`w-full flex  px-1 py-2 relative ${styles.pagination}`}>
+    <div
+      className={`w-full flex rounded-[5px] px-1 py-2 relative ${styles.pagination}`}
+    >
       <div className="w-full bg-[aliceblue] ">
         <Swiper
           slidesPerView={3}
@@ -45,7 +47,7 @@ const SlideSwiper: React.FC<{
         >
           {loading ? (
             <p>Loading...</p>
-          ) : (
+          ) : data && data.length > 0 ? (
             data?.map((d) => (
               <SwiperSlide key={d.id}>
                 <h3
@@ -58,6 +60,8 @@ const SlideSwiper: React.FC<{
                 </h3>
               </SwiperSlide>
             ))
+          ) : (
+            <p>Không có data</p>
           )}
         </Swiper>
       </div>

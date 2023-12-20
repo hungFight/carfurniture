@@ -1,5 +1,6 @@
 import http from "@/utils/http";
 import type { Metadata } from "next";
+import { CookiesProvider } from "next-client-cookies/server";
 
 export const metadata: Metadata = {
   title: "Quản trị",
@@ -11,5 +12,5 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  return <> {children}</>;
+  return <CookiesProvider> {children}</CookiesProvider>;
 }

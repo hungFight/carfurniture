@@ -1,5 +1,5 @@
 "use client";
-import React, { useRef } from "react";
+import React, { useEffect, useRef } from "react";
 
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
@@ -10,6 +10,9 @@ import { PiMessengerLogoLight } from "react-icons/pi";
 import { CiPhone } from "react-icons/ci";
 import { SiShopee } from "react-icons/si";
 import http from "@/utils/http";
+import { useCookies } from "next-client-cookies";
+import { redirect } from "next/navigation";
+import httpToken from "@/utils/httpToken";
 const AddGuideModel: React.FC<{
   title: string;
   onClick: () => void;
@@ -45,8 +48,12 @@ const AddGuideModel: React.FC<{
   >;
 }> = ({ title, onClick, cateId, cateName, newsUp, fet, setNewsUp }) => {
   const [value, setValue] = useState<string>(newsUp?.content ?? "");
+  const [token, setToken] = useState<{
+    accessToken: string;
+    refreshToken: string;
+  }>();
   const [pre, setPre] = useState<boolean>(false);
-
+  const cookies = useCookies();
   const [product, setProduct] = useState<{
     Id?: number;
     Name: string;
@@ -77,39 +84,50 @@ const AddGuideModel: React.FC<{
   };
   const handleSubmit = async (e: any) => {
     e.preventDefault();
-    console.log(product.FormCollection, "product");
-    setLoading(true);
-    const formData = new FormData();
-    product.Content = value;
-    formData.append("categoryName", cateName);
-    formData.append("Name", product.Name);
-    formData.append("Content", product.Content);
-    formData.append("categoryId", String(product.categoryId));
-    if (newsUp) {
-      // update
-      formData.append("Id", String(newsUp.id));
-
-      formData.append("FormCollection", product.FormCollection);
-      if (checkRef.current) formData.append("Paths", newsUp.urlImage[0]?.path);
-      if (newsUp.id !== null) {
-        const res = await http.put("Guide/Update", formData);
-      }
-    } else {
-      if (cateName && cateId && product.Name && product.Content) {
-        //add
-        formData.append("FormCollection", product.FormCollection);
+    const accessToken = cookies.get("token");
+    const refreshToken = cookies.get("refreshToken");
+    if (accessToken && refreshToken) {
+      const axio = httpToken(accessToken, refreshToken, cookies);
+      const access = cookies.get("token");
+      if (access) {
+        setLoading(true);
+        const formData = new FormData();
+        product.Content = value;
+        formData.append("categoryName", cateName);
         formData.append("Name", product.Name);
         formData.append("Content", product.Content);
-        if (product.FormCollection) {
-          const res = await http.post("Guide/Create", formData);
+        formData.append("categoryId", String(product.categoryId));
+        if (newsUp) {
+          // update
+          formData.append("Id", String(newsUp.id));
+          formData.append("FormCollection", product.FormCollection);
+          if (checkRef.current)
+            formData.append("Paths", newsUp.urlImage[0]?.path);
+          if (newsUp.id !== null) {
+            const res = await axio.put("Guide/Update", formData, {
+              headers: { Authorization: "Bearer " + access },
+            });
+          }
+        } else {
+          if (cateName && cateId && product.Name && product.Content) {
+            //add
+            formData.append("FormCollection", product.FormCollection);
+            formData.append("Name", product.Name);
+            formData.append("Content", product.Content);
+            if (product.FormCollection) {
+              const res = await axio.post("Guide/Create", formData, {
+                headers: { Authorization: "Bearer " + access },
+              });
+            }
+          }
         }
+        await fet(cateName);
+        checkRef.current = false;
+        setNewsUp(undefined);
+        onClick();
+        setLoading(false);
       }
     }
-    await fet(cateName);
-    checkRef.current = false;
-    setNewsUp(undefined);
-    onClick();
-    setLoading(false);
   };
   const modules = {
     toolbar: [
@@ -121,7 +139,15 @@ const AddGuideModel: React.FC<{
       [{ size: ["small", false, "large", "huge"] }],
     ],
   };
-
+  useEffect(() => {
+    const token = cookies.get("token") ?? "";
+    const refreshToken = cookies.get("refreshToken") ?? "";
+    if (!token || !refreshToken) {
+      redirect("/");
+    } else {
+      setToken({ accessToken: token, refreshToken: refreshToken });
+    }
+  }, []);
   const formats = [
     "header",
     "bold",
@@ -144,50 +170,54 @@ const AddGuideModel: React.FC<{
       <form
         onSubmit={handleSubmit}
         encType="multipart/form-data"
-        className="w-full h-full p-5 overflow-auto z-50 sm:w-[640px] block justify-center flex-wrap  fixed top-1/2 right-1/2 left-1/2 translate-x-[-50%] translate-y-[-50%] bg-white"
+        className=" h-full p-5 items-start overflow-auto z-50 w-[80%] flex justify-center flex-wrap  fixed top-1/2 right-1/2 left-1/2 translate-x-[-50%] translate-y-[-50%] bg-white"
       >
-        <h3 className="w-full p-3 text-center relative">
-          {title}
+        <h3 className="w-full p-3 h-fit text-center relative bg-[#0f6ab8] rounded-[5px] text-white">
+          Danh mục {title}
           <div
-            className="absolute top-3 left-2 text-[30px] cursor-pointer"
+            className="absolute top-[9px] left-2 text-[30px] cursor-pointer  hover:text-[#ff4367]"
             onClick={onClick}
           >
             <IoCloseCircleOutline />
           </div>
         </h3>
-        <div className="w-full my-2 flex items-center flex-wrap  h-fit my-3">
-          <label className="text-base mr-3" htmlFor="productFile">
-            Tải ảnh hưỡng dẫn:
-          </label>
-          <input
-            required={newsUp ? false : true}
-            className="outline-[#41af6b] mr-1 shadow-[0_0_2px_#4a8cbf] border-[#4a8cbf] border-[1px] p-1 pr-3 rounded-md"
-            id="productFile"
-            type="file"
-            name="file"
-            onChange={(e) => handleUploadFIle(e)}
-          />
-          {image && (
-            <div className="w-[200px] h-[200px]">
-              <img src={image} className="w-full h-full" />
-            </div>
-          )}
+        <div className="w-1/2 min-h-[85%]">
+          {" "}
+          <div className="w-full my-2 flex items-center flex-wrap  h-fit my-3">
+            <label
+              className="text-base cursor-pointer  w-[127px] px-5 py-1 rounded-[5px] shadow-[0_0_2px_#4a8cbf] border-[#4a8cbf] border-[1px]"
+              htmlFor="productFile"
+            >
+              Tải ảnh lên
+            </label>
+            <input
+              required={newsUp ? false : true}
+              className="outline-[#41af6b] mr-1 shadow-[0_0_2px_#4a8cbf] border-[#4a8cbf] border-[1px] p-1 pr-3 rounded-md"
+              id="productFile"
+              type="file"
+              hidden
+              name="file"
+              onChange={(e) => handleUploadFIle(e)}
+            />
+            {image && (
+              <div className="w-[200px] h-[200px]">
+                <img src={image} className="w-full h-full" />
+              </div>
+            )}
+          </div>
+          <div className="w-full my-2 flex items-center h-fit my-3">
+            <input
+              required
+              className="outline-[#41af6b] w-[350px] mr-1 shadow-[0_0_2px_#4a8cbf] border-[#4a8cbf] border-[1px] p-1 pr-3 rounded-md"
+              id="productName"
+              type="text"
+              value={product?.Name ?? ""}
+              onChange={(e) => setProduct({ ...product, Name: e.target.value })}
+              placeholder="Tiêu đề"
+            />
+          </div>{" "}
         </div>
-        <div className="w-full my-2 flex items-center h-fit my-3">
-          <label className="text-base mr-3" htmlFor="productName">
-            Tiêu đề:
-          </label>
-          <input
-            required
-            className="outline-[#41af6b] mr-1 shadow-[0_0_2px_#4a8cbf] border-[#4a8cbf] border-[1px] p-1 pr-3 rounded-md"
-            id="productName"
-            type="text"
-            value={product?.Name ?? ""}
-            onChange={(e) => setProduct({ ...product, Name: e.target.value })}
-            placeholder="Tiêu đề"
-          />
-        </div>{" "}
-        <div className={`w-full my-2 flex items-center  flex-wrap  h-fit my-3`}>
+        <div className={`w-1/2 my-2 flex items-center  flex-wrap  h-fit my-3`}>
           <h3 className="text-base mr-3 w-full">Content:</h3>
           <ReactQuill
             className="w-full"
@@ -203,13 +233,13 @@ const AddGuideModel: React.FC<{
         ></div> */}
         <div className="flex justify-around items-center w-full h-fit my-3">
           <div
-            className="text-sm px-3 py-1 hover:text-[#0074da] cursor-pointer"
+            className="text-sm bg-[#3390e1] text-white rounded-[5px] px-3 py-1  cursor-pointer"
             onClick={() => setPre(true)}
           >
             Preview
           </div>
           <button
-            className="text-sm px-3 py-1 hover:text-[#0074da] cursor-pointer"
+            className="text-sm bg-[#3390e1] text-white rounded-[5px] px-3 py-1  cursor-pointer"
             type="submit"
           >
             Submit{loading ? " is in processing..." : ""}

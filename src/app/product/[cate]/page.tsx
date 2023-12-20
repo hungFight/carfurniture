@@ -185,7 +185,9 @@ const page = (props: { params: { cate: string } }) => {
                 <Link
                   key={p.id}
                   href="/[slug]"
-                  as={`${props.params.cate}/${p.name}/${p.id}`}
+                  as={`${props.params.cate}/${p.name
+                    .replace(/\s+/g, "-")
+                    .replace(/&/g, "-and-")}/${p.id}`}
                   className="w-[200px] m-3 md:w-[250px] p-1 border shadow-[0_0_3px_#7a7a7a] hover:shadow-[0_0_10px] mb-4 cursor-pointer"
                   onClick={() => {
                     if (typeof localStorage !== "undefined") {

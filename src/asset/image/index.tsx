@@ -6,6 +6,7 @@ import slideTwoTwo from "./silde/2/2.jpg";
 import slideThreeOne from "./silde/3/1.jpg";
 import slideFourOne from "./silde/4/1.jpg";
 import slideFiveOne from "./silde/5/10.jpg";
+import test from "./z4993233706097_1fc369f3294a87ed398e5a051d0ba8e7.jpg";
 export const Images = {
   logo,
   slideOneOne,
@@ -15,4 +16,5 @@ export const Images = {
   slideThreeOne,
   slideFourOne,
   slideFiveOne,
+  test,
 };

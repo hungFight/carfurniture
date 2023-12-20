@@ -2,7 +2,7 @@
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import { IoCloseCircleOutline } from "react-icons/io5";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import styles from "./styleComponent.module.scss";
 import { PiMessengerLogoLight } from "react-icons/pi";
 import { CiPhone } from "react-icons/ci";
@@ -14,6 +14,9 @@ import { Pagination } from "swiper/modules";
 // Import Swiper styles
 import "swiper/css";
 import "swiper/css/pagination";
+import { redirect } from "next/navigation";
+import httpToken from "@/utils/httpToken";
+import { useCookies } from "next-client-cookies";
 const AddProductModel: React.FC<{
   title: string;
   onClick: () => void;
@@ -59,6 +62,11 @@ const AddProductModel: React.FC<{
     >
   >;
 }> = ({ title, onClick, cateId, cateName, fet, upCate, setUpCate }) => {
+  const [token, setToken] = useState<{
+    accessToken: string;
+    refreshToken: string;
+  }>();
+  const cookies = useCookies();
   const [value, setValue] = useState<string>(upCate?.Description ?? "");
   const [loading, setLoading] = useState<boolean>(false);
   const [pre, setPre] = useState<boolean>(false);
@@ -100,38 +108,60 @@ const AddProductModel: React.FC<{
   };
   const handleSubmit = async (e: any) => {
     e.preventDefault();
-    console.log(product, "product", product.FormCollection);
-    setLoading(true);
-    const formData = new FormData();
-    product.Description = value;
-    formData.append("Name", product.Name);
-    formData.append("Price", product.Price);
-    formData.append("Description", product.Description);
-    formData.append("UrlShoppe", product.UrlShoppe);
-    formData.append("categoryId", String(product.categoryId));
-    formData.append("categoryName", cateName);
-    product.FormCollection?.map((f: any) => {
-      formData.append("FormCollection", f);
-    });
-    if (!upCate) {
-      formData.append("Price_After", product.Discount);
-      const res = await http.post("Product/Create", formData);
-    } else {
-      formData.append("Price_After", product.Discount);
-      if (checkRef.current) {
-        upCate.urlImage.map((f) => {
-          formData.append("Paths", f.path);
+    const accessToken = cookies.get("token");
+    const refreshToken = cookies.get("refreshToken");
+    if (accessToken && refreshToken) {
+      const axio = httpToken(accessToken, refreshToken, cookies);
+      const access = cookies.get("token");
+
+      if (access) {
+        console.log(product, "product", product.FormCollection);
+        setLoading(true);
+        const formData = new FormData();
+        product.Description = value;
+        formData.append("Name", product.Name);
+        formData.append("Price", product.Price);
+        formData.append("Description", product.Description);
+        formData.append("UrlShoppe", product.UrlShoppe);
+        formData.append("categoryId", String(product.categoryId));
+        formData.append("categoryName", cateName);
+        product.FormCollection?.map((f: any) => {
+          formData.append("FormCollection", f);
         });
+        if (!upCate) {
+          formData.append("Price_After", product.Discount);
+          const res = await axio.post("Product/Create", formData, {
+            headers: { Authorization: "Bearer " + access },
+          });
+        } else {
+          formData.append("Price_After", product.Discount);
+          if (checkRef.current) {
+            upCate.urlImage.map((f) => {
+              formData.append("Paths", f.path);
+            });
+          }
+          formData.append("Id", String(upCate.Id));
+          const res = await axio.put("Product/Update", formData, {
+            headers: { Authorization: "Bearer " + access },
+          });
+          checkRef.current = false;
+        }
+        await fet(cateName);
+        setUpCate(undefined);
+        onClick();
+        setLoading(false);
       }
-      formData.append("Id", String(upCate.Id));
-      const res = await http.put("Product/Update", formData);
-      checkRef.current = false;
     }
-    await fet(cateName);
-    setUpCate(undefined);
-    onClick();
-    setLoading(false);
   };
+  useEffect(() => {
+    const token = cookies.get("token") ?? "";
+    const refreshToken = cookies.get("refreshToken") ?? "";
+    if (!token || !refreshToken) {
+      redirect("/");
+    } else {
+      setToken({ accessToken: token, refreshToken: refreshToken });
+    }
+  }, []);
   const modules = {
     toolbar: [
       [{ header: [1, 2, 3, false] }],
@@ -165,99 +195,95 @@ const AddProductModel: React.FC<{
       <form
         onSubmit={handleSubmit}
         encType="multipart/form-data"
-        className="w-full h-full p-5 overflow-auto z-50 sm:w-[640px] flex justify-center flex-wrap  fixed top-1/2 right-1/2 left-1/2 translate-x-[-50%] translate-y-[-50%] bg-white"
+        className=" h-full p-5 items-start overflow-auto z-50 w-[80%] flex justify-center flex-wrap  fixed top-1/2 right-1/2 left-1/2 translate-x-[-50%] translate-y-[-50%] bg-white"
       >
-        <h3 className="w-full p-3 text-center relative">
-          {title}
+        <h3 className="w-full p-3 h-fit text-center relative bg-[#0f6ab8] rounded-[5px] text-white">
+          Danh mục {title}
           <div
-            className="absolute top-3 left-2 text-[30px] cursor-pointer"
+            className="absolute top-[9px] left-2 text-[30px] cursor-pointer  hover:text-[#ff4367]"
             onClick={onClick}
           >
             <IoCloseCircleOutline />
           </div>
         </h3>
-        <div className="w-full my-2 flex items-center flex-wrap">
-          <label className="text-base mr-3" htmlFor="productFile">
-            Tải ảnh sản phẩm lên:
-          </label>
-          <input
-            required={upCate ? false : true}
-            className="outline-[#41af6b] mr-1 shadow-[0_0_2px_#4a8cbf] border-[#4a8cbf] border-[1px] p-1 pr-3 rounded-md"
-            id="productFile"
-            type="file"
-            name="file"
-            multiple
-            onChange={(e) => handleUploadFIle(e)}
-          />
-          {image && (
-            <div className="w-full  flex flex-wrap">
-              {image.map((url) => (
-                <img src={url} className="w-[150px] h-[150px] mr-2 mt-2" />
-              ))}
-            </div>
-          )}
+        <div className="w-1/2 min-h-[85%]">
+          {" "}
+          <div className="w-full my-2 flex items-center flex-wrap">
+            <label
+              className="text-base cursor-pointer  w-[127px] px-5 py-1 rounded-[5px] shadow-[0_0_2px_#4a8cbf] border-[#4a8cbf] border-[1px]"
+              htmlFor="productFile"
+            >
+              Tải ảnh lên
+            </label>
+            <input
+              required={upCate ? false : true}
+              className="outline-[#41af6b] mr-1 shadow-[0_0_2px_#4a8cbf] border-[#4a8cbf] border-[1px] p-1 pr-3 rounded-md"
+              id="productFile"
+              type="file"
+              name="file"
+              hidden
+              multiple
+              onChange={(e) => handleUploadFIle(e)}
+            />
+            {image && (
+              <div className="w-full  flex flex-wrap">
+                {image.map((url) => (
+                  <img src={url} className="w-[150px] h-[150px] mr-2 mt-2" />
+                ))}
+              </div>
+            )}
+          </div>
+          <div className="w-full my-2 flex items-center">
+            <input
+              value={product.Name}
+              required
+              className="w-[350px] outline-[#41af6b] mr-1 shadow-[0_0_2px_#4a8cbf] border-[#4a8cbf] border-[1px] p-1 pr-3 rounded-md"
+              id="productName"
+              type="text"
+              onChange={(e) => setProduct({ ...product, Name: e.target.value })}
+              placeholder="Tên sản phẩm"
+            />
+          </div>{" "}
+          <div className="w-full my-2 flex items-center">
+            <input
+              value={product.Price}
+              required
+              className="w-[350px] outline-[#41af6b] mr-1 shadow-[0_0_2px_#4a8cbf] border-[#4a8cbf] border-[1px] p-1 pr-3 rounded-md"
+              id="productPrice"
+              type="text"
+              onChange={(e) =>
+                setProduct({ ...product, Price: e.target.value })
+              }
+              placeholder="Giá sản phẩm"
+            />
+          </div>{" "}
+          <div className="w-full my-2 flex items-center">
+            <input
+              id="productDiscount"
+              type="text"
+              value={product.Discount}
+              onChange={(e) =>
+                setProduct({ ...product, Discount: e.target.value })
+              }
+              placeholder="Giá gốc sản phẩm"
+              className="w-[350px] outline-[#41af6b] mr-1 shadow-[0_0_2px_#4a8cbf] border-[#4a8cbf] border-[1px] p-1 pr-3 rounded-md"
+            />
+          </div>{" "}
+          <div className="w-full my-2 flex items-center">
+            <input
+              required
+              className="w-[350px] outline-[#41af6b] mr-1 shadow-[0_0_2px_#4a8cbf] border-[#4a8cbf] border-[1px] p-1 pr-3 rounded-md"
+              id="productShop"
+              value={product.UrlShoppe}
+              type="text"
+              placeholder="Link shop"
+              onChange={(e) =>
+                setProduct({ ...product, UrlShoppe: e.target.value })
+              }
+            />
+          </div>{" "}
         </div>
-        <div className="w-full my-2 flex items-center">
-          <label className="text-base mr-3" htmlFor="productName">
-            Tên sản phẩm:
-          </label>
-          <input
-            value={product.Name}
-            required
-            className="outline-[#41af6b] mr-1 shadow-[0_0_2px_#4a8cbf] border-[#4a8cbf] border-[1px] p-1 pr-3 rounded-md"
-            id="productName"
-            type="text"
-            onChange={(e) => setProduct({ ...product, Name: e.target.value })}
-            placeholder="Tên sản phẩm"
-          />
-        </div>{" "}
-        <div className="w-full my-2 flex items-center">
-          <label className="text-base mr-3" htmlFor="productPrice">
-            Giá sản phẩm:
-          </label>
-          <input
-            value={product.Price}
-            required
-            className="outline-[#41af6b] mr-1 shadow-[0_0_2px_#4a8cbf] border-[#4a8cbf] border-[1px] p-1 pr-3 rounded-md"
-            id="productPrice"
-            type="text"
-            onChange={(e) => setProduct({ ...product, Price: e.target.value })}
-            placeholder="Giá sản phẩm"
-          />
-        </div>{" "}
-        <div className="w-full my-2 flex items-center">
-          <label className="text-base mr-3" htmlFor="productDiscount">
-            Giá gốc sản phẩm:
-          </label>
-          <input
-            id="productDiscount"
-            type="text"
-            value={product.Discount}
-            onChange={(e) =>
-              setProduct({ ...product, Discount: e.target.value })
-            }
-            placeholder="Giá gốc sản phẩm"
-            className="outline-[#41af6b] mr-1 shadow-[0_0_2px_#4a8cbf] border-[#4a8cbf] border-[1px] p-1 pr-3 rounded-md"
-          />
-        </div>{" "}
-        <div className="w-full my-2 flex items-center">
-          <label className="text-base mr-3" htmlFor="productShop">
-            Link shop:
-          </label>
-          <input
-            required
-            className="outline-[#41af6b] mr-1 shadow-[0_0_2px_#4a8cbf] border-[#4a8cbf] border-[1px] p-1 pr-3 rounded-md"
-            id="productShop"
-            value={product.UrlShoppe}
-            type="text"
-            placeholder="Link shop"
-            onChange={(e) =>
-              setProduct({ ...product, UrlShoppe: e.target.value })
-            }
-          />
-        </div>{" "}
-        <div className={`w-full my-2 flex items-center  flex-wrap `}>
-          <h3 className="text-base mr-3 w-full">Mô tả:</h3>
+        <div className={`w-1/2 my-2 flex items-center  flex-wrap `}>
           <ReactQuill
             className="w-full"
             theme="snow"
@@ -272,13 +298,13 @@ const AddProductModel: React.FC<{
         ></div> */}
         <div className="flex justify-around items-center w-full">
           <div
-            className="text-sm px-3 py-1 hover:text-[#0074da] cursor-pointer"
+            className="text-sm px-3 py-1 bg-[#3390e1] text-white rounded-[5px]  cursor-pointer"
             onClick={() => setPre(true)}
           >
             Preview
           </div>
           <button
-            className="text-sm px-3 py-1 hover:text-[#0074da] cursor-pointer"
+            className="text-sm bg-[#3390e1] text-white rounded-[5px] px-3 py-1  cursor-pointer"
             type="submit"
           >
             Submit{loading ? " is in processing..." : ""}

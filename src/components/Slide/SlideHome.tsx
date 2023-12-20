@@ -7,12 +7,13 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/pagination";
 import "swiper/css/navigation";
-
+import { FaArrowAltCircleRight } from "react-icons/fa";
 // import required modules
 import { Autoplay, Pagination, Navigation } from "swiper/modules";
 import Image from "next/image";
 import { Images } from "@/asset/image";
 import styles from "./styleSlide.module.scss";
+import Link from "next/link";
 export default function SlideHome() {
   const [change, setChange] = useState<{ current: number; next: number }>({
     current: 0,
@@ -23,55 +24,55 @@ export default function SlideHome() {
       id: 1,
       val: [
         "VIỆT HÓA, KÍCH HOẠT TÍNH NĂNG ẨN XE MAZDA",
-        "- Font tiếng việt cho hệ thống Mazda connect",
-        "- Kích hoạt và update bản đồ Mazda navigation chính hãng.",
-        "- Kích hoạt xem Video qua usb (mp4, Avi,...)",
-        "- Cài đặt hình nền, ảnh gia đình lên giao diện màn hình xe",
-        "- Kích hoạt sử dụng cảm ứng khi xe di chuyển",
+        "Font tiếng việt cho hệ thống Mazda connect",
+        "Kích hoạt và update bản đồ Mazda navigation chính hãng.",
+        "Kích hoạt xem Video qua usb (mp4, Avi,...)",
+        "Cài đặt hình nền, ảnh gia đình lên giao diện màn hình xe",
+        "Kích hoạt sử dụng cảm ứng khi xe di chuyển",
       ],
     },
     {
       id: 2,
       val: [
         "THẺ BẢN ĐỒ CHÍNH HÃNG XE MAZDA (MAZDA NAVIGATION)",
-        "- Thẻ chính hãng có license bản quyền, không mất bảo hành xe",
-        "- Hiển thị Cảnh báo tốc độ và Điều hướng trên Hắt kính (HUD)",
-        "- Định vị chính xác vị trí của xe khi di chuyển, kiểm soát tốc độ và xác định đúng điểm dừng đỗ.",
-        "- Cảnh báo giới hạn tốc độ, cảnh báo khi xe đi vào những cung đường nguy hiểm.",
-        "- Có thể chạy offline bằng định vị vệ tinh, k phụ thuộc vào kết nối mạng",
+        "Thẻ chính hãng có license bản quyền, không mất bảo hành xe",
+        "Hiển thị Cảnh báo tốc độ và Điều hướng trên Hắt kính (HUD)",
+        "Định vị chính xác vị trí của xe khi di chuyển, kiểm soát tốc độ và xác định đúng điểm dừng đỗ.",
+        "Cảnh báo giới hạn tốc độ, cảnh báo khi xe đi vào những cung đường nguy hiểm.",
+        "Có thể chạy offline bằng định vị vệ tinh, k phụ thuộc vào kết nối mạng",
       ],
     },
     {
       id: 3,
       val: [
         "NÂNG CẤP KIT CARPLAY CHÍNH HÃNG MAZDA",
-        "- Kết nối điện thoại iphone thông qua giao thức carplay",
-        "- Kết nối điện thoại hđh Android thông qua Android auto",
-        "- Kết nối với mọi loại Android box đang có trên thị trường",
-        "- Sử dụng bản đồ google map và vietmap live dẫn đường thông minh",
-        "- Xem youtube với ios đã jailbreak hoặc android cài femata",
+        "Kết nối điện thoại iphone thông qua giao thức carplay",
+        "Kết nối điện thoại hđh Android thông qua Android auto",
+        "Kết nối với mọi loại Android box đang có trên thị trường",
+        "Sử dụng bản đồ google map và vietmap live dẫn đường thông minh",
+        "Xem youtube với ios đã jailbreak hoặc android cài femata",
       ],
     },
     {
       id: 4,
       val: [
         " ANDROID BOX DÀNH CHO XE MAZDA",
-        "- Chip 8 nhân mạnh mẽ, Cấu hình Ram tùy chọn hợp lý",
-        "- Sử dụng hệ điều hành Android mới nhất",
-        "- Tặng vietmap S2 dẫn đường có cảnh báo giao thông",
-        "- Tặng Youtube premium xem youtube ko quảng cáo",
-        "- Tùy chọn sử dụng wifi hoặc sim mạng tiện lợi",
+        "Chip 8 nhân mạnh mẽ, Cấu hình Ram tùy chọn hợp lý",
+        "Sử dụng hệ điều hành Android mới nhất",
+        "Tặng vietmap S2 dẫn đường có cảnh báo giao thông",
+        "Tặng Youtube premium xem youtube ko quảng cáo",
+        "Tùy chọn sử dụng wifi hoặc sim mạng tiện lợi",
       ],
     },
     {
       id: 5,
       val: [
         " CAMERA 3 MẮT CHO XE MAZDA (CÓ MAZDA CONNECT)",
-        "- Bộ cam tùy chọn phiên bản mắt thường hoặc mắt rộng",
-        "- Cắm zắc zin hoàn toàn, không cắt chích hệ thống điện của xe",
-        "- Tích hợp hiển thị camera trước khi vào số D ",
-        "- Tích hợp tự động hiển thị cam gương theo xinhan",
-        "- Chỉ hiện thị camera khi xe di chuyển với tốc độ dưới 15km/h",
+        "Bộ cam tùy chọn phiên bản mắt thường hoặc mắt rộng",
+        "Cắm zắc zin hoàn toàn, không cắt chích hệ thống điện của xe",
+        "Tích hợp hiển thị camera trước khi vào số D ",
+        "ích hợp tự động hiển thị cam gương theo xinhan",
+        "Chỉ hiện thị camera khi xe di chuyển với tốc độ dưới 15km/h",
       ],
     },
   ];
@@ -95,16 +96,22 @@ export default function SlideHome() {
       const R = setTimeout(() => {
         texts.push(
           index !== 0 ? (
-            <p
+            <Link
+              href={`/product/aaa/${text
+                .replace(/\s+/g, "-")
+                .replace(/&/g, "-and-")}`}
               key={index + text}
-              className={`${styles.animationSlideText} text-[10px] w-max md:text-sm  relative top-[-10px] ml-2 mb-1 bg-[aliceblue] xl:bg-inherit  px-[8px] py-[2px] rounded-[5px] `}
+              className={`${styles.animationSlideText} flex text-[10px] items-center  w-max md:text-sm  relative top-[-10px] ml-2 mb-1 bg-[aliceblue] xl:bg-inherit  px-[8px] py-[2px] rounded-[5px] `}
             >
-              {text}
-            </p>
+              <div className="flex items-center text-[green] mr-1">
+                <FaArrowAltCircleRight />
+              </div>
+              <p className="hover:text-[#0065bd]">{text.replace(/-/g, " ")}</p>
+            </Link>
           ) : (
             <h3
               key={index + text}
-              className={`${styles.animationSlideTextH3} text-xs md:text-base xl:text-lg font-semibold mb-3  w-max xl:bg-inherit px-[10px] py-[2px] rounded-[5px] `}
+              className={`${styles.animationSlideTextH3} text-[18px] md:text-[20px] xl:text-[22px] font-semibold mb-3  w-max xl:bg-inherit px-[10px] py-[2px] rounded-[5px] `}
             >
               {text}
             </h3>
@@ -122,42 +129,6 @@ export default function SlideHome() {
   const sildeData = [
     {
       id: 0,
-      element: (
-        <div className="w-full h-[450px]  flex relative flex-wrap sm:flex-nowrap">
-          <div className="xl:w-[52%] w-[100%] sm:w-[60%] relative">
-            <div className="absolute right-[50%] left-[48%] top-[20%] sm:top-[91px]  sm:left-[69%] md:left-[58%] translate-x-[-50%] w-[340px] sm:w-[465px]">
-              {renderedTexts}
-            </div>
-          </div>
-          <div className="sm:w-5/12 w-full xl:w-[52%]   flex justify-start overflow-hidden relative z-10">
-            <div
-              className={` w-full h-[90%]  sm:flex-wrap  xl:flex-nowrap absolute top-0 right-0 p-5  flex  items-center`}
-            >
-              <div
-                className={`${styles.slideImageOneChild1} h-full sm:h-[55%] xl:h-[75.5%] w-4/5 min-w-1/2 xl:w-full  p-[9px] relative`}
-              >
-                <Image
-                  src={Images.slideOneOne}
-                  alt="mazdashop.vn"
-                  className={`${styles.slideOneOne} w-full h-full object-cover rounded-md`}
-                />
-              </div>
-              <div
-                className={`${styles.slideImageOneChild2} h-full sm:h-[55%] xl:h-[75.5%] w-4/5 min-w-1/2 xl:w-full  p-[9px] relative`}
-              >
-                <Image
-                  src={Images.slideOneTwo}
-                  alt="mazdashop.vn"
-                  className={`${styles.slideOneOne} w-full h-full object-cover rounded-md`}
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-      ),
-    },
-    {
-      id: 1,
       element: (
         <div className="w-full h-[450px]  flex relative flex-wrap sm:flex-nowrap">
           <div className="xl:w-[52%] w-[100%] sm:w-[60%] relative">
@@ -183,6 +154,42 @@ export default function SlideHome() {
               >
                 <Image
                   src={Images.slideTwoTwo}
+                  alt="mazdashop.vn"
+                  className={`${styles.slideOneOne} w-full h-full object-cover rounded-md`}
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      ),
+    },
+    {
+      id: 1,
+      element: (
+        <div className="w-full h-[450px]  flex relative flex-wrap sm:flex-nowrap">
+          <div className="xl:w-[52%] w-[100%] sm:w-[60%] relative">
+            <div className="absolute right-[50%] left-[48%] top-[20%] sm:top-[91px]  sm:left-[69%] md:left-[58%] translate-x-[-50%] w-[340px] sm:w-[465px]">
+              {renderedTexts}
+            </div>
+          </div>
+          <div className="sm:w-5/12 w-full xl:w-[52%]   flex justify-start overflow-hidden relative z-10">
+            <div
+              className={` w-full h-[90%]  sm:flex-wrap  xl:flex-nowrap absolute top-0 right-0 p-5  flex  items-center`}
+            >
+              <div
+                className={`${styles.slideImageOneChild1} h-full sm:h-[55%] xl:h-[75.5%] w-4/5 min-w-1/2 xl:w-full  p-[9px] relative`}
+              >
+                <Image
+                  src={Images.slideOneOne}
+                  alt="mazdashop.vn"
+                  className={`${styles.slideOneOne} w-full h-full object-cover rounded-md`}
+                />
+              </div>
+              <div
+                className={`${styles.slideImageOneChild2} h-full sm:h-[55%] xl:h-[75.5%] w-4/5 min-w-1/2 xl:w-full  p-[9px] relative`}
+              >
+                <Image
+                  src={Images.slideOneTwo}
                   alt="mazdashop.vn"
                   className={`${styles.slideOneOne} w-full h-full object-cover rounded-md`}
                 />
@@ -287,10 +294,6 @@ export default function SlideHome() {
         pagination={true}
         modules={[Autoplay, Pagination, Navigation]}
         className="mySwiper"
-        autoplay={{
-          delay: 5000,
-          disableOnInteraction: false,
-        }}
         navigation={true}
         onSlideChange={(e: any) =>
           setChange({ ...change, current: e.activeIndex })

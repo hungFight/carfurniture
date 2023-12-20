@@ -4,7 +4,7 @@ import "./globals.css";
 import { FaPhone } from "react-icons/fa6";
 import Link from "next/link";
 import dynamic from "next/dynamic";
-
+import { CookiesProvider } from "next-client-cookies/server";
 const Header = dynamic(() => import("@/components/Header"));
 const Footer = dynamic(() => import("@/components/Footer"));
 const inter = Inter({ subsets: ["latin"] });
@@ -23,7 +23,9 @@ export default function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         <div className="w-full 2xl:w-[1519px]">
-          <Header />
+          <CookiesProvider>
+            <Header />
+          </CookiesProvider>
           {children}
           <Footer />
         </div>

@@ -12,6 +12,7 @@ import http from "@/utils/http";
 import Link from "next/link";
 import { MdSkipPrevious } from "react-icons/md";
 import { BiSkipNext } from "react-icons/bi";
+import { Images } from "@/asset/image";
 export default function Home() {
   const [search, setSearch] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
@@ -161,7 +162,7 @@ export default function Home() {
       <div className=" w-full mb-[100px] flex justify-center">
         <div className="w-full sm:w-[90%] ">
           <div className="w-full mt-2 mb-1">
-            <h3 className="w-full pl-1 font-semibold text-base xl:text-lg text-center">
+            <h3 className="w-full pl-1 font-semibold text-lg xl:text-lg text-center">
               Danh sách sản phẩm
             </h3>
             <SlideCategory
@@ -245,13 +246,13 @@ export default function Home() {
                         href="/[slug]"
                         as={`product/${caseChose.product?.categoryName}/${r.name}/${r.id}`}
                         key={r.id}
-                        className={`w-[200px] ${
+                        className={`w-[230px] ${
                           dataProducts.length === index + 1 ? "" : "mr-4"
                         } md:w-[300px] p-1 border shadow-[0_0_3px_#7a7a7a] hover:shadow-[0_0_10px] mb-4 cursor-pointer`}
                       >
-                        <div className="w-full h-[200px] md:h-[280px]">
-                          <img
-                            src={r.urlImage[0]?.image}
+                        <div className="w-full h-[164px] md:h-[215px]">
+                          <Image
+                            src={Images.test}
                             alt={r.urlImage[0]?.path}
                             className="w-full h-full object-cover"
                           />

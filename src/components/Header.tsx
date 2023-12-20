@@ -74,7 +74,7 @@ const Header = () => {
                     : ""
                 }`}
                 onClick={(e: any) => {
-                  if (document) {
+                  if (typeof document !== "undefined") {
                     const hear = document?.querySelectorAll(".header_home");
                     Array.from(hear).map((h: any) => {
                       h.style.color = "#3a3b3b";
@@ -91,7 +91,7 @@ const Header = () => {
                   active.indexOf("news") > 0 ? "text-[#42aaea]" : ""
                 } text-sm sm:text-base mx-4 max-sm:my-1 whitespace-pre-wrap my-[2px] font-medium cursor-pointer hover:text-[#42aaea]`}
                 onClick={(e: any) => {
-                  if (document) {
+                  if (typeof document !== "undefined") {
                     const hear = document?.querySelectorAll(".header_home");
                     Array.from(hear).map((h: any) => {
                       h.style.color = "#3a3b3b";
@@ -108,7 +108,7 @@ const Header = () => {
                   active.indexOf("product") > 0 ? "text-[#42aaea]" : ""
                 }  text-sm sm:text-base mx-4 max-sm:my-1 whitespace-pre-wrap my-[2px] font-medium cursor-pointer hover:text-[#42aaea]`}
                 onClick={(e: any) => {
-                  if (document) {
+                  if (typeof document !== "undefined") {
                     const hear = document?.querySelectorAll(".header_home");
                     Array.from(hear).map((h: any) => {
                       h.style.color = "#3a3b3b";
@@ -125,7 +125,7 @@ const Header = () => {
                   active.indexOf("guides") > 0 ? "text-[#42aaea]" : ""
                 } text-[#3a3b3b] text-sm sm:text-base mx-4 max-sm:my-1 my-[2px] whitespace-pre-wrap font-medium cursor-pointer hover:text-[#42aaea]`}
                 onClick={(e: any) => {
-                  if (document) {
+                  if (typeof document !== "undefined") {
                     const hear = document?.querySelectorAll(".header_home");
                     Array.from(hear).map((h: any) => {
                       h.style.color = "#3a3b3b";
@@ -159,7 +159,9 @@ const Header = () => {
             />
           </div>
           <div>
-            <h1 className="font-bold">mazdashop.vn</h1>
+            <a href="/" className="font-bold">
+              mazdashop.vn
+            </a>
             <p className="text-xs">chuyên cung cấp các đồ chơi xe chính hãng</p>
           </div>
         </div>
@@ -204,7 +206,7 @@ const Header = () => {
                 : ""
             } text-sm sm:text-base mx-4 max-sm:my-1 w-max whitespace-pre-wrap font-medium cursor-pointer hover:text-[#42aaea]`}
             onClick={(e: any) => {
-              if (document) {
+              if (typeof document !== "undefined") {
                 const hear = document?.querySelectorAll(".header_home");
                 Array.from(hear).map((h: any) => {
                   h.style.color = "#3a3b3b";
@@ -221,7 +223,7 @@ const Header = () => {
               active.indexOf("news") > 0 ? "text-[#42aaea]" : ""
             } text-sm sm:text-base mx-4 max-sm:my-1 w-max whitespace-pre-wrap font-medium cursor-pointer hover:text-[#42aaea]`}
             onClick={(e: any) => {
-              if (document) {
+              if (typeof document !== "undefined") {
                 const hear = document?.querySelectorAll(".header_home");
                 Array.from(hear).map((h: any) => {
                   h.style.color = "#3a3b3b";
@@ -238,7 +240,7 @@ const Header = () => {
               active.indexOf("product") > 0 ? "text-[#42aaea]" : ""
             }  text-sm sm:text-base mx-4 max-sm:my-1 w-max whitespace-pre-wrap font-medium cursor-pointer hover:text-[#42aaea]`}
             onClick={(e: any) => {
-              if (document) {
+              if (typeof document !== "undefined") {
                 const hear = document?.querySelectorAll(".header_home");
                 Array.from(hear).map((h: any) => {
                   h.style.color = "#3a3b3b";
@@ -255,7 +257,7 @@ const Header = () => {
               active.indexOf("guide") > 0 ? "text-[#42aaea]" : ""
             } text-[#3a3b3b] text-sm sm:text-base mx-4 max-sm:my-1 w-max whitespace-pre-wrap font-medium cursor-pointer hover:text-[#42aaea]`}
             onClick={(e: any) => {
-              if (document) {
+              if (typeof document !== "undefined") {
                 const hear = document?.querySelectorAll(".header_home");
                 Array.from(hear).map((h: any) => {
                   h.style.color = "#3a3b3b";

@@ -131,7 +131,9 @@ const page = (props: { params: { cate: string } }) => {
             <Link
               key={n.id}
               href={`/[slug]`}
-              as={`${props.params.cate}/${n.name}/${n.id}`}
+              as={`${props.params.cate}/${n.name
+                .replace(/\s+/g, "-")
+                .replace(/&/g, "-and-")}/${n.id}`}
               className="w-full flex flex-wrap min-[420px]:flex-nowrap mb-6"
             >
               <div className="min-w-full h-[130px] min-[420px]:min-w-[250px] md:h-[155px] xl:min-w-[350px] xl:h-[210px] mr-3 md:mr-5">

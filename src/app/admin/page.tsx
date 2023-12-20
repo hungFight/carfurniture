@@ -21,13 +21,14 @@ import { AxiosError } from "axios";
 import { useRouter } from "next/navigation";
 import { BiSkipNext } from "react-icons/bi";
 import { MdSkipPrevious } from "react-icons/md";
+import { useCookies } from "next-client-cookies";
 const RoutListing = dynamic(() => import("@/components/Items/RoutListing"));
 const AddNewsModel = dynamic(() => import("@/components/AddNewsModel"));
 const AddProductModel = dynamic(() => import("@/components/AddProductModel"));
 
 const page = () => {
+  const cookies = useCookies();
   // your code
-
   const [search, setSearch] = useState<string>("");
   const [pageIndex, setPageIndex] = useState<number>(0);
   const [loadingSearch, setLoadingSearch] = useState<boolean>(false);
@@ -111,6 +112,10 @@ const page = () => {
     { categoryName: string; categoryId: number }[]
   >([]);
   const router = useRouter();
+  const [token, setToken] = useState<{
+    accessToken: string;
+    refreshToken: string;
+  }>();
   const [add, setAdd] = useState<string>("");
   const [pre, setPre] = useState<boolean>(false);
   const [login, setLogin] = useState<boolean>(false);
@@ -130,17 +135,24 @@ const page = () => {
   const [nameRout, setNameRout] = useState("");
   const [load, setLoad] = useState(false);
   const fet = async () => {
+    setLoadingType(true);
+
     try {
-      if (typeof window !== "undefined") {
-        const token = window.localStorage.getItem("token") ?? "";
-        const refreshToken = window.localStorage.getItem("refreshToken") ?? "";
-        const expire = window.localStorage.getItem("expiration") ?? "";
-        const axio = httpToken(token, refreshToken);
-        setLoadingType(true);
-        const res = await axio.get<typeof dataCate>("CategoryType/GetAll");
-        setCategory(res.data[0].id);
-        setDataCate(res.data);
-        setLoadingType(false);
+      const accessToken = cookies.get("token");
+      const refreshToken = cookies.get("refreshToken");
+      if (accessToken && refreshToken) {
+        const axio = httpToken(accessToken, refreshToken, cookies);
+        const access = cookies.get("token");
+
+        if (access) {
+          const res = await axio.get<typeof dataCate>("CategoryType/GetAll", {
+            headers: { Authorization: "Bearer " + access },
+          });
+          setCategory(res.data[0].id);
+          console.log(res, "dataCate");
+
+          setDataCate(res.data);
+        }
       }
     } catch (error) {
       const err = error as AxiosError;
@@ -149,42 +161,50 @@ const page = () => {
       }
       console.log(err, "error here");
     }
+    setLoadingType(false);
   };
+
   const fetS = async () => {
     setDataList([]);
-    try {
-      if (typeof localStorage !== "undefined") {
-        const token = localStorage.getItem("token") ?? "";
-        const refreshToken = localStorage.getItem("refreshToken") ?? "";
-        const expire = localStorage.getItem("expiration") ?? "";
-        const axio = httpToken(token, refreshToken);
-        const which = dataCate.filter((c) => c.id === categoryType)[0]?.name;
-        const resCate = await axio.get<
-          { categoryName: string; categoryId: number }[]
-        >(`Category/GetAll/${which}`);
-        setNameRout(resCate.data[0]?.categoryName ?? "");
-        setCate({
-          categoryId: resCate.data[0]?.categoryId,
-          categoryName: resCate.data[0]?.categoryName ?? "",
-        });
-        setDataList(resCate.data);
-      }
-    } catch (error) {
-      const err = error as AxiosError;
-      if (err.response?.status === 400) {
-        setLogin(true);
+    const accessToken = cookies.get("token");
+    const refreshToken = cookies.get("refreshToken");
+    if (accessToken && refreshToken) {
+      try {
+        const axio = httpToken(accessToken, refreshToken, cookies);
+        const access = cookies.get("token");
+        if (access) {
+          const which = dataCate.filter((c) => c.id === categoryType)[0]?.name;
+          const resCate = await axio.get<
+            { categoryName: string; categoryId: number }[]
+          >(`Category/GetAll/${which}`, {
+            headers: { Authorization: "Bearer " + access },
+          });
+          setNameRout(resCate.data[0]?.categoryName ?? "");
+          setCate({
+            categoryId: resCate.data[0]?.categoryId,
+            categoryName: resCate.data[0]?.categoryName ?? "",
+          });
+          setDataList(resCate.data);
+        }
+      } catch (error) {
+        const err = error as AxiosError;
+        if (err.response?.status === 400) {
+          setLogin(true);
+        }
       }
     }
   };
 
   useEffect(() => {
     if (typeof localStorage !== "undefined") {
-      const token = localStorage.getItem("token") ?? "";
-      const refreshToken = localStorage.getItem("refreshToken") ?? "";
-      const expire = localStorage.getItem("expiration") ?? "";
-      if (!token || !refreshToken || !expire) redirect("/");
+      const accessToken = cookies.get("token");
+      const refreshToken = cookies.get("refreshToken");
+      if (!accessToken || !refreshToken) {
+        redirect("/");
+      } else {
+        fet();
+      }
     }
-    fet();
   }, []);
 
   useEffect(() => {
@@ -193,59 +213,82 @@ const page = () => {
     }
   }, [dataCate, categoryType]);
   async function fetCateName(name: string, index = 1, search?: string) {
-    setLoadingSearch(true);
-    setLoadingDirect(true);
+    const accessToken = cookies.get("token");
+    const refreshToken = cookies.get("refreshToken");
     try {
-      if (typeof window !== "undefined") {
-        const token = window.localStorage.getItem("token") ?? "";
-        const refreshToken = window.localStorage.getItem("refreshToken") ?? "";
-        const expire = window.localStorage.getItem("expiration") ?? "";
-        const axio = httpToken(token, refreshToken);
+      if (accessToken && refreshToken) {
+        setLoadingSearch(true);
+        setLoadingDirect(true);
+        const axio = httpToken(accessToken, refreshToken, cookies);
+        const acc = cookies.get("token");
 
-        if (categoryType === product) {
-          const res = await axio.post("Product/GetPaginationProduct", {
-            pageIndex: index,
-            pageSize: 1,
-            search_CategoryName: name,
-            search_Name: search,
-          });
-          setPageIndex(res.data.totalPageIndex);
-          setDataProducts(res.data.data);
-        } else {
-          setDataProducts([]);
-        }
-        if (categoryType === news) {
-          const res = await axio.post("Blog/GetPaginationProduct", {
-            pageIndex: index,
-            pageSize: 1,
-            search_Name: search,
-            search_CategoryName: name,
-          });
-          setPageIndex(res.data.totalPageIndex);
-          setDataNews(res.data.data);
-        } else {
-          setDataNews([]);
-        }
-        if (categoryType === guide) {
-          const res = await axio.post("Guide/GetPaginationProduct", {
-            pageIndex: index,
-            pageSize: 1,
-            search_Name: search,
-            search_CategoryName: name,
-          });
-          setPageIndex(res.data.totalPageIndex);
-          setDataGuid(res.data.data);
+        if (acc) {
+          if (categoryType === product) {
+            const accs = cookies.get("token");
+            if (accs) {
+              const res = await axio.post(
+                "Product/GetPaginationProduct",
+                {
+                  pageIndex: index,
+                  pageSize: 1,
+                  search_CategoryName: name,
+                  search_Name: search,
+                },
+                { headers: { Authorization: "Bearer " + acc } }
+              );
+              setPageIndex(res.data.totalPageIndex);
+              setDataProducts(res.data.data);
+            }
+          } else {
+            setDataProducts([]);
+          }
+          if (categoryType === news) {
+            const accsb = cookies.get("token");
+            if (accsb) {
+              const res = await axio.post(
+                "Blog/GetPaginationProduct",
+                {
+                  pageIndex: index,
+                  pageSize: 1,
+                  search_Name: search,
+                  search_CategoryName: name,
+                },
+                { headers: { Authorization: "Bearer " + acc } }
+              );
+              setPageIndex(res.data.totalPageIndex);
+              setDataNews(res.data.data);
+            }
+          } else {
+            setDataNews([]);
+          }
+          if (categoryType === guide) {
+            const accsbc = cookies.get("token");
+            if (accsbc) {
+              const res = await axio.post(
+                "Guide/GetPaginationProduct",
+                {
+                  pageIndex: index,
+                  pageSize: 1,
+                  search_Name: search,
+                  search_CategoryName: name,
+                },
+                { headers: { Authorization: "Bearer " + acc } }
+              );
+              setPageIndex(res.data.totalPageIndex);
+              setDataGuid(res.data.data);
+            }
+          }
         }
       }
+      setLoadingDirect(false);
+
+      setLoadingSearch(false);
     } catch (error) {
       const err = error as AxiosError;
       if (err.response?.status === 400) {
         setLogin(true);
       }
     }
-
-    setLoadingSearch(false);
-    setLoadingDirect(false);
   }
   useEffect(() => {
     fetCateName(nameRout, 1);
@@ -281,19 +324,25 @@ const page = () => {
   };
 
   const [nameCate, setNameCate] = useState("");
+  const [loadingAdd, setLoadingAdd] = useState<boolean>(false);
   const handleAddCate = async () => {
+    setLoadingAdd(true);
+    const accessToken = cookies.get("token");
+    const refreshToken = cookies.get("refreshToken");
     try {
-      if (typeof window !== "undefined") {
-        const token = window.localStorage.getItem("token") ?? "";
-        const refreshToken = window.localStorage.getItem("refreshToken") ?? "";
-        const expire = window.localStorage.getItem("expiration") ?? "";
-        const axio = httpToken(token, refreshToken);
+      if (accessToken && refreshToken) {
+        const axio = httpToken(accessToken, refreshToken, cookies);
+        const acces = cookies.get("token");
 
-        if (nameCate) {
-          const res = await axio.post<typeof dataCate>("Category/Create", {
-            Name: nameCate,
-            categoryTypeId: categoryType,
-          });
+        if (nameCate && acces) {
+          const res = await axio.post<typeof dataCate>(
+            "Category/Create",
+            {
+              Name: nameCate,
+              categoryTypeId: categoryType,
+            },
+            { headers: { Authorization: "Bearer " + acces } }
+          );
           setAddCate(false);
           setNameCate("");
           if (res.data) fetS();
@@ -301,21 +350,30 @@ const page = () => {
       }
     } catch (error) {
       const err = error as AxiosError;
+      console.log(err, "err here");
       if (err.response?.status === 400) {
+        cookies.remove("token");
+        cookies.remove("refreshToken");
         setLogin(true);
       }
     }
+    setLoadingAdd(false);
   };
   const handleDeleteDirectory = async (id: number) => {
     try {
-      if (typeof window !== "undefined") {
-        const token = window.localStorage.getItem("token") ?? "";
-        const refreshToken = window.localStorage.getItem("refreshToken") ?? "";
-        const expire = window.localStorage.getItem("expiration") ?? "";
-        const axio = httpToken(token, refreshToken);
-        const res = await axio.delete(`Category/Delete/${id}`);
-        if (res.data?.mess) {
-          fetS();
+      const accessToken = cookies.get("token");
+      const refreshToken = cookies.get("refreshToken");
+      if (accessToken && refreshToken) {
+        const axio = httpToken(accessToken, refreshToken, cookies);
+        const access = cookies.get("token");
+
+        if (access) {
+          const res = await axio.delete(`Category/Delete/${id}`, {
+            headers: { Authorization: "Bearer " + access },
+          });
+          if (res.data?.mess) {
+            fetS();
+          }
         }
       }
     } catch (error) {
@@ -333,22 +391,30 @@ const page = () => {
   };
   const handleUpdateDirectory = async (id: number, name: string) => {
     try {
-      if (typeof window !== "undefined") {
-        const token = window.localStorage.getItem("token") ?? "";
-        const refreshToken = window.localStorage.getItem("refreshToken") ?? "";
-        const axio = httpToken(token, refreshToken);
-        const res = await axio.put(`Category/Update`, {
-          Id: id,
-          Name: name,
-          CategoryTypeId: categoryType,
-        });
-        setDataList((pre) =>
-          pre.map((r) => {
-            if (r.categoryId === id) r.categoryName = name;
-            return r;
-          })
-        );
-        return true;
+      const accessToken = cookies.get("token");
+      const refreshToken = cookies.get("refreshToken");
+      if (accessToken && refreshToken) {
+        const axio = httpToken(accessToken, refreshToken, cookies);
+        const access = cookies.get("token");
+
+        if (access) {
+          const res = await axio.put(
+            `Category/Update`,
+            {
+              Id: id,
+              Name: name,
+              CategoryTypeId: categoryType,
+            },
+            { headers: { Authorization: "Bearer " + access } }
+          );
+          setDataList((pre) =>
+            pre.map((r) => {
+              if (r.categoryId === id) r.categoryName = name;
+              return r;
+            })
+          );
+          return true;
+        }
       }
     } catch (error) {
       const err = error as AxiosError;
@@ -377,7 +443,7 @@ const page = () => {
             <button
               className="text-white mt-2 text-base cursor-pointer w-full border-[2px]"
               onClick={() => {
-                if (typeof window !== "undefined") {
+                if (token) {
                   window.localStorage.removeItem("token");
                   window.localStorage.removeItem("refreshToken");
                   window.localStorage.removeItem("expiration");
@@ -414,9 +480,7 @@ const page = () => {
                   handleUpdateDirectory={handleUpdateDirectory}
                   handleDeleteDirectory={handleDeleteDirectory}
                   menu={
-                    dataCate
-                      .filter((d) => d.id === categoryType)[0]
-                      ?.name.toLowerCase() ?? ""
+                    dataCate.filter((d) => d.id === categoryType)[0]?.name ?? ""
                   }
                   choice={routs[1]}
                   Tag="div"
@@ -424,7 +488,9 @@ const page = () => {
                 />
               </div>
               <div
-                className="w-full flex items-center cursor-pointer "
+                className={`w-full flex items-center cursor-pointer ${
+                  addCate ? "" : "hover:text-[#1f80d4]"
+                }`}
                 onClick={() => setAddCate(true)}
               >
                 <div className="flex mr-3 text-[20px]">
@@ -444,9 +510,9 @@ const page = () => {
                     />
                     <button
                       onClick={handleAddCate}
-                      className="hover:text-[#4a8cbf] shadow-[0_0_2px_#4a8cbf text-sm"
+                      className="hover:text-[#4a8cbf] p-[6px] hover:bg-[#e0f0fe] rounded-[6px] border-[1px] shadow-[0_0_2px_#4a8cbf text-sm shadow-[0_0_2px_#4a8cbf] border-[#4a8cbf]"
                     >
-                      Thêm
+                      {loadingAdd ? "Loading..." : "Thêm"}
                     </button>
                   </>
                 ) : (
@@ -543,7 +609,9 @@ const page = () => {
                   <Link
                     key={p.id}
                     href="/[slug]"
-                    as={`product/${routs[1]}/${p.name}/${p.id}`}
+                    as={`product/${routs[1]}/${p.name
+                      .replace(/\s+/g, "-")
+                      .replace(/&/g, "-and-")}/${p.id}`}
                     className=" relative w-[250px] p-1 border shadow-[0_0_3px_#7a7a7a] hover:shadow-[0_0_10px] mb-4 mx-3 cursor-pointer"
                   >
                     <div
@@ -761,7 +829,9 @@ const page = () => {
                 dataNews.map((bl) => (
                   <Link
                     href="/[slug]"
-                    as={`news/${routs[1]}/${bl.name}/${bl.id}`}
+                    as={`news/${routs[1]}/${bl.name
+                      .replace(/\s+/g, "-")
+                      .replace(/&/g, "-and-")}/${bl.id}`}
                     className="w-full flex flex-wrap md:flex-nowrap  mb-4 relative"
                     key={bl.id}
                     onClick={() => {
@@ -955,7 +1025,9 @@ const page = () => {
                 dataGuid.map((g) => (
                   <Link
                     href="/[slug]"
-                    as={`guide/${routs[1]}/${g.name}/${g.id}`}
+                    as={`guide/${routs[1]}/${g.name
+                      .replace(/\s+/g, "-")
+                      .replace(/&/g, "-and-")}/${g.id}`}
                     className="w-full flex flex-wrap md:flex-nowrap  mb-4 relative"
                     key={g.id}
                   >
@@ -1133,7 +1205,7 @@ const page = () => {
         <FormAboutUs title="About us" onClick={() => setAboutUs(false)} />
       )}
       <div
-        className="w-fit fixed bg-[#0099e6] bottom-[88px] z-10 right-3 rounded-[5px] cursor-pointer font-medium px-3 py-1 text-white"
+        className="w-fit fixed bg-[#0099e6] bottom-[88px] z-10 right-5 rounded-[5px] cursor-pointer font-medium px-3 py-1 text-white"
         onClick={() => setAboutUs(true)}
       >
         About us
@@ -1146,6 +1218,3 @@ const page = () => {
 };
 
 export default page;
-function useEffectLayout(arg0: () => void, arg1: never[]) {
-  throw new Error("Function not implemented.");
-}

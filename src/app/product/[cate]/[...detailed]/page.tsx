@@ -6,14 +6,29 @@ import { SiShopee } from "react-icons/si";
 import styles from "@/components/styleComponent.module.scss";
 import Image from "./Image";
 
-const getProduct = async (detailed: string) => {
-  if (detailed) {
-    const res = await http.get(`Product/GetByID/${detailed}`);
+const getProduct = async (detailed: string[]) => {
+  if (detailed.length > 1) {
+    const res = await http.get(`Product/GetByID/${detailed[1]}`);
     return res.data;
+  } else {
+    if (detailed.length) {
+      const res = await http.post("Product/GetPaginationProduct", {
+        pageIndex: 1,
+        pageSize: 1,
+        search_CategoryName: "aaa",
+        search_Name: decodeURIComponent(detailed[0]).replace(/-/g, " "),
+      });
+
+      const resD = await http.get(`Product/GetByID/${res.data.data[0]?.id}`);
+      console.log("eeeeeeeeeee", resD.data);
+      return resD.data;
+    }
   }
   return undefined;
 };
 const page = async (props: { params: { detailed: string[] | string } }) => {
+  console.log("hellllllo", props);
+
   const data:
     | {
         product: {
@@ -30,9 +45,9 @@ const page = async (props: { params: { detailed: string[] | string } }) => {
     | undefined =
     typeof props.params.detailed === "string"
       ? undefined
-      : await getProduct(props.params.detailed[1]);
+      : await getProduct(props.params.detailed);
   return (
-    <div className="w-full min-[1000px]:flex justify-start">
+    <div className="w-full min-[1000px]:flex center">
       {data && (
         <div className="w-full min-[1000px]:w-[1000px] relative mt-15 border-t p-5">
           <div>
