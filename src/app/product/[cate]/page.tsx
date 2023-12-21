@@ -65,7 +65,6 @@ const page = (props: { params: { cate: string } }) => {
               info_in_AboutUs: [{ url_Mess: string; phone: string }];
             }>(`Product/GetByID/${hasSeen[0]}`);
             const res2 = await http.get(`Product/GetByID/${hasSeen[1]}`);
-            console.log(res1.data);
 
             setPageIndex(0);
             setData([
@@ -99,7 +98,6 @@ const page = (props: { params: { cate: string } }) => {
       setData(res.data.data);
     }
   };
-  console.log(search, "props data");
   const handleSearch = (e: any) => {
     setSearch(e.target.value);
   };
@@ -203,11 +201,8 @@ const page = (props: { params: { cate: string } }) => {
                       const h: number[] = JSON.parse(
                         localStorage.getItem("product") ?? JSON.stringify([])
                       );
-                      console.log(h, "hhhh");
 
                       if (h.some((m) => m !== p.id) || !h.length) {
-                        console.log(h, "hhhh voooo");
-
                         h.unshift(p.id);
                         const newH = h.filter((s, index) => index !== 2);
                         localStorage.setItem("product", JSON.stringify(newH));

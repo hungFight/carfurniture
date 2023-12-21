@@ -148,8 +148,6 @@ const page = () => {
         if (access) {
           const res = await axio.get<typeof dataCate>("CategoryType/GetAll");
           setCategory(res.data[0].id);
-          console.log(res, "dataCate");
-
           setDataCate(res.data);
         }
       }
@@ -158,7 +156,6 @@ const page = () => {
       if (err.response?.status === 400) {
         setLogin(true);
       }
-      console.log(err, "error here");
     }
     setLoadingType(false);
   };
@@ -352,7 +349,6 @@ const page = () => {
       }
     } catch (error) {
       const err = error as AxiosError;
-      console.log(err, "err here");
       if (err.response?.status === 400) {
         cookies.remove("token");
         cookies.remove("refreshToken");

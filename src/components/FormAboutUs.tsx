@@ -31,8 +31,6 @@ const FormAboutUs: React.FC<{ title: string; onClick: () => void }> = ({
   const cookies = useCookies();
   const [loading, setLoading] = useState<boolean>(false);
   const fet = async (token: string, refreshToken: string) => {
-    console.log(token, "data token");
-
     const axio = httpToken(token, refreshToken, cookies, tokeRef);
     if (tokeRef.current) {
       const res = await axio.get<(typeof data)[]>("AboutUs/GetAll");
@@ -92,8 +90,6 @@ const FormAboutUs: React.FC<{ title: string; onClick: () => void }> = ({
       setLoading(false);
     }
   };
-  console.log(data, "data99");
-
   return (
     <div
       className="fixed top-0 left-0 w-full h-full flex justify-center bg-[#1c1c1cc4] z-[999]"

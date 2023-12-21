@@ -286,8 +286,6 @@ export default function SlideHome() {
     },
   ];
 
-  console.log(change, "change");
-
   return (
     <div className={`w-[100%] ${styles.bk}`}>
       <Swiper

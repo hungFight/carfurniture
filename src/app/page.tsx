@@ -103,9 +103,7 @@ export default function Home() {
       setDataProducts(res.data.data);
       setLoading(false);
     } else {
-      console.log(caseChose, "cases");
       setLoadingType(true);
-
       const res = await http.post("Product/GetPaginationProduct", {
         pageIndex: index,
         pageSize: 8,

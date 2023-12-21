@@ -97,7 +97,6 @@ const AddProductModel: React.FC<{
 
   const handleUploadFIle = (e: any) => {
     const files = e.target.files;
-    console.log(files, "files");
     const fils = [];
     for (let i = 0; i < files.length; i++) {
       fils.push(files[i]);
@@ -116,7 +115,6 @@ const AddProductModel: React.FC<{
       const axio = httpToken(accessToken, refreshToken, cookies, tokeRef);
 
       if (tokeRef.current) {
-        console.log(product, "product", product.FormCollection);
         setLoading(true);
         const formData = new FormData();
         product.Description = value;

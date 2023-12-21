@@ -68,7 +68,6 @@ const AddGuideModel: React.FC<{
     FormCollection: null,
   });
   const [image, setImage] = useState<string>(newsUp?.urlImage[0].image ?? "");
-  console.log(product);
   const checkRef = useRef<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
   const tokeRef = useRef<string>("");

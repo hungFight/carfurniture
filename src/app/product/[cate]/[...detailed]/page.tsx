@@ -20,15 +20,12 @@ const getProduct = async (detailed: string[]) => {
       });
 
       const resD = await http.get(`Product/GetByID/${res.data.data[0]?.id}`);
-      console.log("eeeeeeeeeee", resD.data);
       return resD.data;
     }
   }
   return undefined;
 };
 const page = async (props: { params: { detailed: string[] | string } }) => {
-  console.log("hellllllo", props);
-
   const data:
     | {
         product: {

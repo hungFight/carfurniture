@@ -23,16 +23,19 @@ const Login: React.FC<{
   const handleLogin = async () => {
     if (account.userName && account.password) {
       setLoading(true);
-      const res = await http.post<{
-        expiration: string;
-        refreshToken: string;
-        token: string;
-      }>("/User/Login", {
+      const res = await http.post<
+        | {
+            expiration: string;
+            refreshToken: string;
+            token: string;
+          }
+        | string
+      >("/User/Login", {
         username: account.userName,
         password: account.password,
       });
 
-      if (res.data?.token && res.data !== "FALSE") {
+      if (typeof res.data !== "string" && res.data?.token) {
         cookies.set("token", res.data.token, {
           path: "/",
           secure: false,

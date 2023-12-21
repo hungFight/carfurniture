@@ -56,7 +56,6 @@ const Header = () => {
     });
   };
 
-  console.log(active.indexOf("news"), "active");
   const [onTab, setOnTab] = useState<boolean>(false);
   return (
     <div className="w-full 2xl:w-[1519px] bg-white flex justify-center h-auto sm:h-[125px] pt-4 border-b-2">

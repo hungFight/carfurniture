@@ -6,8 +6,6 @@ const Routing: React.FC<{
   pathname: string;
 }> = ({ routs, pathname }) => {
   const d = pathname?.split("/");
-  console.log(d);
-
   return (
     <div className="flex w-fit ">
       <a href="/" className="whitespace-nowrap">

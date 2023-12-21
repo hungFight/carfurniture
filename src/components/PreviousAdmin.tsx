@@ -43,7 +43,6 @@ const PreviousAdmin: React.FC<{
     }[];
   };
 }> = ({ setPre, product, news }) => {
-  console.log(product);
   return (
     <div
       className="w-full h-full fixed top-0 left-0  z-[999] flex justify-center bg-[#000000c9]"

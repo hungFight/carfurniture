@@ -27,7 +27,6 @@ const Map = () => {
   const [cc, setCc] = useState(false);
   const fet = async () => {
     const res = await http.get<(typeof data)[]>("AboutUs/GetAll");
-    console.log(res, "data");
     setData(res.data[0]);
   };
   useEffect(() => {

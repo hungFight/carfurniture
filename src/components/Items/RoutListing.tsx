@@ -47,7 +47,6 @@ const RoutListing: React.FC<{
         ? decodeURIComponent(pathname.split(`/`)[2]).replace(/-/g, " ")
         : defaultR,
     ];
-    console.log(d, "routDD", pathname.split(`/`));
     setRouts(d);
     rr.current = true;
     const hasSeen: number[] = JSON.parse(
@@ -67,7 +66,6 @@ const RoutListing: React.FC<{
     getProduct();
   }, []);
   useEffect(() => {
-    console.log("vooooo 22", routs);
     routs[0] = title;
     if (routs.length > 1 || rr.current) {
       if (!pathname.split(`${currentPath}/`)[1])
@@ -91,7 +89,6 @@ const RoutListing: React.FC<{
 
         setLoad(!load);
       } else {
-        console.log("vooooo 11c");
         routs[1] = decodeURIComponent(pathname.split(`/`)[2]).replace(
           /-/g,
           " "
@@ -100,7 +97,6 @@ const RoutListing: React.FC<{
         setRouts(routs.filter((r, index) => index !== 2));
         setLoad(!load);
       }
-      console.log("vooo", pathname.split(routs[1] ?? ""));
     }
   }, [pathname, rr.current]);
   const [load, setLoad] = useState(false);
@@ -114,8 +110,6 @@ const RoutListing: React.FC<{
     setLoad(!load);
   };
   const f = routs[1] ?? "";
-  console.log(routs, "routs", f);
-
   return (
     <div className={`px-5 w-full ${routs[3] ? "" : "md:w-[400px]"} `}>
       <div className="w-full my-3 mb-4">

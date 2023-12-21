@@ -22,7 +22,6 @@ class HttpToken {
     cookies: Cookies,
     tokeRef: React.MutableRefObject<string>
   ) {
-    console.log("token here", token, tokenN);
     let i = 0;
     let tokenNc = token;
 
@@ -30,7 +29,6 @@ class HttpToken {
       async (config) => {
         return await new Promise(async (resolve, reject) => {
           try {
-            console.log("all right", i++);
             const date = new Date();
             if (!tokenN) tokenN = tokenNc;
             if (tokenNc === tokenN) {
@@ -66,7 +64,6 @@ class HttpToken {
         });
       },
       (err) => {
-        console.log("error Axios");
         return Promise.reject(err);
       }
     );
