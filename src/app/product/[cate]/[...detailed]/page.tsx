@@ -47,9 +47,9 @@ const page = async (props: { params: { detailed: string[] | string } }) => {
       ? undefined
       : await getProduct(props.params.detailed);
   return (
-    <div className="w-full min-[1000px]:flex center">
+    <div className="w-full min-[1000px]:flex justify-center">
       {data && (
-        <div className="w-full min-[1000px]:w-[1000px] relative mt-15 border-t p-5">
+        <div className="w-full min-[1000px]:w-[90%] relative mt-15 border-t p-5">
           <div>
             <div className="min-[1000px]:flex">
               <div

@@ -50,13 +50,17 @@ const page = (props: { params: { cate: string } }) => {
   };
 
   useEffect(() => {
-    getNews(props.params.cate);
+    getNews(decodeURIComponent(props.params.cate).replace(/-/g, " "));
   }, []);
   const handleSearch = (e: any) => {
     setSearch(e.target.value);
   };
   const handleClick = () => {
-    getNews(props.params.cate, 1, search);
+    getNews(
+      decodeURIComponent(props.params.cate).replace(/-/g, " "),
+      1,
+      search
+    );
   };
   const [additionalPage, setAdditionalPage] = useState<number>(1);
   let managerIndex = false;
@@ -65,7 +69,7 @@ const page = (props: { params: { cate: string } }) => {
     <div className="w-full md:w-[60%] p-3">
       <div className="w-full mb-4">
         <InputSearch
-          placeholder={props.params.cate}
+          placeholder={decodeURIComponent(props.params.cate).replace(/-/g, " ")}
           onChange={handleSearch}
           onClick={handleClick}
           loading={loadingSearch}
@@ -131,7 +135,9 @@ const page = (props: { params: { cate: string } }) => {
             <Link
               key={d.id}
               href={`/[slug]`}
-              as={`${props.params.cate}/${d.name
+              as={`${props.params.cate
+                .replace(/\s+/g, "-")
+                .replace(/&/g, "-and-")}/${d.name
                 .replace(/\s+/g, "-")
                 .replace(/&/g, "-and-")}/${d.id}`}
               className="w-full flex flex-wrap min-[420px]:flex-nowrap mb-6"

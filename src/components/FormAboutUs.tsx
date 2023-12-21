@@ -27,19 +27,18 @@ const FormAboutUs: React.FC<{ title: string; onClick: () => void }> = ({
     google_map: "",
   });
   const dataF = useRef<typeof data>();
+  const tokeRef = useRef<string>("");
   const cookies = useCookies();
   const [loading, setLoading] = useState<boolean>(false);
   const fet = async (token: string, refreshToken: string) => {
     console.log(token, "data token");
 
-    const axio = httpToken(token, refreshToken, cookies);
-    const tok = cookies.get("token");
-    const res = await axio.get<(typeof data)[]>("AboutUs/GetAll", {
-      headers: { Authorization: "Bearer " + tok },
-    });
-    console.log(res, "data");
-    dataF.current = res.data[0];
-    setData(res.data[0]);
+    const axio = httpToken(token, refreshToken, cookies, tokeRef);
+    if (tokeRef.current) {
+      const res = await axio.get<(typeof data)[]>("AboutUs/GetAll");
+      dataF.current = res.data[0];
+      setData(res.data[0]);
+    }
   };
 
   useEffect(() => {
@@ -48,6 +47,7 @@ const FormAboutUs: React.FC<{ title: string; onClick: () => void }> = ({
     if (!token || !refreshToken) {
       redirect("/");
     } else {
+      tokeRef.current = token;
       fet(token, refreshToken);
     }
   }, []);
@@ -57,48 +57,36 @@ const FormAboutUs: React.FC<{ title: string; onClick: () => void }> = ({
     const tokR = cookies.get("refreshToken");
 
     if (tok && tokR) {
-      const axio = httpToken(tok, tokR, cookies);
-      setLoading(true);
-      const toks = cookies.get("token");
-      if (toks) {
+      const axio = httpToken(tok, tokR, cookies, tokeRef);
+      if (tokeRef.current) {
+        setLoading(true);
+
         if (
           dataF.current?.id &&
           JSON.stringify(dataF.current) !== JSON.stringify(data) &&
           data
         ) {
-          const res = await axio.put<(typeof data)[]>(
-            "AboutUs/Update",
-            {
-              Id: data.id,
-              Name: data.name,
-              Address: data.address,
-              Phone: data.phone,
-              Email: data.email,
-              Url_Mess: data?.url_Mess,
-              google_map: data.google_map,
-            },
-            {
-              headers: { Authorization: "Bearer " + toks },
-            }
-          );
+          const res = await axio.put<(typeof data)[]>("AboutUs/Update", {
+            Id: data.id,
+            Name: data.name,
+            Address: data.address,
+            Phone: data.phone,
+            Email: data.email,
+            Url_Mess: data?.url_Mess,
+            google_map: data.google_map,
+          });
 
           onClick();
         } else {
-          const res = await axio.post<(typeof data)[]>(
-            "AboutUs/Create",
-            {
-              Id: data.id,
-              Name: data.name,
-              Address: data.address,
-              Phone: data.phone,
-              Email: data.email,
-              Url_Mess: data?.url_Mess,
-              google_map: data.google_map,
-            },
-            {
-              headers: { Authorization: "Bearer " + toks },
-            }
-          );
+          const res = await axio.post<(typeof data)[]>("AboutUs/Create", {
+            Id: data.id,
+            Name: data.name,
+            Address: data.address,
+            Phone: data.phone,
+            Email: data.email,
+            Url_Mess: data?.url_Mess,
+            google_map: data.google_map,
+          });
         }
       }
       setLoading(false);

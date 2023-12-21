@@ -28,7 +28,7 @@ const page = (props: { params: { cate: string } }) => {
   >();
 
   const getProduct = async (cate: string, index = 1, name?: string) => {
-    if (decodeURIComponent(cate) === "Đã xem") {
+    if (decodeURIComponent(cate).replace(/-/g, " ") === "Đã xem") {
       if (typeof localStorage !== "undefined") {
         const hasSeen: number[] =
           JSON.parse(localStorage.getItem("product") ?? JSON.stringify([])) ??
@@ -80,7 +80,7 @@ const page = (props: { params: { cate: string } }) => {
       setLoading(true);
       const res = await http.post("Product/GetPaginationProduct", {
         pageIndex: index,
-        pageSize: 6,
+        pageSize: 4,
         search_Name: name,
         search_CategoryName: decodeURIComponent(cate),
       });
@@ -91,7 +91,7 @@ const page = (props: { params: { cate: string } }) => {
       setLoadingSearch(true);
       const res = await http.post("Product/GetPaginationProduct", {
         pageIndex: index,
-        pageSize: 1,
+        pageSize: 4,
         search_CategoryName: decodeURIComponent(cate),
       });
       setPageIndex(res.data.totalPageIndex);
@@ -104,10 +104,14 @@ const page = (props: { params: { cate: string } }) => {
     setSearch(e.target.value);
   };
   const handleAdd = () => {
-    getProduct(props.params.cate, 1, search);
+    getProduct(
+      decodeURIComponent(props.params.cate).replace(/-/g, " "),
+      1,
+      search
+    );
   };
   useEffect(() => {
-    getProduct(props.params.cate);
+    getProduct(decodeURIComponent(props.params.cate).replace(/-/g, " "));
   }, []);
   let managerIndex = false;
   let isIndex = false;
@@ -117,7 +121,10 @@ const page = (props: { params: { cate: string } }) => {
         {decodeURIComponent(props.params.cate) !== "Đã xem" && (
           <div className="w-full mb-4">
             <InputSearch
-              placeholder={props.params.cate}
+              placeholder={decodeURIComponent(props.params.cate).replace(
+                /-/g,
+                " "
+              )}
               onChange={handleSearch}
               onClick={handleAdd}
               loading={loading}
@@ -185,7 +192,9 @@ const page = (props: { params: { cate: string } }) => {
                 <Link
                   key={p.id}
                   href="/[slug]"
-                  as={`${props.params.cate}/${p.name
+                  as={`${props.params.cate
+                    .replace(/\s+/g, "-")
+                    .replace(/&/g, "-and-")}/${p.name
                     .replace(/\s+/g, "-")
                     .replace(/&/g, "-and-")}/${p.id}`}
                   className="w-[200px] m-3 md:w-[250px] p-1 border shadow-[0_0_3px_#7a7a7a] hover:shadow-[0_0_10px] mb-4 cursor-pointer"

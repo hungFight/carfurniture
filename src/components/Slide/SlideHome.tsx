@@ -97,7 +97,7 @@ export default function SlideHome() {
         texts.push(
           index !== 0 ? (
             <Link
-              href={`/product/aaa/${text
+              href={`/product/${process.env.DEFAULT_PRODUCT}/${text
                 .replace(/\s+/g, "-")
                 .replace(/&/g, "-and-")}`}
               key={index + text}
@@ -295,6 +295,10 @@ export default function SlideHome() {
         modules={[Autoplay, Pagination, Navigation]}
         className="mySwiper"
         navigation={true}
+        autoplay={{
+          delay: 5500,
+          disableOnInteraction: false,
+        }}
         onSlideChange={(e: any) =>
           setChange({ ...change, current: e.activeIndex })
         }

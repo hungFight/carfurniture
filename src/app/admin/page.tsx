@@ -1,6 +1,6 @@
 "use client";
 import SlideCategory from "@/components/Slide/SlideCategory";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import styles from "../styleHomePage.module.scss";
 import { SiShopee } from "react-icons/si";
 import Routing from "@/components/Items/Routing";
@@ -15,13 +15,13 @@ import moment from "moment";
 import AddGuideModel from "@/components/AddGuideModel";
 import InputSearch from "@/components/Items/InputSearch";
 import FormAboutUs from "@/components/FormAboutUs";
-import { redirect } from "next/navigation";
+import { redirect, usePathname } from "next/navigation";
 import httpToken from "@/utils/httpToken";
-import { AxiosError } from "axios";
-import { useRouter } from "next/navigation";
+import { AxiosError, AxiosInstance } from "axios";
 import { BiSkipNext } from "react-icons/bi";
 import { MdSkipPrevious } from "react-icons/md";
 import { useCookies } from "next-client-cookies";
+import { useRouter } from "next/navigation";
 const RoutListing = dynamic(() => import("@/components/Items/RoutListing"));
 const AddNewsModel = dynamic(() => import("@/components/AddNewsModel"));
 const AddProductModel = dynamic(() => import("@/components/AddProductModel"));
@@ -112,10 +112,7 @@ const page = () => {
     { categoryName: string; categoryId: number }[]
   >([]);
   const router = useRouter();
-  const [token, setToken] = useState<{
-    accessToken: string;
-    refreshToken: string;
-  }>();
+  const tokeRef = useRef<string>("");
   const [add, setAdd] = useState<string>("");
   const [pre, setPre] = useState<boolean>(false);
   const [login, setLogin] = useState<boolean>(false);
@@ -129,6 +126,8 @@ const page = () => {
     categoryId: 0,
     categoryName: "",
   });
+  const pathname = usePathname();
+
   const [additionalPage, setAdditionalPage] = useState<number>(1);
   const [loading, setLoading] = useState("");
   const [routs, setRouts] = useState(["Quản trị"]);
@@ -141,13 +140,13 @@ const page = () => {
       const accessToken = cookies.get("token");
       const refreshToken = cookies.get("refreshToken");
       if (accessToken && refreshToken) {
-        const axio = httpToken(accessToken, refreshToken, cookies);
-        const access = cookies.get("token");
+        const axio = httpToken(accessToken, refreshToken, cookies, tokeRef);
+        const access = await new Promise((resolve, reject) => {
+          resolve(cookies.get("token"));
+        });
 
         if (access) {
-          const res = await axio.get<typeof dataCate>("CategoryType/GetAll", {
-            headers: { Authorization: "Bearer " + access },
-          });
+          const res = await axio.get<typeof dataCate>("CategoryType/GetAll");
           setCategory(res.data[0].id);
           console.log(res, "dataCate");
 
@@ -170,15 +169,15 @@ const page = () => {
     const refreshToken = cookies.get("refreshToken");
     if (accessToken && refreshToken) {
       try {
-        const axio = httpToken(accessToken, refreshToken, cookies);
-        const access = cookies.get("token");
+        const axio = httpToken(accessToken, refreshToken, cookies, tokeRef);
+        const access = await new Promise((resolve, reject) => {
+          resolve(cookies.get("token"));
+        });
         if (access) {
           const which = dataCate.filter((c) => c.id === categoryType)[0]?.name;
           const resCate = await axio.get<
             { categoryName: string; categoryId: number }[]
-          >(`Category/GetAll/${which}`, {
-            headers: { Authorization: "Bearer " + access },
-          });
+          >(`Category/GetAll/${which}`);
           setNameRout(resCate.data[0]?.categoryName ?? "");
           setCate({
             categoryId: resCate.data[0]?.categoryId,
@@ -196,14 +195,13 @@ const page = () => {
   };
 
   useEffect(() => {
-    if (typeof localStorage !== "undefined") {
-      const accessToken = cookies.get("token");
-      const refreshToken = cookies.get("refreshToken");
-      if (!accessToken || !refreshToken) {
-        redirect("/");
-      } else {
-        fet();
-      }
+    const accessToken = cookies.get("token");
+    const refreshToken = cookies.get("refreshToken");
+    if (!accessToken || !refreshToken) {
+      redirect("/");
+    } else {
+      tokeRef.current = accessToken;
+      fet();
     }
   }, []);
 
@@ -219,8 +217,10 @@ const page = () => {
       if (accessToken && refreshToken) {
         setLoadingSearch(true);
         setLoadingDirect(true);
-        const axio = httpToken(accessToken, refreshToken, cookies);
-        const acc = cookies.get("token");
+        const axio = httpToken(accessToken, refreshToken, cookies, tokeRef);
+        const acc = await new Promise((resolve, reject) => {
+          resolve(cookies.get("token"));
+        });
 
         if (acc) {
           if (categoryType === product) {
@@ -230,7 +230,7 @@ const page = () => {
                 "Product/GetPaginationProduct",
                 {
                   pageIndex: index,
-                  pageSize: 1,
+                  pageSize: 4,
                   search_CategoryName: name,
                   search_Name: search,
                 },
@@ -249,7 +249,7 @@ const page = () => {
                 "Blog/GetPaginationProduct",
                 {
                   pageIndex: index,
-                  pageSize: 1,
+                  pageSize: 6,
                   search_Name: search,
                   search_CategoryName: name,
                 },
@@ -268,7 +268,7 @@ const page = () => {
                 "Guide/GetPaginationProduct",
                 {
                   pageIndex: index,
-                  pageSize: 1,
+                  pageSize: 6,
                   search_Name: search,
                   search_CategoryName: name,
                 },
@@ -331,8 +331,10 @@ const page = () => {
     const refreshToken = cookies.get("refreshToken");
     try {
       if (accessToken && refreshToken) {
-        const axio = httpToken(accessToken, refreshToken, cookies);
-        const acces = cookies.get("token");
+        const axio = httpToken(accessToken, refreshToken, cookies, tokeRef);
+        const acces = await new Promise((resolve, reject) => {
+          resolve(cookies.get("token"));
+        });
 
         if (nameCate && acces) {
           const res = await axio.post<typeof dataCate>(
@@ -364,13 +366,13 @@ const page = () => {
       const accessToken = cookies.get("token");
       const refreshToken = cookies.get("refreshToken");
       if (accessToken && refreshToken) {
-        const axio = httpToken(accessToken, refreshToken, cookies);
-        const access = cookies.get("token");
+        const axio = httpToken(accessToken, refreshToken, cookies, tokeRef);
+        const access = await new Promise((resolve, reject) => {
+          resolve(cookies.get("token"));
+        });
 
         if (access) {
-          const res = await axio.delete(`Category/Delete/${id}`, {
-            headers: { Authorization: "Bearer " + access },
-          });
+          const res = await axio.delete(`Category/Delete/${id}`);
           if (res.data?.mess) {
             fetS();
           }
@@ -394,26 +396,29 @@ const page = () => {
       const accessToken = cookies.get("token");
       const refreshToken = cookies.get("refreshToken");
       if (accessToken && refreshToken) {
-        const axio = httpToken(accessToken, refreshToken, cookies);
-        const access = cookies.get("token");
+        const axio = httpToken(accessToken, refreshToken, cookies, tokeRef);
+        const access = await new Promise((resolve, reject) => {
+          resolve(cookies.get("token"));
+        });
 
         if (access) {
-          const res = await axio.put(
-            `Category/Update`,
-            {
+          const ts = cookies.get("token");
+          if (ts) {
+            const res = await axio.put(`Category/Update`, {
               Id: id,
               Name: name,
               CategoryTypeId: categoryType,
-            },
-            { headers: { Authorization: "Bearer " + access } }
-          );
-          setDataList((pre) =>
-            pre.map((r) => {
-              if (r.categoryId === id) r.categoryName = name;
-              return r;
-            })
-          );
-          return true;
+            });
+            fetS();
+            setDataList((pre) =>
+              pre.map((r) => {
+                if (r.categoryId === id) r.categoryName = name;
+                return r;
+              })
+            );
+
+            return true;
+          }
         }
       }
     } catch (error) {
@@ -443,11 +448,13 @@ const page = () => {
             <button
               className="text-white mt-2 text-base cursor-pointer w-full border-[2px]"
               onClick={() => {
-                if (token) {
-                  window.localStorage.removeItem("token");
-                  window.localStorage.removeItem("refreshToken");
-                  window.localStorage.removeItem("expiration");
-                  window.location.href = "/";
+                const accessToken = cookies.get("token");
+                const refreshToken = cookies.get("refreshToken");
+                if (accessToken && refreshToken) {
+                  cookies.remove("token");
+                  cookies.remove("refreshToken");
+                  cookies.remove("userName");
+                  router.push("/");
                 }
               }}
             >
@@ -467,7 +474,7 @@ const page = () => {
       <div className="w-full flex flex-wrap md:flex-nowrap">
         <div className=" px-5 w-full md:w-[400px]">
           <div className="w-full my-3 mb-4">
-            <Routing routs={routs} />
+            <Routing routs={routs} pathname={pathname} />
           </div>
           <div className="w-full flex mb-15 flex-wrap md:flex-nowrap">
             <div className="w-full md:w-[350px]  mb-5 md:border-r mr-2">
@@ -532,6 +539,9 @@ const page = () => {
               onClick={() => {
                 setAdd(routs[1]);
                 setLoad(!load);
+                setProductUp(undefined);
+                setNewsUp(undefined);
+                setGuideUp(undefined);
               }}
             >
               {categoryType === product && <p>Thêm sản phẩm</p>}
@@ -609,7 +619,9 @@ const page = () => {
                   <Link
                     key={p.id}
                     href="/[slug]"
-                    as={`product/${routs[1]}/${p.name
+                    as={`product/${routs[1]
+                      .replace(/\s+/g, "-")
+                      .replace(/&/g, "-and-")}/${p.name
                       .replace(/\s+/g, "-")
                       .replace(/&/g, "-and-")}/${p.id}`}
                     className=" relative w-[250px] p-1 border shadow-[0_0_3px_#7a7a7a] hover:shadow-[0_0_10px] mb-4 mx-3 cursor-pointer"
@@ -829,13 +841,14 @@ const page = () => {
                 dataNews.map((bl) => (
                   <Link
                     href="/[slug]"
-                    as={`news/${routs[1]}/${bl.name
+                    as={`news/${routs[1]
+                      .replace(/\s+/g, "-")
+                      .replace(/&/g, "-and-")}/${bl.name
                       .replace(/\s+/g, "-")
                       .replace(/&/g, "-and-")}/${bl.id}`}
                     className="w-full flex flex-wrap md:flex-nowrap  mb-4 relative"
                     key={bl.id}
                     onClick={() => {
-                      setNewsUp(bl);
                       setPre(true);
                     }}
                   >
@@ -1025,7 +1038,9 @@ const page = () => {
                 dataGuid.map((g) => (
                   <Link
                     href="/[slug]"
-                    as={`guide/${routs[1]}/${g.name
+                    as={`guide/${routs[1]
+                      .replace(/\s+/g, "-")
+                      .replace(/&/g, "-and-")}/${g.name
                       .replace(/\s+/g, "-")
                       .replace(/&/g, "-and-")}/${g.id}`}
                     className="w-full flex flex-wrap md:flex-nowrap  mb-4 relative"

@@ -16,7 +16,12 @@ const instanceAxios = axios.create({
 });
 let tokenN = "";
 class HttpToken {
-  axiosJWTs(token: string, refreshToken: string, cookies: Cookies) {
+  axiosJWTs(
+    token: string,
+    refreshToken: string,
+    cookies: Cookies,
+    tokeRef: React.MutableRefObject<string>
+  ) {
     console.log("token here", token, tokenN);
     let i = 0;
     let tokenNc = token;
@@ -29,23 +34,17 @@ class HttpToken {
             const date = new Date();
             if (!tokenN) tokenN = tokenNc;
             if (tokenNc === tokenN) {
+              config.headers.Authorization = "Bearer " + tokenNc;
               const decodeToken: any = await jwtDecode(tokenNc);
               // if (refreshTokenT.exp < date.getTime() / 1000 + 5) {
               // } else
               if (decodeToken.exp < date.getTime() / 1000 + 5) {
                 // faster 50 second
-                console.log(
-                  decodeToken.exp,
-                  date.getTime() / 1000 + 2,
-                  token,
-                  "hhhh"
-                );
-
                 const res = await http.post("User/RefreshToken", {
                   accessToken: token,
                   refreshToken,
                 });
-
+                tokeRef.current = res.data.accessToken;
                 tokenN = res.data.accessToken;
                 cookies.set("token", res.data.accessToken, {
                   path: "/",
@@ -57,6 +56,7 @@ class HttpToken {
                   secure: false,
                   sameSite: "strict",
                 });
+                config.headers.Authorization = "Bearer " + res.data.accessToken;
               }
             }
             resolve(config);

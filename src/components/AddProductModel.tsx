@@ -93,6 +93,8 @@ const AddProductModel: React.FC<{
   const [image, setImage] = useState<string[]>(
     upCate?.urlImage.map((f) => f.image) ?? []
   );
+  const tokeRef = useRef<string>("");
+
   const handleUploadFIle = (e: any) => {
     const files = e.target.files;
     console.log(files, "files");
@@ -111,10 +113,9 @@ const AddProductModel: React.FC<{
     const accessToken = cookies.get("token");
     const refreshToken = cookies.get("refreshToken");
     if (accessToken && refreshToken) {
-      const axio = httpToken(accessToken, refreshToken, cookies);
-      const access = cookies.get("token");
+      const axio = httpToken(accessToken, refreshToken, cookies, tokeRef);
 
-      if (access) {
+      if (tokeRef.current) {
         console.log(product, "product", product.FormCollection);
         setLoading(true);
         const formData = new FormData();
@@ -130,9 +131,7 @@ const AddProductModel: React.FC<{
         });
         if (!upCate) {
           formData.append("Price_After", product.Discount);
-          const res = await axio.post("Product/Create", formData, {
-            headers: { Authorization: "Bearer " + access },
-          });
+          const res = await axio.post("Product/Create", formData);
         } else {
           formData.append("Price_After", product.Discount);
           if (checkRef.current) {
@@ -141,9 +140,7 @@ const AddProductModel: React.FC<{
             });
           }
           formData.append("Id", String(upCate.Id));
-          const res = await axio.put("Product/Update", formData, {
-            headers: { Authorization: "Bearer " + access },
-          });
+          const res = await axio.put("Product/Update", formData);
           checkRef.current = false;
         }
         await fet(cateName);
@@ -159,6 +156,7 @@ const AddProductModel: React.FC<{
     if (!token || !refreshToken) {
       redirect("/");
     } else {
+      tokeRef.current = token;
       setToken({ accessToken: token, refreshToken: refreshToken });
     }
   }, []);

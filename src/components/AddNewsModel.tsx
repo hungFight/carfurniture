@@ -49,6 +49,7 @@ const AddNewsModel: React.FC<{
 }> = ({ title, onClick, cateId, cateName, newsUp, fet, setNewsUp }) => {
   const [value, setValue] = useState<string>(newsUp?.content ?? "");
   const [pre, setPre] = useState<boolean>(false);
+  const tokeRef = useRef<string>("");
   const cookies = useCookies();
   const [token, setToken] = useState<{
     accessToken: string;
@@ -76,10 +77,12 @@ const AddNewsModel: React.FC<{
     const accessToken = cookies.get("token");
     const refreshToken = cookies.get("refreshToken");
     if (accessToken && refreshToken) {
-      const axio = httpToken(accessToken, refreshToken, cookies);
-      const access = cookies.get("token");
+      const axio = httpToken(accessToken, refreshToken, cookies, tokeRef);
+      const access = await new Promise((resolve, reject) => {
+        resolve(cookies.get("token"));
+      });
 
-      if (access) {
+      if (tokeRef.current) {
         setLoading(true);
 
         const formData = new FormData();
@@ -97,7 +100,7 @@ const AddNewsModel: React.FC<{
             formData.append("Paths", newsUp.urlImage[0]?.path);
           if (newsUp.id !== null) {
             const res = await axio.put("Blog/Update", formData, {
-              headers: { Authorization: "Bearer " + access },
+              headers: { Authorization: "Bearer " + tokeRef.current },
             });
           }
         } else {
@@ -107,9 +110,7 @@ const AddNewsModel: React.FC<{
             formData.append("Name", news.Name);
             formData.append("Content", news.Content);
             if (news.FormCollection) {
-              const res = await axio.post("Blog/Create", formData, {
-                headers: { Authorization: "Bearer " + access },
-              });
+              const res = await axio.post("Blog/Create", formData);
             }
           }
         }
@@ -134,6 +135,7 @@ const AddNewsModel: React.FC<{
     if (!token || !refreshToken) {
       redirect("/");
     } else {
+      tokeRef.current = token;
       setToken({ accessToken: token, refreshToken: refreshToken });
     }
   }, []);
@@ -184,7 +186,7 @@ const AddNewsModel: React.FC<{
         </h3>
         <div className="w-1/2 min-h-[85%]">
           {" "}
-          <div className="w-full my-2 flex items-center flex-wrap h-fit my-3">
+          <div className="w-full  block h-fit my-3">
             <label
               className="text-base cursor-pointer  w-[127px] px-5 py-1 rounded-[5px] shadow-[0_0_2px_#4a8cbf] border-[#4a8cbf] border-[1px]"
               htmlFor="productFile"
@@ -201,7 +203,7 @@ const AddNewsModel: React.FC<{
               onChange={(e) => handleUploadFIle(e)}
             />
             {image && (
-              <div className="w-[200px] h-[200px]">
+              <div className="w-[200px] h-[200px] mt-[10px]">
                 <img src={image} className="w-full h-full" />
               </div>
             )}

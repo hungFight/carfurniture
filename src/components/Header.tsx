@@ -2,39 +2,46 @@
 import { Images } from "@/asset/image";
 import Image from "next/image";
 import Link from "next/link";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { PiDotsNineBold } from "react-icons/pi";
 import { IoMdClose } from "react-icons/io";
 import http from "@/utils/http";
 import Login from "./Login";
 import moment from "moment";
-import { usePathname } from "next/navigation";
+import { redirect, usePathname } from "next/navigation";
+import { useCookies } from "next-client-cookies";
+import { useRouter } from "next/navigation";
+import httpToken from "@/utils/httpToken";
 const Header = () => {
   const [session, setSession] = useState<boolean>(false);
+  const cookies = useCookies();
   const [active, setActive] = useState<string>("");
   const [firstCate, setFirstCate] = useState<{
     product: string;
     news: string;
     guide: string;
   }>({ product: "", news: "", guide: "" });
+  const router = useRouter();
+  const tokeRef = useRef<string>("");
   const [auth, setAuth] = useState<boolean>(false);
   const pathname = usePathname();
   useEffect(() => {
     getData();
-    if (typeof window !== "undefined") {
-      // your code
-      const token = window.localStorage.getItem("token") ?? "";
-      const refreshToken = window.localStorage.getItem("refreshToken") ?? "";
-      const expire = window.localStorage.getItem("expiration") ?? "";
-      console.log(moment(expire).format("YYYY-MM-DD HH:mm:ss"), "time");
-      setActive(window.location.pathname);
-      if (!token || !refreshToken || !expire) setAuth(true);
-    }
+    // your code
+    const token = cookies.get("token") ?? "";
+    const refreshToken = cookies.get("refreshToken") ?? "";
+    setActive(pathname);
+    if (!token || !refreshToken) setAuth(true);
   }, []);
   useEffect(() => {
     if (active) {
-      setActive(window.location.pathname);
+      setActive(pathname);
     }
+    const token = cookies.get("token") ?? "";
+    const refreshToken = cookies.get("refreshToken") ?? "";
+    setActive(pathname);
+    if (!token || !refreshToken) setAuth(true);
+    tokeRef.current = token;
   }, [pathname]);
   const getData = async () => {
     const res = await http.get("CategoryType/GetAll");
@@ -86,7 +93,9 @@ const Header = () => {
                 Trang chủ
               </Link>
               <Link
-                href={`/news/${firstCate.news}`}
+                href={`/news/${firstCate.news
+                  .replace(/\s+/g, "-")
+                  .replace(/&/g, "-and-")}`}
                 className={`header_home w-full text-[#3a3b3b] ${
                   active.indexOf("news") > 0 ? "text-[#42aaea]" : ""
                 } text-sm sm:text-base mx-4 max-sm:my-1 whitespace-pre-wrap my-[2px] font-medium cursor-pointer hover:text-[#42aaea]`}
@@ -103,7 +112,9 @@ const Header = () => {
                 Tin tức
               </Link>
               <Link
-                href={`/product/${firstCate.product}`}
+                href={`/product/${firstCate.product
+                  .replace(/\s+/g, "-")
+                  .replace(/&/g, "-and-")}`}
                 className={`header_home w-full text-[#3a3b3b] ${
                   active.indexOf("product") > 0 ? "text-[#42aaea]" : ""
                 }  text-sm sm:text-base mx-4 max-sm:my-1 whitespace-pre-wrap my-[2px] font-medium cursor-pointer hover:text-[#42aaea]`}
@@ -120,7 +131,9 @@ const Header = () => {
                 Danh sách sản phẩm
               </Link>
               <Link
-                href={`/guide/${firstCate.guide}`}
+                href={`/guide/${firstCate.guide
+                  .replace(/\s+/g, "-")
+                  .replace(/&/g, "-and-")}`}
                 className={`header_home w-full  ${
                   active.indexOf("guides") > 0 ? "text-[#42aaea]" : ""
                 } text-[#3a3b3b] text-sm sm:text-base mx-4 max-sm:my-1 my-[2px] whitespace-pre-wrap font-medium cursor-pointer hover:text-[#42aaea]`}
@@ -134,7 +147,7 @@ const Header = () => {
                   }
                 }}
               >
-                Hưỡng dẫn
+                Hưỡng dẫn sử dụng
               </Link>
               <div
                 onClick={() => setOnTab(false)}
@@ -159,8 +172,8 @@ const Header = () => {
             />
           </div>
           <div>
-            <a href="/" className="font-bold">
-              mazdashop.vn
+            <a href="/" className="font-bold text-lg">
+              Mazdashop.vn
             </a>
             <p className="text-xs">chuyên cung cấp các đồ chơi xe chính hãng</p>
           </div>
@@ -176,16 +189,24 @@ const Header = () => {
           <div
             className="flex max-sm:absolute max-sm:top-[5px] max-sm:right-11 cursor-pointer "
             onClick={async () => {
-              if (typeof window !== "undefined") {
-                const userName = window.localStorage.getItem("userName");
-                const token = window.localStorage.getItem("token");
-                const res = await http.get(`User/Logout/${userName}`, {
-                  headers: { Authorization: "Bearer " + token },
-                });
-                window.localStorage.removeItem("token");
-                localStorage.removeItem("refreshToken");
-                localStorage.removeItem("expiration");
-                window.location.reload();
+              const accessToken = cookies.get("token");
+              const refreshToken = cookies.get("refreshToken");
+              if (accessToken && refreshToken) {
+                const axio = httpToken(
+                  accessToken,
+                  refreshToken,
+                  cookies,
+                  tokeRef
+                );
+                if (tokeRef.current) {
+                  const userName = cookies.get("userName");
+                  const token = cookies.get("token");
+                  const res = await axio.get(`User/Logout/${userName}`);
+                  cookies.remove("token");
+                  cookies.remove("refreshToken");
+                  setAuth(true);
+                  router.refresh();
+                }
               }
             }}
           >
@@ -207,12 +228,12 @@ const Header = () => {
             } text-sm sm:text-base mx-4 max-sm:my-1 w-max whitespace-pre-wrap font-medium cursor-pointer hover:text-[#42aaea]`}
             onClick={(e: any) => {
               if (typeof document !== "undefined") {
-                const hear = document?.querySelectorAll(".header_home");
-                Array.from(hear).map((h: any) => {
-                  h.style.color = "#3a3b3b";
-                });
-                e.target.style.color = "#42aaea";
               }
+              const hear = document?.querySelectorAll(".header_home");
+              Array.from(hear).map((h: any) => {
+                h.style.color = "#3a3b3b";
+              });
+              e.target.style.color = "#42aaea";
             }}
           >
             Trang chủ
@@ -224,12 +245,12 @@ const Header = () => {
             } text-sm sm:text-base mx-4 max-sm:my-1 w-max whitespace-pre-wrap font-medium cursor-pointer hover:text-[#42aaea]`}
             onClick={(e: any) => {
               if (typeof document !== "undefined") {
-                const hear = document?.querySelectorAll(".header_home");
-                Array.from(hear).map((h: any) => {
-                  h.style.color = "#3a3b3b";
-                });
-                e.target.style.color = "#42aaea";
               }
+              const hear = document?.querySelectorAll(".header_home");
+              Array.from(hear).map((h: any) => {
+                h.style.color = "#3a3b3b";
+              });
+              e.target.style.color = "#42aaea";
             }}
           >
             Tin tức
@@ -241,12 +262,12 @@ const Header = () => {
             }  text-sm sm:text-base mx-4 max-sm:my-1 w-max whitespace-pre-wrap font-medium cursor-pointer hover:text-[#42aaea]`}
             onClick={(e: any) => {
               if (typeof document !== "undefined") {
-                const hear = document?.querySelectorAll(".header_home");
-                Array.from(hear).map((h: any) => {
-                  h.style.color = "#3a3b3b";
-                });
-                e.target.style.color = "#42aaea";
               }
+              const hear = document?.querySelectorAll(".header_home");
+              Array.from(hear).map((h: any) => {
+                h.style.color = "#3a3b3b";
+              });
+              e.target.style.color = "#42aaea";
             }}
           >
             Danh sách sản phẩm
@@ -258,15 +279,15 @@ const Header = () => {
             } text-[#3a3b3b] text-sm sm:text-base mx-4 max-sm:my-1 w-max whitespace-pre-wrap font-medium cursor-pointer hover:text-[#42aaea]`}
             onClick={(e: any) => {
               if (typeof document !== "undefined") {
-                const hear = document?.querySelectorAll(".header_home");
-                Array.from(hear).map((h: any) => {
-                  h.style.color = "#3a3b3b";
-                });
-                e.target.style.color = "#42aaea";
               }
+              const hear = document?.querySelectorAll(".header_home");
+              Array.from(hear).map((h: any) => {
+                h.style.color = "#3a3b3b";
+              });
+              e.target.style.color = "#42aaea";
             }}
           >
-            Hưỡng dẫn
+            Hưỡng dẫn sử dụng
           </Link>
         </div>
 

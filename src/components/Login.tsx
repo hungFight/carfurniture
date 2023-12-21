@@ -32,7 +32,7 @@ const Login: React.FC<{
         password: account.password,
       });
 
-      if (res.data) {
+      if (res.data?.token && res.data !== "FALSE") {
         cookies.set("token", res.data.token, {
           path: "/",
           secure: false,
@@ -43,7 +43,11 @@ const Login: React.FC<{
           secure: false,
           sameSite: "strict",
         });
-
+        cookies.set("userName", account.userName, {
+          path: "/",
+          secure: false,
+          sameSite: "strict",
+        });
         window.location.reload();
         setSession(false);
       } else {

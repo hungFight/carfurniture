@@ -43,14 +43,11 @@ const RoutListing: React.FC<{
   useEffect(() => {
     const d: any = [
       title,
-      window.location.pathname.split(`/`)[2].replace(/-/g, " ")
-        ? decodeURIComponent(window.location.pathname.split(`/`)[2]).replace(
-            /-/g,
-            " "
-          )
+      pathname.split(`/`)[2].replace(/-/g, " ")
+        ? decodeURIComponent(pathname.split(`/`)[2]).replace(/-/g, " ")
         : defaultR,
     ];
-    console.log(d, "routDD", window.location.pathname.split(`/`));
+    console.log(d, "routDD", pathname.split(`/`));
     setRouts(d);
     rr.current = true;
     const hasSeen: number[] = JSON.parse(
@@ -73,26 +70,33 @@ const RoutListing: React.FC<{
     console.log("vooooo 22", routs);
     routs[0] = title;
     if (routs.length > 1 || rr.current) {
-      if (!window.location.pathname.split(`${currentPath}/`)[1])
+      if (!pathname.split(`${currentPath}/`)[1])
         setRouts((pre) => pre.filter((r, index) => index !== 1));
-      if (pathname.split(routs[1] ?? "")[1]) {
-        if (window.location.pathname.split(`/`)[2]) {
-          console.log("vooooo 333");
-          routs[1] = decodeURIComponent(
-            window.location.pathname.split(`/`)[2]
-          ).replace(/-/g, " ");
-          routs[2] = decodeURIComponent(
-            window.location.pathname.split(`/`)[3]
-          ).replace(/-/g, " ");
+      if (
+        decodeURIComponent(pathname)
+          .replace(/-/g, " ")
+          .split(routs[1] ?? "")[1]
+      ) {
+        if (pathname.split(`/`)[2]) {
+          routs[1] = decodeURIComponent(pathname.split(`/`)[2]).replace(
+            /-/g,
+            " "
+          );
+          routs[2] = decodeURIComponent(pathname.split(`/`)[3]).replace(
+            /-/g,
+            " "
+          );
           setRouts(routs);
         }
 
         setLoad(!load);
       } else {
         console.log("vooooo 11c");
-        routs[1] = decodeURIComponent(
-          window.location.pathname.split(`/`)[2]
-        ).replace(/-/g, " ");
+        routs[1] = decodeURIComponent(pathname.split(`/`)[2]).replace(
+          /-/g,
+          " "
+        );
+
         setRouts(routs.filter((r, index) => index !== 2));
         setLoad(!load);
       }
@@ -115,7 +119,7 @@ const RoutListing: React.FC<{
   return (
     <div className={`px-5 w-full ${routs[3] ? "" : "md:w-[400px]"} `}>
       <div className="w-full my-3 mb-4">
-        <Routing routs={routs} />
+        <Routing routs={routs} pathname={pathname} />
       </div>
       {!routs[2] && (
         <div

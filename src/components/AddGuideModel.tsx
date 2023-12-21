@@ -71,6 +71,7 @@ const AddGuideModel: React.FC<{
   console.log(product);
   const checkRef = useRef<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
+  const tokeRef = useRef<string>("");
 
   const [componentDisabled, setComponentDisabled] = useState<boolean>(true);
   const handleUploadFIle = (e: any) => {
@@ -87,9 +88,11 @@ const AddGuideModel: React.FC<{
     const accessToken = cookies.get("token");
     const refreshToken = cookies.get("refreshToken");
     if (accessToken && refreshToken) {
-      const axio = httpToken(accessToken, refreshToken, cookies);
-      const access = cookies.get("token");
-      if (access) {
+      const axio = httpToken(accessToken, refreshToken, cookies, tokeRef);
+      const access = await new Promise((resolve, reject) => {
+        resolve(cookies.get("token"));
+      });
+      if (tokeRef.current) {
         setLoading(true);
         const formData = new FormData();
         product.Content = value;
@@ -105,7 +108,7 @@ const AddGuideModel: React.FC<{
             formData.append("Paths", newsUp.urlImage[0]?.path);
           if (newsUp.id !== null) {
             const res = await axio.put("Guide/Update", formData, {
-              headers: { Authorization: "Bearer " + access },
+              headers: { Authorization: "Bearer " + tokeRef.current },
             });
           }
         } else {
@@ -115,9 +118,7 @@ const AddGuideModel: React.FC<{
             formData.append("Name", product.Name);
             formData.append("Content", product.Content);
             if (product.FormCollection) {
-              const res = await axio.post("Guide/Create", formData, {
-                headers: { Authorization: "Bearer " + access },
-              });
+              const res = await axio.post("Guide/Create", formData);
             }
           }
         }
@@ -145,6 +146,7 @@ const AddGuideModel: React.FC<{
     if (!token || !refreshToken) {
       redirect("/");
     } else {
+      tokeRef.current = token;
       setToken({ accessToken: token, refreshToken: refreshToken });
     }
   }, []);
@@ -183,9 +185,9 @@ const AddGuideModel: React.FC<{
         </h3>
         <div className="w-1/2 min-h-[85%]">
           {" "}
-          <div className="w-full my-2 flex items-center flex-wrap  h-fit my-3">
+          <div className="w-full block h-fit my-3">
             <label
-              className="text-base cursor-pointer  w-[127px] px-5 py-1 rounded-[5px] shadow-[0_0_2px_#4a8cbf] border-[#4a8cbf] border-[1px]"
+              className="text-base cursor-pointer   w-[127px] px-5 py-1 rounded-[5px] shadow-[0_0_2px_#4a8cbf] border-[#4a8cbf] border-[1px]"
               htmlFor="productFile"
             >
               Tải ảnh lên
@@ -200,7 +202,7 @@ const AddGuideModel: React.FC<{
               onChange={(e) => handleUploadFIle(e)}
             />
             {image && (
-              <div className="w-[200px] h-[200px]">
+              <div className="w-[200px] h-[200px] mt-[10px]">
                 <img src={image} className="w-full h-full" />
               </div>
             )}

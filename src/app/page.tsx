@@ -142,11 +142,23 @@ export default function Home() {
   return (
     <div className="w-full  ">
       <SlideHome />
-      <div className="w-full h-40 bg-[#212322] flex flex-wrap">
-        <div className="w-full pt-1 sm:w-[40%] sm:p-3 h-fit sm:h-full flex items-center justify-center">
-          <p className="text-white">
-            Các úng dụng và phần mềm hỗ trợ khác như ...
+      <div className="w-full h-fit min-[600px]:h-40 bg-[#212322] flex flex-wrap items-center">
+        <div
+          style={{ fontFamily: '"Mazda robo",sans-serif' }}
+          className="w-full flex-wrap h-fit  pt-1 sm:w-[40%] sm:p-3 justify-start max-[600px]:pl-[10%]  flex items-center md:pl-[70px]"
+        >
+          <p className="text-white w-fit text-[17px] min-[500px]:text-[21px]">
+            Các ứng dụng phần mềm{" "}
+            <em
+              style={{ fontFamily: '"Mazda type",sans-serif' }}
+              className="text-[#ceff00] text-[24px]  min-[500px]:text-[30px]"
+            >
+              hiệu quả
+            </em>
           </p>
+          <span className="text-[#CEFF00] text-[16px] min-[500px]:text-[20px] m-0 ">
+            Liên tục cập nhật phần mềm mới
+          </span>
         </div>
         <div className="w-full sm:w-[60%] h-fit sm:h-full flex items-center justify-center">
           <div>
@@ -162,7 +174,7 @@ export default function Home() {
       <div className=" w-full mb-[100px] flex justify-center">
         <div className="w-full sm:w-[90%] ">
           <div className="w-full mt-2 mb-1">
-            <h3 className="w-full pl-1 font-semibold text-lg xl:text-lg text-center">
+            <h3 className="w-full pl-1 font-semibold text-lg xl:text-[20px] text-center">
               Danh sách sản phẩm
             </h3>
             <SlideCategory
@@ -244,7 +256,11 @@ export default function Home() {
                     dataProducts.map((r, index) => (
                       <Link
                         href="/[slug]"
-                        as={`product/${caseChose.product?.categoryName}/${r.name}/${r.id}`}
+                        as={`product/${caseChose.product?.categoryName
+                          .replace(/\s+/g, "-")
+                          .replace(/&/g, "-and-")}/${r.name
+                          .replace(/\s+/g, "-")
+                          .replace(/&/g, "-and-")}/${r.id}`}
                         key={r.id}
                         className={`w-[230px] ${
                           dataProducts.length === index + 1 ? "" : "mr-4"
@@ -325,13 +341,17 @@ export default function Home() {
               <div className="flex flex-wrap justify-around">
                 {dataNews.map((n) => (
                   <Link
-                    href={`news/${caseChose.news?.categoryName}/${n.name}/${n.id}`}
+                    href={`news/${caseChose.news?.categoryName
+                      .replace(/\s+/g, "-")
+                      .replace(/&/g, "-and-")}/${n.name
+                      .replace(/\s+/g, "-")
+                      .replace(/&/g, "-and-")}/${n.id}`}
                     key={n.id}
-                    className="w-[200px] xl:w-[250px] p-1 border shadow-[0_0_3px_#7a7a7a] hover:shadow-[0_0_10px] mb-4 cursor-pointer mr-2"
+                    className="w-[230px] xl:w-[250px] p-1 border shadow-[0_0_3px_#7a7a7a] hover:shadow-[0_0_10px] mb-4 cursor-pointer mr-2"
                   >
-                    <div className="w-full h-[180px] xl:h-[220px]">
-                      <img
-                        src={n.urlImage[0]?.image}
+                    <div className="w-full h-[168px] xl:h-[174px]">
+                      <Image
+                        src={Images.test}
                         alt={n.urlImage[0]?.path}
                         className="w-full h-full object-cover"
                       />
@@ -364,16 +384,20 @@ export default function Home() {
               <h3
                 className={`text-base w-full font-semibold text-center my-5 ${styles.hh4}`}
               >
-                Hưỡng dẫn
+                Hưỡng dẫn sử dụng
               </h3>
               <div className="flex flex-wrap justify-around">
                 {dataGuid.map((n) => (
                   <Link
-                    href={`guides/${caseChose.product?.categoryName}/${n.name}/${n.id}`}
+                    href={`guide/${caseChose.product?.categoryName
+                      .replace(/\s+/g, "-")
+                      .replace(/&/g, "-and-")}/${n.name
+                      .replace(/\s+/g, "-")
+                      .replace(/&/g, "-and-")}/${n.id}`}
                     key={n.id}
-                    className="w-[200px] xl:w-[250px] p-1 border shadow-[0_0_3px_#7a7a7a] hover:shadow-[0_0_10px] mb-4 cursor-pointer mr-2"
+                    className="w-[230px] xl:w-[250px] p-1 border shadow-[0_0_3px_#7a7a7a] hover:shadow-[0_0_10px] mb-4 cursor-pointer mr-2"
                   >
-                    <div className="w-full h-[180px] xl:h-[220px]">
+                    <div className="w-full h-[168px] xl:h-[174px]">
                       <img
                         src={n.urlImage[0]?.image}
                         alt={n.urlImage[0]?.path}

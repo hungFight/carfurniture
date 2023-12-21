@@ -33,3 +33,8 @@
   font-family: Mazda patrick;
   src: url(../asset/font/RobotoMono-Regular.ttf);
 }
+
+@font-face {
+  font-family: Mazda robo;
+  src: url(../asset/font/Montserrat-Light.ttf);
+}

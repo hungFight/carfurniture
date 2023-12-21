@@ -47,7 +47,7 @@ const Listing: React.FC<{
           </div>
           {onTap && (
             <div
-              className="absolute w-full bg-white top-[44px] left-0 rounded-[5px] px-1 py-5 shadow-[0_0_4px_#909090] z-20 "
+              className="absolute w-full bg-[#363636] text-white top-[44px] left-0 rounded-[5px] px-1 py-5 shadow-[0_0_4px_#909090] z-20 "
               onClick={(e) => e.stopPropagation()}
             >
               {loading ? (
@@ -58,7 +58,9 @@ const Listing: React.FC<{
                     {!(update === r.categoryId) ? (
                       <Tag
                         href={`/[slug]`}
-                        as={`/${defaultR}/${r.categoryName}`}
+                        as={`/${defaultR}/${r.categoryName
+                          .replace(/\s+/g, "-")
+                          .replace(/&/g, "-and-")}`}
                         className={`w-full  text-sm md:text-base cursor-pointer  ${
                           choice === r.categoryName ? "text-[#0087ff]" : ""
                         }`}
@@ -138,7 +140,9 @@ const Listing: React.FC<{
               {!(update === r.categoryId) ? (
                 <Tag
                   href={`/[slug]`}
-                  as={`${r.categoryName}`}
+                  as={`${r.categoryName
+                    .replace(/\s+/g, "-")
+                    .replace(/&/g, "-and-")}`}
                   className={`w-full  text-sm md:text-base cursor-pointer hover:text-[#0087ff] ${
                     choice === r.categoryName ? "text-[#0087ff]" : ""
                   }`}
