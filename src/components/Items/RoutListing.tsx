@@ -43,8 +43,8 @@ const RoutListing: React.FC<{
   useEffect(() => {
     const d: any = [
       title,
-      pathname.split(`/`)[2].replace(/-/g, " ")
-        ? decodeURIComponent(pathname.split(`/`)[2]).replace(/-/g, " ")
+      pathname.split(`/`)[2]?.replace(/-/g, " ")
+        ? decodeURIComponent(pathname.split(`/`)[2])?.replace(/-/g, " ")
         : defaultR,
     ];
     setRouts(d);
@@ -76,7 +76,7 @@ const RoutListing: React.FC<{
           .split(routs[1] ?? "")[1]
       ) {
         if (pathname.split(`/`)[2]) {
-          routs[1] = decodeURIComponent(pathname.split(`/`)[2]).replace(
+          routs[1] = decodeURIComponent(pathname.split(`/`)[2])?.replace(
             /-/g,
             " "
           );
@@ -89,7 +89,7 @@ const RoutListing: React.FC<{
 
         setLoad(!load);
       } else {
-        routs[1] = decodeURIComponent(pathname.split(`/`)[2]).replace(
+        routs[1] = decodeURIComponent(pathname.split(`/`)[2])?.replace(
           /-/g,
           " "
         );

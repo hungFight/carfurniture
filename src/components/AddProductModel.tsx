@@ -110,38 +110,36 @@ const AddProductModel: React.FC<{
     if (accessToken && refreshToken) {
       const axio = httpToken(accessToken, refreshToken, cookies);
 
-      if (tokeRef.current) {
-        setLoading(true);
-        const formData = new FormData();
-        product.Description = value;
-        formData.append("Name", product.Name);
-        formData.append("Price", product.Price);
-        formData.append("Description", product.Description);
-        formData.append("UrlShoppe", product.UrlShoppe);
-        formData.append("categoryId", String(product.categoryId));
-        formData.append("categoryName", cateName);
-        product.FormCollection?.map((f: any) => {
-          formData.append("FormCollection", f);
-        });
-        if (!upCate) {
-          formData.append("Price_After", product.Discount);
-          const res = await axio.post("Product/Create", formData);
-        } else {
-          formData.append("Price_After", product.Discount);
-          if (checkRef.current) {
-            upCate.urlImage.map((f) => {
-              formData.append("Paths", f.path);
-            });
-          }
-          formData.append("Id", String(upCate.Id));
-          const res = await axio.put("Product/Update", formData);
-          checkRef.current = false;
+      setLoading(true);
+      const formData = new FormData();
+      product.Description = value;
+      formData.append("Name", product.Name);
+      formData.append("Price", product.Price);
+      formData.append("Description", product.Description);
+      formData.append("UrlShoppe", product.UrlShoppe);
+      formData.append("categoryId", String(product.categoryId));
+      formData.append("categoryName", cateName);
+      product.FormCollection?.map((f: any) => {
+        formData.append("FormCollection", f);
+      });
+      if (!upCate) {
+        formData.append("Price_After", product.Discount);
+        const res = await axio.post("Product/Create", formData);
+      } else {
+        formData.append("Price_After", product.Discount);
+        if (checkRef.current) {
+          upCate.urlImage.map((f) => {
+            formData.append("Paths", f.path);
+          });
         }
-        await fet(cateName);
-        setUpCate(undefined);
-        onClick();
-        setLoading(false);
+        formData.append("Id", String(upCate.Id));
+        const res = await axio.put("Product/Update", formData);
+        checkRef.current = false;
       }
+      await fet(cateName);
+      setUpCate(undefined);
+      onClick();
+      setLoading(false);
     }
   };
   useEffect(() => {
