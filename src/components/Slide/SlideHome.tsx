@@ -23,23 +23,23 @@ export default function SlideHome() {
     {
       id: 1,
       val: [
-        "VIỆT HÓA, KÍCH HOẠT TÍNH NĂNG ẨN XE MAZDA",
-        "Font tiếng việt cho hệ thống Mazda connect",
-        "Kích hoạt và update bản đồ Mazda navigation chính hãng.",
-        "Kích hoạt xem Video qua usb (mp4, Avi,...)",
-        "Cài đặt hình nền, ảnh gia đình lên giao diện màn hình xe",
-        "Kích hoạt sử dụng cảm ứng khi xe di chuyển",
-      ],
-    },
-    {
-      id: 2,
-      val: [
         "THẺ BẢN ĐỒ CHÍNH HÃNG XE MAZDA (MAZDA NAVIGATION)",
         "Thẻ chính hãng có license bản quyền, không mất bảo hành xe",
         "Hiển thị Cảnh báo tốc độ và Điều hướng trên Hắt kính (HUD)",
         "Định vị chính xác vị trí của xe khi di chuyển, kiểm soát tốc độ và xác định đúng điểm dừng đỗ.",
         "Cảnh báo giới hạn tốc độ, cảnh báo khi xe đi vào những cung đường nguy hiểm.",
         "Có thể chạy offline bằng định vị vệ tinh, k phụ thuộc vào kết nối mạng",
+      ],
+    },
+    {
+      id: 2,
+      val: [
+        "VIỆT HÓA, KÍCH HOẠT TÍNH NĂNG ẨN XE MAZDA",
+        "Font tiếng việt cho hệ thống Mazda connect",
+        "Kích hoạt và update bản đồ Mazda navigation chính hãng.",
+        "Kích hoạt xem Video qua usb (mp4, Avi,...)",
+        "Cài đặt hình nền, ảnh gia đình lên giao diện màn hình xe",
+        "Kích hoạt sử dụng cảm ứng khi xe di chuyển",
       ],
     },
     {
