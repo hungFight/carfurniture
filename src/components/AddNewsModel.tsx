@@ -13,6 +13,7 @@ import http from "@/utils/http";
 import { useCookies } from "next-client-cookies";
 import { redirect } from "next/navigation";
 import httpToken from "@/utils/httpToken";
+import { AxiosError } from "axios";
 const AddNewsModel: React.FC<{
   title: string;
   onClick: () => void;
@@ -46,7 +47,17 @@ const AddNewsModel: React.FC<{
       | undefined
     >
   >;
-}> = ({ title, onClick, cateId, cateName, newsUp, fet, setNewsUp }) => {
+  setLogin: (value: React.SetStateAction<boolean>) => void;
+}> = ({
+  title,
+  onClick,
+  cateId,
+  cateName,
+  newsUp,
+  fet,
+  setNewsUp,
+  setLogin,
+}) => {
   const [value, setValue] = useState<string>(newsUp?.content ?? "");
   const [pre, setPre] = useState<boolean>(false);
   const cookies = useCookies();
@@ -73,48 +84,55 @@ const AddNewsModel: React.FC<{
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
-    const accessToken = cookies.get("token");
-    const refreshToken = cookies.get("refreshToken");
-    if (accessToken && refreshToken) {
-      const axio = httpToken(accessToken, refreshToken, cookies);
-      const access = await new Promise((resolve, reject) => {
-        resolve(cookies.get("token"));
-      });
+    try {
+      const accessToken = cookies.get("token");
+      const refreshToken = cookies.get("refreshToken");
+      if (accessToken && refreshToken) {
+        const axio = httpToken(accessToken, refreshToken, cookies);
+        const access = await new Promise((resolve, reject) => {
+          resolve(cookies.get("token"));
+        });
 
-      setLoading(true);
+        setLoading(true);
 
-      const formData = new FormData();
-      news.Content = value;
-      formData.append("categoryName", cateName);
-      formData.append("CategoryId", String(cateId));
-      formData.append("Name", news.Name);
-      formData.append("Content", news.Content);
-      if (newsUp) {
-        // update
-        formData.append("Id", String(newsUp.id));
+        const formData = new FormData();
+        news.Content = value;
+        formData.append("categoryName", cateName);
+        formData.append("CategoryId", String(cateId));
+        formData.append("Name", news.Name);
+        formData.append("Content", news.Content);
+        if (newsUp) {
+          // update
+          formData.append("Id", String(newsUp.id));
 
-        formData.append("FormCollection", news.FormCollection);
-        if (checkRef.current)
-          formData.append("Paths", newsUp.urlImage[0]?.path);
-        if (newsUp.id !== null) {
-          const res = await axio.put("Blog/Update", formData);
-        }
-      } else {
-        if (cateName && cateId && news.Name && news.Content) {
-          //add
           formData.append("FormCollection", news.FormCollection);
-          formData.append("Name", news.Name);
-          formData.append("Content", news.Content);
-          if (news.FormCollection) {
-            const res = await axio.post("Blog/Create", formData);
+          if (checkRef.current)
+            formData.append("Paths", newsUp.urlImage[0]?.path);
+          if (newsUp.id !== null) {
+            const res = await axio.put("Blog/Update", formData);
+          }
+        } else {
+          if (cateName && cateId && news.Name && news.Content) {
+            //add
+            formData.append("FormCollection", news.FormCollection);
+            formData.append("Name", news.Name);
+            formData.append("Content", news.Content);
+            if (news.FormCollection) {
+              const res = await axio.post("Blog/Create", formData);
+            }
           }
         }
+        await fet(cateName);
+        checkRef.current = false;
+        setNewsUp(undefined);
+        onClick();
+        setLoading(false);
       }
-      await fet(cateName);
-      checkRef.current = false;
-      setNewsUp(undefined);
-      onClick();
-      setLoading(false);
+    } catch (error) {
+      const err = error as AxiosError;
+      if (err.response?.status === 400) {
+        setLogin(true);
+      }
     }
   };
   // upload file

@@ -983,6 +983,7 @@ const page = () => {
             setUpCate={setProductUp}
             title={routs[1]}
             fet={fetCateName}
+            setLogin={setLogin}
             onClick={() => {
               setAdd("");
             }}
@@ -996,6 +997,7 @@ const page = () => {
               setAdd("");
             }}
             newsUp={newsUp}
+            setLogin={setLogin}
             setNewsUp={setNewsUp}
             fet={fetCateName}
             cateId={cate.categoryId}
@@ -1008,6 +1010,7 @@ const page = () => {
               setAdd("");
             }}
             newsUp={guideUp}
+            setLogin={setLogin}
             setNewsUp={setGuideUp}
             fet={fetCateName}
             cateId={cate.categoryId}
@@ -1018,7 +1021,11 @@ const page = () => {
         <></>
       )}
       {aboutUs && (
-        <FormAboutUs title="About us" onClick={() => setAboutUs(false)} />
+        <FormAboutUs
+          title="About us"
+          onClick={() => setAboutUs(false)}
+          setLogin={setLogin}
+        />
       )}
       <div
         className="w-fit fixed bg-[#0099e6] bottom-[88px] z-10 right-5 rounded-[5px] cursor-pointer font-medium px-3 py-1 text-white"

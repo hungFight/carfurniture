@@ -6,10 +6,7 @@ import { Cookies } from "next-client-cookies";
 
 const instanceAxios = axios.create({
   baseURL: process.env.DB_URL,
-  headers: {
-    // "Content-Type": "application/json",
-    Accept: "application/json",
-  },
+
   httpsAgent: new https.Agent({
     rejectUnauthorized: false,
   }),

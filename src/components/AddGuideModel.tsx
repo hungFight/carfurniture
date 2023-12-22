@@ -13,6 +13,7 @@ import http from "@/utils/http";
 import { useCookies } from "next-client-cookies";
 import { redirect } from "next/navigation";
 import httpToken from "@/utils/httpToken";
+import { AxiosError } from "axios";
 const AddGuideModel: React.FC<{
   title: string;
   onClick: () => void;
@@ -46,7 +47,17 @@ const AddGuideModel: React.FC<{
       | undefined
     >
   >;
-}> = ({ title, onClick, cateId, cateName, newsUp, fet, setNewsUp }) => {
+  setLogin: (value: React.SetStateAction<boolean>) => void;
+}> = ({
+  title,
+  onClick,
+  cateId,
+  cateName,
+  newsUp,
+  fet,
+  setNewsUp,
+  setLogin,
+}) => {
   const [value, setValue] = useState<string>(newsUp?.content ?? "");
   const [token, setToken] = useState<{
     accessToken: string;
@@ -83,45 +94,52 @@ const AddGuideModel: React.FC<{
   };
   const handleSubmit = async (e: any) => {
     e.preventDefault();
-    const accessToken = cookies.get("token");
-    const refreshToken = cookies.get("refreshToken");
-    if (accessToken && refreshToken) {
-      const axio = httpToken(accessToken, refreshToken, cookies);
-      const access = await new Promise((resolve, reject) => {
-        resolve(cookies.get("token"));
-      });
-      setLoading(true);
-      const formData = new FormData();
-      product.Content = value;
-      formData.append("categoryName", cateName);
-      formData.append("Name", product.Name);
-      formData.append("Content", product.Content);
-      formData.append("categoryId", String(product.categoryId));
-      if (newsUp) {
-        // update
-        formData.append("Id", String(newsUp.id));
-        formData.append("FormCollection", product.FormCollection);
-        if (checkRef.current)
-          formData.append("Paths", newsUp.urlImage[0]?.path);
-        if (newsUp.id !== null) {
-          const res = await axio.put("Guide/Update", formData);
-        }
-      } else {
-        if (cateName && cateId && product.Name && product.Content) {
-          //add
+    try {
+      const accessToken = cookies.get("token");
+      const refreshToken = cookies.get("refreshToken");
+      if (accessToken && refreshToken) {
+        const axio = httpToken(accessToken, refreshToken, cookies);
+        const access = await new Promise((resolve, reject) => {
+          resolve(cookies.get("token"));
+        });
+        setLoading(true);
+        const formData = new FormData();
+        product.Content = value;
+        formData.append("categoryName", cateName);
+        formData.append("Name", product.Name);
+        formData.append("Content", product.Content);
+        formData.append("categoryId", String(product.categoryId));
+        if (newsUp) {
+          // update
+          formData.append("Id", String(newsUp.id));
           formData.append("FormCollection", product.FormCollection);
-          formData.append("Name", product.Name);
-          formData.append("Content", product.Content);
-          if (product.FormCollection) {
-            const res = await axio.post("Guide/Create", formData);
+          if (checkRef.current)
+            formData.append("Paths", newsUp.urlImage[0]?.path);
+          if (newsUp.id !== null) {
+            const res = await axio.put("Guide/Update", formData);
+          }
+        } else {
+          if (cateName && cateId && product.Name && product.Content) {
+            //add
+            formData.append("FormCollection", product.FormCollection);
+            formData.append("Name", product.Name);
+            formData.append("Content", product.Content);
+            if (product.FormCollection) {
+              const res = await axio.post("Guide/Create", formData);
+            }
           }
         }
+        await fet(cateName);
+        checkRef.current = false;
+        setNewsUp(undefined);
+        onClick();
+        setLoading(false);
       }
-      await fet(cateName);
-      checkRef.current = false;
-      setNewsUp(undefined);
-      onClick();
-      setLoading(false);
+    } catch (error) {
+      const err = error as AxiosError;
+      if (err.response?.status === 400) {
+        setLogin(true);
+      }
     }
   };
   const modules = {

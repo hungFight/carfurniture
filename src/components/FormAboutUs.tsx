@@ -5,10 +5,12 @@ import { IoCloseCircleOutline } from "react-icons/io5";
 import { useCookies } from "next-client-cookies";
 import { redirect } from "next/navigation";
 import httpToken from "@/utils/httpToken";
-const FormAboutUs: React.FC<{ title: string; onClick: () => void }> = ({
-  title,
-  onClick,
-}) => {
+import { AxiosError } from "axios";
+const FormAboutUs: React.FC<{
+  title: string;
+  onClick: () => void;
+  setLogin: (value: React.SetStateAction<boolean>) => void;
+}> = ({ title, onClick, setLogin }) => {
   const [data, setData] = useState<{
     id: number;
     name: string;
@@ -51,43 +53,50 @@ const FormAboutUs: React.FC<{ title: string; onClick: () => void }> = ({
   }, []);
 
   const handleUpdate = async () => {
-    const tok = cookies.get("token");
-    const tokR = cookies.get("refreshToken");
+    try {
+      const tok = cookies.get("token");
+      const tokR = cookies.get("refreshToken");
 
-    if (tok && tokR) {
-      const axio = httpToken(tok, tokR, cookies);
-      if (tokeRef.current) {
-        setLoading(true);
+      if (tok && tokR) {
+        const axio = httpToken(tok, tokR, cookies);
+        if (tokeRef.current) {
+          setLoading(true);
 
-        if (
-          dataF.current?.id &&
-          JSON.stringify(dataF.current) !== JSON.stringify(data) &&
-          data
-        ) {
-          const res = await axio.put<(typeof data)[]>("AboutUs/Update", {
-            Id: data.id,
-            Name: data.name,
-            Address: data.address,
-            Phone: data.phone,
-            Email: data.email,
-            Url_Mess: data?.url_Mess,
-            google_map: data.google_map,
-          });
+          if (
+            dataF.current?.id &&
+            JSON.stringify(dataF.current) !== JSON.stringify(data) &&
+            data
+          ) {
+            const res = await axio.put<(typeof data)[]>("AboutUs/Update", {
+              Id: data.id,
+              Name: data.name,
+              Address: data.address,
+              Phone: data.phone,
+              Email: data.email,
+              Url_Mess: data?.url_Mess,
+              google_map: data.google_map,
+            });
 
-          onClick();
-        } else {
-          const res = await axio.post<(typeof data)[]>("AboutUs/Create", {
-            Id: data.id,
-            Name: data.name,
-            Address: data.address,
-            Phone: data.phone,
-            Email: data.email,
-            Url_Mess: data?.url_Mess,
-            google_map: data.google_map,
-          });
+            onClick();
+          } else {
+            const res = await axio.post<(typeof data)[]>("AboutUs/Create", {
+              Id: data.id,
+              Name: data.name,
+              Address: data.address,
+              Phone: data.phone,
+              Email: data.email,
+              Url_Mess: data?.url_Mess,
+              google_map: data.google_map,
+            });
+          }
         }
+        setLoading(false);
       }
-      setLoading(false);
+    } catch (error) {
+      const err = error as AxiosError;
+      if (err.response?.status === 400) {
+        setLogin(true);
+      }
     }
   };
   return (

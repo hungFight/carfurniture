@@ -12,7 +12,6 @@ import http from "@/utils/http";
 import Link from "next/link";
 import { MdSkipPrevious } from "react-icons/md";
 import { BiSkipNext } from "react-icons/bi";
-import NextNProgress from "nextjs-progressbar";
 import { Images } from "@/asset/image";
 export default function Home() {
   const [search, setSearch] = useState<string>("");

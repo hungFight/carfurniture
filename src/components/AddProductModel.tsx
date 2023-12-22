@@ -17,6 +17,8 @@ import "swiper/css/pagination";
 import { redirect } from "next/navigation";
 import httpToken from "@/utils/httpToken";
 import { useCookies } from "next-client-cookies";
+import { AxiosError } from "axios";
+
 const AddProductModel: React.FC<{
   title: string;
   onClick: () => void;
@@ -61,7 +63,17 @@ const AddProductModel: React.FC<{
       | undefined
     >
   >;
-}> = ({ title, onClick, cateId, cateName, fet, upCate, setUpCate }) => {
+  setLogin: (value: React.SetStateAction<boolean>) => void;
+}> = ({
+  title,
+  onClick,
+  cateId,
+  cateName,
+  fet,
+  upCate,
+  setUpCate,
+  setLogin,
+}) => {
   const cookies = useCookies();
   const [value, setValue] = useState<string>(upCate?.Description ?? "");
   const [loading, setLoading] = useState<boolean>(false);
@@ -105,41 +117,48 @@ const AddProductModel: React.FC<{
   };
   const handleSubmit = async (e: any) => {
     e.preventDefault();
-    const accessToken = cookies.get("token");
-    const refreshToken = cookies.get("refreshToken");
-    if (accessToken && refreshToken) {
-      const axio = httpToken(accessToken, refreshToken, cookies);
+    try {
+      const accessToken = cookies.get("token");
+      const refreshToken = cookies.get("refreshToken");
+      if (accessToken && refreshToken) {
+        const axio = httpToken(accessToken, refreshToken, cookies);
 
-      setLoading(true);
-      const formData = new FormData();
-      product.Description = value;
-      formData.append("Name", product.Name);
-      formData.append("Price", product.Price);
-      formData.append("Description", product.Description);
-      formData.append("UrlShoppe", product.UrlShoppe);
-      formData.append("categoryId", String(product.categoryId));
-      formData.append("categoryName", cateName);
-      product.FormCollection?.map((f: any) => {
-        formData.append("FormCollection", f);
-      });
-      if (!upCate) {
-        formData.append("Price_After", product.Discount);
-        const res = await axio.post("Product/Create", formData);
-      } else {
-        formData.append("Price_After", product.Discount);
-        if (checkRef.current) {
-          upCate.urlImage.map((f) => {
-            formData.append("Paths", f.path);
-          });
+        setLoading(true);
+        const formData = new FormData();
+        product.Description = value;
+        formData.append("Name", product.Name);
+        formData.append("Price", product.Price);
+        formData.append("Description", product.Description);
+        formData.append("UrlShoppe", product.UrlShoppe);
+        formData.append("categoryId", String(product.categoryId));
+        formData.append("categoryName", cateName);
+        product.FormCollection?.map((f: any) => {
+          formData.append("FormCollection", f);
+        });
+        if (!upCate) {
+          formData.append("Price_After", product.Discount);
+          const res = await axio.post("Product/Create", formData);
+        } else {
+          formData.append("Price_After", product.Discount);
+          if (checkRef.current) {
+            upCate.urlImage.map((f) => {
+              formData.append("Paths", f.path);
+            });
+          }
+          formData.append("Id", String(upCate.Id));
+          const res = await axio.put("Product/Update", formData);
+          checkRef.current = false;
         }
-        formData.append("Id", String(upCate.Id));
-        const res = await axio.put("Product/Update", formData);
-        checkRef.current = false;
+        await fet(cateName);
+        setUpCate(undefined);
+        onClick();
+        setLoading(false);
       }
-      await fet(cateName);
-      setUpCate(undefined);
-      onClick();
-      setLoading(false);
+    } catch (error) {
+      const err = error as AxiosError;
+      if (err.response?.status === 400) {
+        setLogin(true);
+      }
     }
   };
   useEffect(() => {
@@ -149,19 +168,10 @@ const AddProductModel: React.FC<{
       redirect("/");
     }
   }, []);
-  const modules = {
-    toolbar: [
-      [{ header: [1, 2, 3, false] }],
-      ["bold", "italic", "underline", "strike", "blockquote"],
-      [{ list: "ordered" }, { list: "bullet" }],
-      ["link", "image", , "video"],
-      ["clean"],
-      [{ size: ["small", false, "large", "huge"] }],
-    ],
-  };
-
   const formats = [
     "header",
+    "font",
+    "size",
     "bold",
     "italic",
     "underline",
@@ -169,10 +179,53 @@ const AddProductModel: React.FC<{
     "blockquote",
     "list",
     "bullet",
+    "indent",
+    "script",
+    "sub",
+    "super",
+    "color",
+    "background",
     "link",
     "image",
     "video",
+    "align",
   ];
+  const fontList = [
+    "Mazda type",
+    "Times New Roman",
+    "Courier New",
+    "Verdana",
+    "CustomFont1",
+    "CustomFont2",
+  ];
+  const modules = {
+    toolbar: {
+      container: [
+        ["bold", "italic", "underline", "strike", "blockquote"],
+        [{ header: 1 }, { header: 2 }],
+        [{ list: "ordered" }, { list: "bullet" }],
+        [{ script: "sub" }, { script: "super" }],
+        [{ indent: "-1" }, { indent: "+1" }],
+        [{ direction: "rtl" }],
+        [{ size: ["small", false, "large", "huge"] }],
+        [{ header: [1, 2, 3, 4, 5, 6, false] }],
+        [
+          { color: ["red", "green", "blue", "yellow", "black"] },
+          { background: [] },
+        ],
+        [{ font: ["Arial", "Times New Roman", "Courier New", "Verdana"] }],
+        [{ align: [] }],
+        ["link", "image", "video"],
+        ["clean"],
+        ["code-block"],
+      ],
+      handlers: {
+        // Add custom handlers if needed
+      },
+    },
+    // Add more modules as needed
+  };
+
   return (
     <>
       <div
@@ -215,7 +268,11 @@ const AddProductModel: React.FC<{
             {image && (
               <div className="w-full  flex flex-wrap">
                 {image.map((url) => (
-                  <img src={url} className="w-[150px] h-[150px] mr-2 mt-2" />
+                  <img
+                    src={url}
+                    key={url}
+                    className="w-[150px] h-[150px] mr-2 mt-2"
+                  />
                 ))}
               </div>
             )}
