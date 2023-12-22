@@ -16,12 +16,7 @@ const instanceAxios = axios.create({
 });
 let tokenN = "";
 class HttpToken {
-  axiosJWTs(
-    token: string,
-    refreshToken: string,
-    cookies: Cookies,
-    tokeRef: React.MutableRefObject<string>
-  ) {
+  axiosJWTs(token: string, refreshToken: string, cookies: Cookies) {
     let i = 0;
     let tokenNc = token;
 
@@ -39,10 +34,9 @@ class HttpToken {
               if (decodeToken.exp < date.getTime() / 1000 + 5) {
                 // faster 50 second
                 const res = await http.post("User/RefreshToken", {
-                  accessToken: token,
+                  accessToken: tokenNc,
                   refreshToken,
                 });
-                tokeRef.current = res.data.accessToken;
                 tokenN = res.data.accessToken;
                 cookies.set("token", res.data.accessToken, {
                   path: "/",

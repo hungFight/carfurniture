@@ -7,6 +7,10 @@ import http from "@/utils/http";
 import moment from "moment";
 import { MdSkipPrevious } from "react-icons/md";
 import { BiSkipNext } from "react-icons/bi";
+import dynamic from "next/dynamic";
+const News = dynamic(() => import("@/components/RenderingData/News"), {
+  loading: () => <p className="text-red">Loading...</p>,
+});
 
 const page = (props: { params: { cate: string } }) => {
   const [pageIndex, setPageIndex] = useState<number>(0);
@@ -131,51 +135,7 @@ const page = (props: { params: { cate: string } }) => {
             )}
         </div>
         {!loading ? (
-          data.map((n) => (
-            <Link
-              key={n.id}
-              href={`/[slug]`}
-              as={`${props.params.cate
-                .replace(/\s+/g, "-")
-                .replace(/&/g, "-and-")}/${n.name
-                .replace(/\s+/g, "-")
-                .replace(/&/g, "-and-")}/${n.id}`}
-              className="w-full flex flex-wrap min-[420px]:flex-nowrap mb-6"
-            >
-              <div className="min-w-full h-[130px] min-[420px]:min-w-[250px] md:h-[155px] xl:min-w-[350px] xl:h-[210px] mr-3 md:mr-5">
-                <img
-                  src={n.urlImage[0]?.image}
-                  alt={n.urlImage[0]?.path}
-                  className="w-full h-full object-cover"
-                />
-              </div>
-              <div className="h-fit">
-                <h3
-                  className="text-base md:text-[17px] font-bold overflow-hidden"
-                  style={{
-                    display: "-webkit-box",
-                    WebkitLineClamp: 2,
-                    WebkitBoxOrient: "vertical",
-                    wordBreak: "break-all",
-                  }}
-                >
-                  {n.name}
-                </h3>
-                <p className="text-xs mt-1">
-                  {moment(n.create_Date).format("DD/MM/YYYY HH:MM:SS")}
-                </p>
-                <div
-                  className={`text-sm md:text-base  mt-2 overflow-hidden ${styles.description}`}
-                  style={{
-                    display: "-webkit-box",
-                    WebkitLineClamp: 4,
-                    WebkitBoxOrient: "vertical",
-                  }}
-                  dangerouslySetInnerHTML={{ __html: n.content }}
-                ></div>
-              </div>
-            </Link>
-          ))
+          data.map((n) => <News key={n.id} n={n} cate={props.params.cate} />)
         ) : (
           <p>Loading...</p>
         )}

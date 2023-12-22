@@ -62,10 +62,6 @@ const AddProductModel: React.FC<{
     >
   >;
 }> = ({ title, onClick, cateId, cateName, fet, upCate, setUpCate }) => {
-  const [token, setToken] = useState<{
-    accessToken: string;
-    refreshToken: string;
-  }>();
   const cookies = useCookies();
   const [value, setValue] = useState<string>(upCate?.Description ?? "");
   const [loading, setLoading] = useState<boolean>(false);
@@ -112,7 +108,7 @@ const AddProductModel: React.FC<{
     const accessToken = cookies.get("token");
     const refreshToken = cookies.get("refreshToken");
     if (accessToken && refreshToken) {
-      const axio = httpToken(accessToken, refreshToken, cookies, tokeRef);
+      const axio = httpToken(accessToken, refreshToken, cookies);
 
       if (tokeRef.current) {
         setLoading(true);
@@ -153,9 +149,6 @@ const AddProductModel: React.FC<{
     const refreshToken = cookies.get("refreshToken") ?? "";
     if (!token || !refreshToken) {
       redirect("/");
-    } else {
-      tokeRef.current = token;
-      setToken({ accessToken: token, refreshToken: refreshToken });
     }
   }, []);
   const modules = {

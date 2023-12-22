@@ -22,7 +22,6 @@ const Header = () => {
     guide: string;
   }>({ product: "", news: "", guide: "" });
   const router = useRouter();
-  const tokeRef = useRef<string>("");
   const [auth, setAuth] = useState<boolean>(false);
   const pathname = usePathname();
   useEffect(() => {
@@ -41,7 +40,6 @@ const Header = () => {
     const refreshToken = cookies.get("refreshToken") ?? "";
     setActive(pathname);
     if (!token || !refreshToken) setAuth(true);
-    tokeRef.current = token;
   }, [pathname]);
   const getData = async () => {
     const res = await http.get("CategoryType/GetAll");
@@ -191,21 +189,14 @@ const Header = () => {
               const accessToken = cookies.get("token");
               const refreshToken = cookies.get("refreshToken");
               if (accessToken && refreshToken) {
-                const axio = httpToken(
-                  accessToken,
-                  refreshToken,
-                  cookies,
-                  tokeRef
-                );
-                if (tokeRef.current) {
-                  const userName = cookies.get("userName");
-                  const token = cookies.get("token");
-                  const res = await axio.get(`User/Logout/${userName}`);
-                  cookies.remove("token");
-                  cookies.remove("refreshToken");
-                  setAuth(true);
-                  router.refresh();
-                }
+                const axio = httpToken(accessToken, refreshToken, cookies);
+                const userName = cookies.get("userName");
+                const token = cookies.get("token");
+                const res = await axio.get(`User/Logout/${userName}`);
+                cookies.remove("token");
+                cookies.remove("refreshToken");
+                setAuth(true);
+                router.refresh();
               }
             }}
           >

@@ -31,7 +31,7 @@ const FormAboutUs: React.FC<{ title: string; onClick: () => void }> = ({
   const cookies = useCookies();
   const [loading, setLoading] = useState<boolean>(false);
   const fet = async (token: string, refreshToken: string) => {
-    const axio = httpToken(token, refreshToken, cookies, tokeRef);
+    const axio = httpToken(token, refreshToken, cookies);
     if (tokeRef.current) {
       const res = await axio.get<(typeof data)[]>("AboutUs/GetAll");
       dataF.current = res.data[0];
@@ -55,7 +55,7 @@ const FormAboutUs: React.FC<{ title: string; onClick: () => void }> = ({
     const tokR = cookies.get("refreshToken");
 
     if (tok && tokR) {
-      const axio = httpToken(tok, tokR, cookies, tokeRef);
+      const axio = httpToken(tok, tokR, cookies);
       if (tokeRef.current) {
         setLoading(true);
 

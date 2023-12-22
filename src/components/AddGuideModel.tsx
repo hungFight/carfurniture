@@ -70,7 +70,6 @@ const AddGuideModel: React.FC<{
   const [image, setImage] = useState<string>(newsUp?.urlImage[0].image ?? "");
   const checkRef = useRef<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
-  const tokeRef = useRef<string>("");
 
   const [componentDisabled, setComponentDisabled] = useState<boolean>(true);
   const handleUploadFIle = (e: any) => {
@@ -87,46 +86,42 @@ const AddGuideModel: React.FC<{
     const accessToken = cookies.get("token");
     const refreshToken = cookies.get("refreshToken");
     if (accessToken && refreshToken) {
-      const axio = httpToken(accessToken, refreshToken, cookies, tokeRef);
+      const axio = httpToken(accessToken, refreshToken, cookies);
       const access = await new Promise((resolve, reject) => {
         resolve(cookies.get("token"));
       });
-      if (tokeRef.current) {
-        setLoading(true);
-        const formData = new FormData();
-        product.Content = value;
-        formData.append("categoryName", cateName);
-        formData.append("Name", product.Name);
-        formData.append("Content", product.Content);
-        formData.append("categoryId", String(product.categoryId));
-        if (newsUp) {
-          // update
-          formData.append("Id", String(newsUp.id));
+      setLoading(true);
+      const formData = new FormData();
+      product.Content = value;
+      formData.append("categoryName", cateName);
+      formData.append("Name", product.Name);
+      formData.append("Content", product.Content);
+      formData.append("categoryId", String(product.categoryId));
+      if (newsUp) {
+        // update
+        formData.append("Id", String(newsUp.id));
+        formData.append("FormCollection", product.FormCollection);
+        if (checkRef.current)
+          formData.append("Paths", newsUp.urlImage[0]?.path);
+        if (newsUp.id !== null) {
+          const res = await axio.put("Guide/Update", formData);
+        }
+      } else {
+        if (cateName && cateId && product.Name && product.Content) {
+          //add
           formData.append("FormCollection", product.FormCollection);
-          if (checkRef.current)
-            formData.append("Paths", newsUp.urlImage[0]?.path);
-          if (newsUp.id !== null) {
-            const res = await axio.put("Guide/Update", formData, {
-              headers: { Authorization: "Bearer " + tokeRef.current },
-            });
-          }
-        } else {
-          if (cateName && cateId && product.Name && product.Content) {
-            //add
-            formData.append("FormCollection", product.FormCollection);
-            formData.append("Name", product.Name);
-            formData.append("Content", product.Content);
-            if (product.FormCollection) {
-              const res = await axio.post("Guide/Create", formData);
-            }
+          formData.append("Name", product.Name);
+          formData.append("Content", product.Content);
+          if (product.FormCollection) {
+            const res = await axio.post("Guide/Create", formData);
           }
         }
-        await fet(cateName);
-        checkRef.current = false;
-        setNewsUp(undefined);
-        onClick();
-        setLoading(false);
       }
+      await fet(cateName);
+      checkRef.current = false;
+      setNewsUp(undefined);
+      onClick();
+      setLoading(false);
     }
   };
   const modules = {
@@ -145,7 +140,6 @@ const AddGuideModel: React.FC<{
     if (!token || !refreshToken) {
       redirect("/");
     } else {
-      tokeRef.current = token;
       setToken({ accessToken: token, refreshToken: refreshToken });
     }
   }, []);

@@ -49,7 +49,6 @@ const AddNewsModel: React.FC<{
 }> = ({ title, onClick, cateId, cateName, newsUp, fet, setNewsUp }) => {
   const [value, setValue] = useState<string>(newsUp?.content ?? "");
   const [pre, setPre] = useState<boolean>(false);
-  const tokeRef = useRef<string>("");
   const cookies = useCookies();
   const [token, setToken] = useState<{
     accessToken: string;
@@ -77,49 +76,45 @@ const AddNewsModel: React.FC<{
     const accessToken = cookies.get("token");
     const refreshToken = cookies.get("refreshToken");
     if (accessToken && refreshToken) {
-      const axio = httpToken(accessToken, refreshToken, cookies, tokeRef);
+      const axio = httpToken(accessToken, refreshToken, cookies);
       const access = await new Promise((resolve, reject) => {
         resolve(cookies.get("token"));
       });
 
-      if (tokeRef.current) {
-        setLoading(true);
+      setLoading(true);
 
-        const formData = new FormData();
-        news.Content = value;
-        formData.append("categoryName", cateName);
-        formData.append("CategoryId", String(cateId));
-        formData.append("Name", news.Name);
-        formData.append("Content", news.Content);
-        if (newsUp) {
-          // update
-          formData.append("Id", String(newsUp.id));
+      const formData = new FormData();
+      news.Content = value;
+      formData.append("categoryName", cateName);
+      formData.append("CategoryId", String(cateId));
+      formData.append("Name", news.Name);
+      formData.append("Content", news.Content);
+      if (newsUp) {
+        // update
+        formData.append("Id", String(newsUp.id));
 
+        formData.append("FormCollection", news.FormCollection);
+        if (checkRef.current)
+          formData.append("Paths", newsUp.urlImage[0]?.path);
+        if (newsUp.id !== null) {
+          const res = await axio.put("Blog/Update", formData);
+        }
+      } else {
+        if (cateName && cateId && news.Name && news.Content) {
+          //add
           formData.append("FormCollection", news.FormCollection);
-          if (checkRef.current)
-            formData.append("Paths", newsUp.urlImage[0]?.path);
-          if (newsUp.id !== null) {
-            const res = await axio.put("Blog/Update", formData, {
-              headers: { Authorization: "Bearer " + tokeRef.current },
-            });
-          }
-        } else {
-          if (cateName && cateId && news.Name && news.Content) {
-            //add
-            formData.append("FormCollection", news.FormCollection);
-            formData.append("Name", news.Name);
-            formData.append("Content", news.Content);
-            if (news.FormCollection) {
-              const res = await axio.post("Blog/Create", formData);
-            }
+          formData.append("Name", news.Name);
+          formData.append("Content", news.Content);
+          if (news.FormCollection) {
+            const res = await axio.post("Blog/Create", formData);
           }
         }
-        await fet(cateName);
-        checkRef.current = false;
-        setNewsUp(undefined);
-        onClick();
-        setLoading(false);
       }
+      await fet(cateName);
+      checkRef.current = false;
+      setNewsUp(undefined);
+      onClick();
+      setLoading(false);
     }
   };
   // upload file
@@ -135,7 +130,6 @@ const AddNewsModel: React.FC<{
     if (!token || !refreshToken) {
       redirect("/");
     } else {
-      tokeRef.current = token;
       setToken({ accessToken: token, refreshToken: refreshToken });
     }
   }, []);

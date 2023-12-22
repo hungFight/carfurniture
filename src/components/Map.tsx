@@ -8,10 +8,7 @@ import http from "@/utils/http";
 import Link from "next/link";
 import styles from "./styleComponent.module.scss";
 import { useCookies } from "next-client-cookies";
-const containerStyle = {
-  width: "400px",
-  height: "400px",
-};
+import { FaFacebook } from "react-icons/fa";
 
 const Map = () => {
   const cookies = useCookies();
@@ -81,7 +78,7 @@ const Map = () => {
         </h3>
         <h3 className="font-semibold mb-[8px] text-[12px] w-fit flex opacity-[0.7]">
           <div className="flex items-center mr-2">
-            <PiMessengerLogoLight />
+            <FaFacebook />
           </div>
           FanPage:{" "}
           <a

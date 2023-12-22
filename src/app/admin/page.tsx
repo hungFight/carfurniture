@@ -22,9 +22,27 @@ import { BiSkipNext } from "react-icons/bi";
 import { MdSkipPrevious } from "react-icons/md";
 import { useCookies } from "next-client-cookies";
 import { useRouter } from "next/navigation";
-const RoutListing = dynamic(() => import("@/components/Items/RoutListing"));
-const AddNewsModel = dynamic(() => import("@/components/AddNewsModel"));
-const AddProductModel = dynamic(() => import("@/components/AddProductModel"));
+const GuideAdmin = dynamic(
+  () => import("@/components/RenderingData/GuideAdmin")
+);
+const NewsAdmin = dynamic(
+  () => import("@/components/RenderingData/NewsAdmin"),
+  {
+    loading: () => <p className="text-red">Loading...</p>,
+  }
+);
+const ProductAdmin = dynamic(
+  () => import("@/components/RenderingData/ProductAdmin"),
+  {
+    loading: () => <p className="text-red">Loading...</p>,
+  }
+);
+const AddNewsModel = dynamic(() => import("@/components/AddNewsModel"), {
+  loading: () => <p className="text-red">Loading...</p>,
+});
+const AddProductModel = dynamic(() => import("@/components/AddProductModel"), {
+  loading: () => <p className="text-red">Loading...</p>,
+});
 
 const page = () => {
   const cookies = useCookies();
@@ -140,7 +158,7 @@ const page = () => {
       const accessToken = cookies.get("token");
       const refreshToken = cookies.get("refreshToken");
       if (accessToken && refreshToken) {
-        const axio = httpToken(accessToken, refreshToken, cookies, tokeRef);
+        const axio = httpToken(accessToken, refreshToken, cookies);
         const access = await new Promise((resolve, reject) => {
           resolve(cookies.get("token"));
         });
@@ -166,7 +184,7 @@ const page = () => {
     const refreshToken = cookies.get("refreshToken");
     if (accessToken && refreshToken) {
       try {
-        const axio = httpToken(accessToken, refreshToken, cookies, tokeRef);
+        const axio = httpToken(accessToken, refreshToken, cookies);
         const access = await new Promise((resolve, reject) => {
           resolve(cookies.get("token"));
         });
@@ -214,7 +232,7 @@ const page = () => {
       if (accessToken && refreshToken) {
         setLoadingSearch(true);
         setLoadingDirect(true);
-        const axio = httpToken(accessToken, refreshToken, cookies, tokeRef);
+        const axio = httpToken(accessToken, refreshToken, cookies);
         const acc = await new Promise((resolve, reject) => {
           resolve(cookies.get("token"));
         });
@@ -328,7 +346,7 @@ const page = () => {
     const refreshToken = cookies.get("refreshToken");
     try {
       if (accessToken && refreshToken) {
-        const axio = httpToken(accessToken, refreshToken, cookies, tokeRef);
+        const axio = httpToken(accessToken, refreshToken, cookies);
         const acces = await new Promise((resolve, reject) => {
           resolve(cookies.get("token"));
         });
@@ -362,7 +380,7 @@ const page = () => {
       const accessToken = cookies.get("token");
       const refreshToken = cookies.get("refreshToken");
       if (accessToken && refreshToken) {
-        const axio = httpToken(accessToken, refreshToken, cookies, tokeRef);
+        const axio = httpToken(accessToken, refreshToken, cookies);
         const access = await new Promise((resolve, reject) => {
           resolve(cookies.get("token"));
         });
@@ -392,7 +410,7 @@ const page = () => {
       const accessToken = cookies.get("token");
       const refreshToken = cookies.get("refreshToken");
       if (accessToken && refreshToken) {
-        const axio = httpToken(accessToken, refreshToken, cookies, tokeRef);
+        const axio = httpToken(accessToken, refreshToken, cookies);
         const access = await new Promise((resolve, reject) => {
           resolve(cookies.get("token"));
         });
@@ -612,110 +630,21 @@ const page = () => {
               </div>
               {dataProducts.length > 0 ? (
                 dataProducts.map((p) => (
-                  <Link
+                  <ProductAdmin
                     key={p.id}
-                    href="/[slug]"
-                    as={`product/${routs[1]
-                      .replace(/\s+/g, "-")
-                      .replace(/&/g, "-and-")}/${p.name
-                      .replace(/\s+/g, "-")
-                      .replace(/&/g, "-and-")}/${p.id}`}
-                    className=" relative w-[250px] p-1 border shadow-[0_0_3px_#7a7a7a] hover:shadow-[0_0_10px] mb-4 mx-3 cursor-pointer"
-                  >
-                    <div
-                      className="absolute right-1 cursor-pointer top-0 text-sm w-auto px-3 py-1  bg-white z-10 shadow-[0_0_2px_#999999]"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        e.preventDefault();
-                        setProductUp({
-                          Id: p.id,
-                          Name: p.name,
-                          Price: String(p.price),
-                          Description: p.description,
-                          Discount: String(p.price_After),
-                          categoryId: cate.categoryId,
-                          categoryName: cate.categoryName,
-                          FormCollection: p.urlImage[0]?.image,
-                          path: p.urlImage[0]?.path,
-                          urlImage: p.urlImage,
-                          UrlShoppe: p.urlShoppe,
-                        });
-                        setAdd(routs[1]);
-                      }}
-                    >
-                      Update
-                    </div>
-                    <div className="w-full h-[240px]">
-                      <img
-                        src={p.urlImage[0]?.image}
-                        alt={p.urlImage[0]?.path}
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
-                    <div className={`mt-1 ${styles.containerProductTag}`}>
-                      <h3
-                        className={`font-bold text-sm md:text-base ${styles.nameTag}`}
-                      >
-                        {p.name}
-                      </h3>
-                      <div className="w-full mt-1 md:mt-2 flex items-center border-b border-solid">
-                        <p className="text-[13px] md:text-[14px] font-medium text-[crimson]">
-                          {p.price.toLocaleString("en-US").replace(/,/g, ".")}đ
-                        </p>
-                        {p.price_After && (
-                          <p className="text-[10px] md:text-[11px] mt-[5px] ml-2 line-through">
-                            {p.price_After
-                              .toLocaleString("en-US")
-                              .replace(/,/g, ".")}
-                            đ
-                          </p>
-                        )}
-                      </div>
-                      <div
-                        className={`text-[13px] h-[38px] md:text-[14px] mt-2 md:mt-3 ${styles.desTag}`}
-                        dangerouslySetInnerHTML={{ __html: p.description }}
-                      ></div>
-                    </div>
-                    <div className="my-2 flex items-center justify-center relative">
-                      <p
-                        className="absolute text-sm text-[crimson] top-[5px] left-[10px] "
-                        style={{ color: "crimson !important" }}
-                        onClick={async (e) => {
-                          e.preventDefault();
-                          e.stopPropagation();
-                          if (typeof window !== "undefined") {
-                            const isD = window.confirm(
-                              "Bạn có muốn xoá không?"
-                            );
-                            if (isD) {
-                              setLoading(String(p.id));
-                              const del = await http.delete(
-                                `Product/Delete/${p.id}`
-                              );
-                              if (productUp) setProductUp(undefined);
-                              fetCateName(nameRout);
-                              setLoading("");
-                            }
-                          }
-                        }}
-                      >
-                        {loading === String(p.id) ? "deleting..." : "delete"}
-                      </p>
-                      <button className="text-sm shadow-[0_0_2px_#4a8cbf] border-[#4a8cbf] border-[1px] p-1 pr-3 rounded-md">
-                        View more
-                      </button>
-                      <div
-                        className="absolute top-[5px] text-[crimson] right-[30px] "
-                        style={{ color: "crimson !important" }}
-                        onClick={(e) => {
-                          e.preventDefault();
-                          window.open(p.urlShoppe, "_blank");
-                        }}
-                      >
-                        <SiShopee />
-                      </div>
-                    </div>
-                  </Link>
+                    p={p}
+                    setLogin={setLogin}
+                    cookies={cookies}
+                    cate={cate}
+                    setAdd={setAdd}
+                    setLoading={setLoading}
+                    setProductUp={setProductUp}
+                    productUp={productUp}
+                    fetCateName={fetCateName}
+                    loading={loading}
+                    nameRout={nameRout}
+                    rout={routs[1]}
+                  />
                 ))
               ) : (
                 <p>Không có sản phẩm nào</p>
@@ -835,84 +764,21 @@ const page = () => {
               </div>
               {dataNews.length > 0 ? (
                 dataNews.map((bl) => (
-                  <Link
-                    href="/[slug]"
-                    as={`news/${routs[1]
-                      .replace(/\s+/g, "-")
-                      .replace(/&/g, "-and-")}/${bl.name
-                      .replace(/\s+/g, "-")
-                      .replace(/&/g, "-and-")}/${bl.id}`}
-                    className="w-full flex flex-wrap md:flex-nowrap  mb-4 relative"
+                  <NewsAdmin
+                    bl={bl}
+                    setAdd={setAdd}
+                    setLoading={setLoading}
+                    setLogin={setLogin}
+                    setNewsUp={setNewsUp}
+                    cookies={cookies}
+                    fetCateName={fetCateName}
+                    loading={loading}
+                    nameRout={nameRout}
+                    newsUp={newsUp}
+                    rout={routs[1]}
+                    setPre={setPre}
                     key={bl.id}
-                    onClick={() => {
-                      setPre(true);
-                    }}
-                  >
-                    <div
-                      className="absolute left-[83px] cursor-pointer top-0 text-sm w-auto px-3 py-1  bg-white z-10 shadow-[0_0_2px_#999999]"
-                      onClick={async (e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        if (typeof window !== "undefined") {
-                          const isD = window.confirm("Bạn có muốn xoá không?");
-                          if (isD) {
-                            setLoading(String(bl.id));
-                            const del = await http.delete(
-                              `Blog/Delete/${bl.id}`
-                            );
-                            fetCateName(nameRout);
-                            if (newsUp) setNewsUp(undefined);
-                            setLoading("");
-                          }
-                        }
-                      }}
-                    >
-                      {loading === String(bl.id) ? "deleting..." : "delete"}
-                    </div>
-                    <div
-                      className="absolute left-1 cursor-pointer top-0 text-sm w-auto px-3 py-1  bg-white z-10 shadow-[0_0_2px_#999999]"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        setNewsUp(bl);
-                        setAdd(routs[1]);
-                      }}
-                    >
-                      Update
-                    </div>
-                    <div className="min-w-full h-[130px] md:min-w-[250px] md:h-[155px]  mr-3 md:mr-5">
-                      <img
-                        src={bl.urlImage[0]?.image}
-                        alt={bl.urlImage[0]?.path}
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
-                    <div className="h-fit">
-                      <h3
-                        className="text-base md:text-[17px] font-bold overflow-hidden"
-                        style={{
-                          display: "-webkit-box",
-                          WebkitLineClamp: 2,
-                          WebkitBoxOrient: "vertical",
-                          wordBreak: "break-all",
-                        }}
-                      >
-                        {bl.name}
-                      </h3>
-                      <p className="text-xs mt-1">
-                        {moment(bl.create_Date).format("DD/MM/YYYY HH:MM:SS")}
-                      </p>
-                      <div
-                        className={`text-sm md:text-base  mt-2 overflow-hidden ${styles.description}`}
-                        style={{
-                          display: "-webkit-box",
-                          WebkitLineClamp: 4,
-                          WebkitBoxOrient: "vertical",
-                        }}
-                        dangerouslySetInnerHTML={{ __html: bl.content }}
-                      ></div>
-                    </div>
-                  </Link>
+                  />
                 ))
               ) : (
                 <p>Không có Blog nào</p>
@@ -1032,82 +898,21 @@ const page = () => {
               </div>
               {dataGuid.length > 0 ? (
                 dataGuid.map((g) => (
-                  <Link
-                    href="/[slug]"
-                    as={`guide/${routs[1]
-                      .replace(/\s+/g, "-")
-                      .replace(/&/g, "-and-")}/${g.name
-                      .replace(/\s+/g, "-")
-                      .replace(/&/g, "-and-")}/${g.id}`}
-                    className="w-full flex flex-wrap md:flex-nowrap  mb-4 relative"
+                  <GuideAdmin
+                    setAdd={setAdd}
+                    setLoading={setLoading}
+                    setLogin={setLogin}
+                    setNewsUp={setNewsUp}
+                    cookies={cookies}
+                    fetCateName={fetCateName}
+                    loading={loading}
+                    nameRout={nameRout}
+                    newsUp={newsUp}
+                    rout={routs[1]}
                     key={g.id}
-                  >
-                    <div
-                      className="absolute left-[83px] cursor-pointer top-0 text-sm w-auto px-3 py-1  bg-white z-10 shadow-[0_0_2px_#999999]"
-                      onClick={async (e) => {
-                        e.stopPropagation();
-                        e.preventDefault();
-
-                        if (typeof window !== "undefined") {
-                          const isD = window.confirm("Bạn có muốn xoá không?");
-                          if (isD && g.id) {
-                            setLoading(String(g.id));
-                            const del = await http.delete(
-                              `Guide/Delete/${g.id}`
-                            );
-                            fetCateName(nameRout);
-                            if (newsUp) setNewsUp(undefined);
-                            setLoading("");
-                          }
-                        }
-                      }}
-                    >
-                      {loading === String(g.id) ? "deleting..." : "delete"}
-                    </div>
-                    <div
-                      className="absolute left-1 cursor-pointer top-0 text-sm w-auto px-3 py-1  bg-white z-10 shadow-[0_0_2px_#999999]"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        setGuideUp(g);
-                        setAdd(routs[1]);
-                      }}
-                    >
-                      Update
-                    </div>
-                    <div className="min-w-full h-[130px] md:min-w-[250px] md:h-[155px] xl:min-w-[350px] xl:h-[210px] mr-3 md:mr-5">
-                      <img
-                        src={g.urlImage[0]?.image}
-                        alt={g.urlImage[0]?.path}
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
-                    <div className="">
-                      <h3
-                        className="text-base md:text-[17px] font-bold overflow-hidden"
-                        style={{
-                          display: "-webkit-box",
-                          WebkitLineClamp: 2,
-                          WebkitBoxOrient: "vertical",
-                          wordBreak: "break-all",
-                        }}
-                      >
-                        {g.name}
-                      </h3>
-                      <p className="text-xs mt-1">
-                        {moment(g.create_Date).format("DD/MM/YYYY HH:MM:SS")}
-                      </p>
-                      <div
-                        className={`text-sm md:text-base  mt-2 overflow-hidden ${styles.description}`}
-                        style={{
-                          display: "-webkit-box",
-                          WebkitLineClamp: 4,
-                          WebkitBoxOrient: "vertical",
-                        }}
-                        dangerouslySetInnerHTML={{ __html: g.content }}
-                      ></div>
-                    </div>
-                  </Link>
+                    setGuideUp={setGuideUp}
+                    g={g}
+                  />
                 ))
               ) : (
                 <p>Không có guide nào</p>
