@@ -265,8 +265,8 @@ export default function Home() {
                         } md:w-[300px] p-1 border shadow-[0_0_3px_#7a7a7a] hover:shadow-[0_0_10px] mb-4 cursor-pointer`}
                       >
                         <div className="w-full h-[164px] md:h-[215px]">
-                          <Image
-                            src={Images.test}
+                          <img
+                            src={r.urlImage[0]?.image}
                             alt={r.urlImage[0]?.path}
                             className="w-full h-full object-cover"
                           />
@@ -348,8 +348,8 @@ export default function Home() {
                     className="w-[230px] xl:w-[250px] p-1 border shadow-[0_0_3px_#7a7a7a] hover:shadow-[0_0_10px] mb-4 cursor-pointer mr-2"
                   >
                     <div className="w-full h-[168px] xl:h-[174px]">
-                      <Image
-                        src={Images.test}
+                      <img
+                        src={n.urlImage[0]?.image}
                         alt={n.urlImage[0]?.path}
                         className="w-full h-full object-cover"
                       />
