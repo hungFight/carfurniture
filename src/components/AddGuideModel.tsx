@@ -1,7 +1,17 @@
 "use client";
 import React, { useEffect, useRef } from "react";
 
-import ReactQuill from "react-quill";
+import type ReactQuill from "react-quill";
+const QuillWrapper = dynamic(
+  async () => {
+    const { default: RQ } = await import("react-quill");
+    // eslint-disable-next-line react/display-name
+    return ({ ...props }) => <RQ {...props} />;
+  },
+  {
+    ssr: false,
+  }
+) as typeof ReactQuill;
 import "react-quill/dist/quill.snow.css";
 import { IoCloseCircleOutline } from "react-icons/io5";
 import { useState } from "react";
@@ -14,6 +24,7 @@ import { useCookies } from "next-client-cookies";
 import { redirect } from "next/navigation";
 import httpToken from "@/utils/httpToken";
 import { AxiosError } from "axios";
+import dynamic from "next/dynamic";
 const AddGuideModel: React.FC<{
   title: string;
   onClick: () => void;
@@ -178,7 +189,7 @@ const AddGuideModel: React.FC<{
         [{ header: [1, 2, 3, 4, 5, 6, false] }],
         [
           {
-            color: ["red", "green", "blue", "yellow", "black", "pink", "gray"],
+            color: [],
           },
           { background: [] },
         ],
@@ -262,9 +273,8 @@ const AddGuideModel: React.FC<{
         </div>
         <div className={`w-1/2 my-2 flex items-center  flex-wrap  h-fit my-3`}>
           <h3 className="text-base mr-3 w-full">Content:</h3>
-          <ReactQuill
+          <QuillWrapper
             className="w-full"
-            theme="snow"
             value={value}
             onChange={setValue}
             modules={modules}

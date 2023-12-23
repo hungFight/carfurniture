@@ -187,7 +187,7 @@ const AddNewsModel: React.FC<{
         [{ header: [1, 2, 3, 4, 5, 6, false] }],
         [
           {
-            color: ["red", "green", "blue", "yellow", "black", "pink", "gray"],
+            color: [],
           },
           { background: [] },
         ],
@@ -264,7 +264,6 @@ const AddNewsModel: React.FC<{
           <h3 className="text-base mr-3 w-full">Content:</h3>
           <ReactQuill
             className="w-full"
-            theme="snow"
             value={value}
             onChange={setValue}
             modules={modules}

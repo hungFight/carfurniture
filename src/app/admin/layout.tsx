@@ -12,5 +12,9 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  return <CookiesProvider> {children}</CookiesProvider>;
+  return (
+    <>
+      <CookiesProvider> {children}</CookiesProvider>
+    </>
+  );
 }

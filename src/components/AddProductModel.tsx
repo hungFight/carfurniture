@@ -1,5 +1,15 @@
 "use client";
-import ReactQuill from "react-quill";
+import type ReactQuill from "react-quill";
+const QuillWrapper = dynamic(
+  async () => {
+    const { default: RQ } = await import("react-quill");
+    // eslint-disable-next-line react/display-name
+    return ({ ...props }) => <RQ {...props} />;
+  },
+  {
+    ssr: false,
+  }
+) as typeof ReactQuill;
 import "react-quill/dist/quill.snow.css";
 import { IoCloseCircleOutline } from "react-icons/io5";
 import { useEffect, useRef, useState } from "react";
@@ -18,6 +28,7 @@ import { redirect } from "next/navigation";
 import httpToken from "@/utils/httpToken";
 import { useCookies } from "next-client-cookies";
 import { AxiosError } from "axios";
+import dynamic from "next/dynamic";
 
 const AddProductModel: React.FC<{
   title: string;
@@ -188,7 +199,6 @@ const AddProductModel: React.FC<{
     "link",
     "image",
     "video",
-    "align",
   ];
 
   const modules = {
@@ -204,7 +214,7 @@ const AddProductModel: React.FC<{
         [{ header: [1, 2, 3, 4, 5, 6, false] }],
         [
           {
-            color: ["red", "green", "blue", "yellow", "black", "pink", "gray"],
+            color: [],
           },
           { background: [] },
         ],
@@ -323,9 +333,8 @@ const AddProductModel: React.FC<{
           </div>{" "}
         </div>
         <div className={`w-1/2 my-2 flex items-center  flex-wrap `}>
-          <ReactQuill
+          <QuillWrapper
             className="w-full"
-            theme="snow"
             value={value}
             onChange={setValue}
             modules={modules}
