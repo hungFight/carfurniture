@@ -25,17 +25,9 @@ import { useRouter } from "next/navigation";
 const GuideAdmin = dynamic(
   () => import("@/components/RenderingData/GuideAdmin")
 );
-const NewsAdmin = dynamic(
-  () => import("@/components/RenderingData/NewsAdmin"),
-  {
-    loading: () => <p className="text-red">Loading...</p>,
-  }
-);
+const NewsAdmin = dynamic(() => import("@/components/RenderingData/NewsAdmin"));
 const ProductAdmin = dynamic(
-  () => import("@/components/RenderingData/ProductAdmin"),
-  {
-    loading: () => <p className="text-red">Loading...</p>,
-  }
+  () => import("@/components/RenderingData/ProductAdmin")
 );
 const AddNewsModel = dynamic(() => import("@/components/AddNewsModel"), {
   loading: () => <p className="text-red">Loading...</p>,

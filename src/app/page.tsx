@@ -3,7 +3,6 @@ import styles from "./styleHomePage.module.scss";
 import React, { useEffect, useRef, useState } from "react";
 // Import Swiper React components
 
-import SlideHome from "@/components/Slide/SlideHome";
 import Image from "next/image";
 import InputSearch from "@/components/Items/InputSearch";
 import SlideCategory from "@/components/Slide/SlideCategory";
@@ -12,7 +11,12 @@ import http from "@/utils/http";
 import Link from "next/link";
 import { MdSkipPrevious } from "react-icons/md";
 import { BiSkipNext } from "react-icons/bi";
-import { Images } from "@/asset/image";
+import dynamic from "next/dynamic";
+const SlideHome = dynamic(() => import("@/components/Slide/SlideHome"), {
+  loading: () => (
+    <div className="w-full h-[450px] bg-[aliceblue] flex relative flex-wrap sm:flex-nowrap"></div>
+  ),
+});
 export default function Home() {
   const [search, setSearch] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);

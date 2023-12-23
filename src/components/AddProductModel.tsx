@@ -210,10 +210,12 @@ const AddProductModel: React.FC<{
         [{ size: ["small", false, "large", "huge"] }],
         [{ header: [1, 2, 3, 4, 5, 6, false] }],
         [
-          { color: ["red", "green", "blue", "yellow", "black"] },
+          {
+            color: ["red", "green", "blue", "yellow", "black", "pink", "gray"],
+          },
           { background: [] },
         ],
-        [{ font: ["Arial", "Times New Roman", "Courier New", "Verdana"] }],
+        [{ font: [] }],
         [{ align: [] }],
         ["link", "image", "video"],
         ["clean"],

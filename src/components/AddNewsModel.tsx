@@ -151,19 +151,10 @@ const AddNewsModel: React.FC<{
       setToken({ accessToken: token, refreshToken: refreshToken });
     }
   }, []);
-  const modules = {
-    toolbar: [
-      [{ header: [1, 2, 3, false] }],
-      ["bold", "italic", "underline", "strike", "blockquote"],
-      [{ list: "ordered" }, { list: "bullet" }],
-      ["link", "image", , "video"],
-      ["clean"],
-      [{ size: ["small", false, "large", "huge"] }],
-    ],
-  };
-
   const formats = [
     "header",
+    "font",
+    "size",
     "bold",
     "italic",
     "underline",
@@ -171,10 +162,47 @@ const AddNewsModel: React.FC<{
     "blockquote",
     "list",
     "bullet",
+    "indent",
+    "script",
+    "sub",
+    "super",
+    "color",
+    "background",
     "link",
     "image",
     "video",
+    "align",
   ];
+
+  const modules = {
+    toolbar: {
+      container: [
+        ["bold", "italic", "underline", "strike", "blockquote"],
+        [{ header: 1 }, { header: 2 }],
+        [{ list: "ordered" }, { list: "bullet" }],
+        [{ script: "sub" }, { script: "super" }],
+        [{ indent: "-1" }, { indent: "+1" }],
+        [{ direction: "rtl" }],
+        [{ size: ["small", false, "large", "huge"] }],
+        [{ header: [1, 2, 3, 4, 5, 6, false] }],
+        [
+          {
+            color: ["red", "green", "blue", "yellow", "black", "pink", "gray"],
+          },
+          { background: [] },
+        ],
+        [{ font: [] }],
+        [{ align: [] }],
+        ["link", "image", "video"],
+        ["clean"],
+        ["code-block"],
+      ],
+      handlers: {
+        // Add custom handlers if needed
+      },
+    },
+    // Add more modules as needed
+  };
 
   return (
     <>
