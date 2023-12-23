@@ -1,17 +1,11 @@
 "use client";
 import SlideCategory from "@/components/Slide/SlideCategory";
 import React, { useEffect, useRef, useState } from "react";
-import styles from "../styleHomePage.module.scss";
-import { SiShopee } from "react-icons/si";
 import Routing from "@/components/Items/Routing";
 import Listing from "@/components/Items/Listing";
 import { IoIosAddCircle } from "react-icons/io";
-import http from "@/utils/http";
-import numeral from "numeral";
-import Link from "next/link";
 import dynamic from "next/dynamic";
 import PreviousAdmin from "@/components/PreviousAdmin";
-import moment from "moment";
 import AddGuideModel from "@/components/AddGuideModel";
 import InputSearch from "@/components/Items/InputSearch";
 import FormAboutUs from "@/components/FormAboutUs";

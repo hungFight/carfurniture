@@ -31,6 +31,18 @@ const Header = () => {
     const refreshToken = cookies.get("refreshToken") ?? "";
     setActive(pathname);
     if (!token || !refreshToken) setAuth(true);
+    if (typeof document !== "undefined") {
+      const hear = document?.querySelectorAll(".header_home");
+
+      Array.from(hear).map((h) => {
+        h.addEventListener("click", (e: any) => {
+          Array.from(hear).map((h: any) => {
+            h.style.color = "#3a3b3b";
+          });
+          if (e.target) e.target.style.color = "#42aaea";
+        });
+      });
+    }
   }, []);
   useEffect(() => {
     if (active) {
@@ -55,6 +67,15 @@ const Header = () => {
   };
 
   const [onTab, setOnTab] = useState<boolean>(false);
+  console.log(
+    active,
+    "active",
+    !(active.indexOf("product") > 0) &&
+      !(active.indexOf("news") > 0) &&
+      !(active.indexOf("guide") > 0),
+    active.indexOf("news")
+  );
+
   return (
     <div className="w-full  bg-white flex justify-center h-auto sm:h-[125px] pt-4 border-b-2">
       {onTab && (
@@ -70,22 +91,13 @@ const Header = () => {
             <div className=" w-full flex flex-wrap mt-[15px]">
               <Link
                 href="/"
-                className={`header_home w-full text-[#3a3b3b]   my-[2px] text-sm sm:text-base mx-4 max-sm:my-1 whitespace-pre-wrap font-medium cursor-pointer hover:text-[#42aaea] ${
+                className={`header_home w-full    my-[2px] text-sm sm:text-base mx-4 max-sm:my-1 whitespace-pre-wrap font-medium cursor-pointer hover:text-[#42aaea] ${
                   !(active.indexOf("product") > 0) &&
                   !(active.indexOf("news") > 0) &&
                   !(active.indexOf("guide") > 0)
                     ? "text-[#42aaea]"
-                    : ""
+                    : "text-[#3a3b3b]"
                 }`}
-                onClick={(e: any) => {
-                  if (typeof document !== "undefined") {
-                    const hear = document?.querySelectorAll(".header_home");
-                    Array.from(hear).map((h: any) => {
-                      h.style.color = "#3a3b3b";
-                    });
-                    e.target.style.color = "#42aaea";
-                  }
-                }}
               >
                 Trang chủ
               </Link>
@@ -93,18 +105,11 @@ const Header = () => {
                 href={`/news/${firstCate.news
                   .replace(/\s+/g, "-")
                   .replace(/&/g, "-and-")}`}
-                className={`header_home w-full text-[#3a3b3b] ${
-                  active.indexOf("news") > 0 ? "text-[#42aaea]" : ""
+                className={`header_home w-full  ${
+                  active.indexOf("news") > 0
+                    ? "text-[#42aaea]"
+                    : "text-[#3a3b3b]"
                 } text-sm sm:text-base mx-4 max-sm:my-1 whitespace-pre-wrap my-[2px] font-medium cursor-pointer hover:text-[#42aaea]`}
-                onClick={(e: any) => {
-                  if (typeof document !== "undefined") {
-                    const hear = document?.querySelectorAll(".header_home");
-                    Array.from(hear).map((h: any) => {
-                      h.style.color = "#3a3b3b";
-                    });
-                    e.target.style.color = "#42aaea";
-                  }
-                }}
               >
                 Tin tức
               </Link>
@@ -112,18 +117,11 @@ const Header = () => {
                 href={`/product/${firstCate.product
                   .replace(/\s+/g, "-")
                   .replace(/&/g, "-and-")}`}
-                className={`header_home w-full text-[#3a3b3b] ${
-                  active.indexOf("product") > 0 ? "text-[#42aaea]" : ""
+                className={`header_home w-full  ${
+                  active.indexOf("product") > 0
+                    ? "text-[#42aaea]"
+                    : "text-[#3a3b3b]"
                 }  text-sm sm:text-base mx-4 max-sm:my-1 whitespace-pre-wrap my-[2px] font-medium cursor-pointer hover:text-[#42aaea]`}
-                onClick={(e: any) => {
-                  if (typeof document !== "undefined") {
-                    const hear = document?.querySelectorAll(".header_home");
-                    Array.from(hear).map((h: any) => {
-                      h.style.color = "#3a3b3b";
-                    });
-                    e.target.style.color = "#42aaea";
-                  }
-                }}
               >
                 Danh sách sản phẩm
               </Link>
@@ -132,17 +130,10 @@ const Header = () => {
                   .replace(/\s+/g, "-")
                   .replace(/&/g, "-and-")}`}
                 className={`header_home w-full  ${
-                  active.indexOf("guides") > 0 ? "text-[#42aaea]" : ""
-                } text-[#3a3b3b] text-sm sm:text-base mx-4 max-sm:my-1 my-[2px] whitespace-pre-wrap font-medium cursor-pointer hover:text-[#42aaea]`}
-                onClick={(e: any) => {
-                  if (typeof document !== "undefined") {
-                    const hear = document?.querySelectorAll(".header_home");
-                    Array.from(hear).map((h: any) => {
-                      h.style.color = "#3a3b3b";
-                    });
-                    e.target.style.color = "#42aaea";
-                  }
-                }}
+                  active.indexOf("guides") > 0
+                    ? "text-[#42aaea]"
+                    : "text-[#3a3b3b]"
+                }  text-sm sm:text-base mx-4 max-sm:my-1 my-[2px] whitespace-pre-wrap font-medium cursor-pointer hover:text-[#42aaea]`}
               >
                 Hưỡng dẫn sử dụng
               </Link>
@@ -209,73 +200,39 @@ const Header = () => {
         >
           <Link
             href="/"
-            className={`header_home text-[#3a3b3b] ${
+            className={`header_home ${
               !(active.indexOf("product") > 0) &&
               !(active.indexOf("news") > 0) &&
               !(active.indexOf("guide") > 0)
                 ? "text-[#42aaea]"
-                : ""
+                : "text-[#3a3b3b] "
             } text-sm sm:text-base mx-4 max-sm:my-1 w-max whitespace-pre-wrap font-medium cursor-pointer hover:text-[#42aaea]`}
-            onClick={(e: any) => {
-              if (typeof document !== "undefined") {
-              }
-              const hear = document?.querySelectorAll(".header_home");
-              Array.from(hear).map((h: any) => {
-                h.style.color = "#3a3b3b";
-              });
-              e.target.style.color = "#42aaea";
-            }}
           >
             Trang chủ
           </Link>
           <Link
             href={`/news/${firstCate.news.replace(/\s+/g, "-")}`}
-            className={`header_home text-[#3a3b3b] ${
-              active.indexOf("news") > 0 ? "text-[#42aaea]" : ""
+            className={`header_home  ${
+              active.indexOf("news") > 0 ? "text-[#42aaea]" : "text-[#3a3b3b]"
             } text-sm sm:text-base mx-4 max-sm:my-1 w-max whitespace-pre-wrap font-medium cursor-pointer hover:text-[#42aaea]`}
-            onClick={(e: any) => {
-              if (typeof document !== "undefined") {
-              }
-              const hear = document?.querySelectorAll(".header_home");
-              Array.from(hear).map((h: any) => {
-                h.style.color = "#3a3b3b";
-              });
-              e.target.style.color = "#42aaea";
-            }}
           >
             Tin tức
           </Link>
           <Link
             href={`/product/${firstCate.product.replace(/\s+/g, "-")}`}
-            className={`header_home text-[#3a3b3b] ${
-              active.indexOf("product") > 0 ? "text-[#42aaea]" : ""
+            className={`header_home  ${
+              active.indexOf("product") > 0
+                ? "text-[#42aaea]"
+                : "text-[#3a3b3b]"
             }  text-sm sm:text-base mx-4 max-sm:my-1 w-max whitespace-pre-wrap font-medium cursor-pointer hover:text-[#42aaea]`}
-            onClick={(e: any) => {
-              if (typeof document !== "undefined") {
-              }
-              const hear = document?.querySelectorAll(".header_home");
-              Array.from(hear).map((h: any) => {
-                h.style.color = "#3a3b3b";
-              });
-              e.target.style.color = "#42aaea";
-            }}
           >
             Danh sách sản phẩm
           </Link>
           <Link
             href={`/guide/${firstCate.guide.replace(/\s+/g, "-")}`}
             className={`header_home ${
-              active.indexOf("guide") > 0 ? "text-[#42aaea]" : ""
-            } text-[#3a3b3b] text-sm sm:text-base mx-4 max-sm:my-1 w-max whitespace-pre-wrap font-medium cursor-pointer hover:text-[#42aaea]`}
-            onClick={(e: any) => {
-              if (typeof document !== "undefined") {
-              }
-              const hear = document?.querySelectorAll(".header_home");
-              Array.from(hear).map((h: any) => {
-                h.style.color = "#3a3b3b";
-              });
-              e.target.style.color = "#42aaea";
-            }}
+              active.indexOf("guide") > 0 ? "text-[#42aaea]" : "text-[#3a3b3b]"
+            }  text-sm sm:text-base mx-4 max-sm:my-1 w-max whitespace-pre-wrap font-medium cursor-pointer hover:text-[#42aaea]`}
           >
             Hưỡng dẫn sử dụng
           </Link>

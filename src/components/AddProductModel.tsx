@@ -190,14 +190,7 @@ const AddProductModel: React.FC<{
     "video",
     "align",
   ];
-  const fontList = [
-    "Mazda type",
-    "Times New Roman",
-    "Courier New",
-    "Verdana",
-    "CustomFont1",
-    "CustomFont2",
-  ];
+
   const modules = {
     toolbar: {
       container: [
