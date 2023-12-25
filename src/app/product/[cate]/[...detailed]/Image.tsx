@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Pagination } from "swiper/modules";
+import { IoArrowUndoCircleOutline } from "react-icons/io5";
 // Import Swiper styles
 import "swiper/css";
 import "swiper/css/pagination";
@@ -18,13 +19,26 @@ const Image: React.FC<{
   const [fullScreen, seFullScreen] = useState<boolean>(false);
   return (
     <>
-      <div className="w-full h-[350px] min-[600px]:w-[500px]  ">
-        <div className="w-full h-full bg-white absolute top-0 bg-[#00000000] left-0 z-10 hover:bg-#0000007a"></div>
+      <div className="w-full h-[350px] min-[600px]:w-[500px]  relative">
+        {fullScreen && (
+          <div
+            className="fixed top-2 right-3  z-[99]"
+            onClick={() => seFullScreen(false)}
+          >
+            <IoArrowUndoCircleOutline />
+          </div>
+        )}
+        <div
+          className="w-full h-full absolute top-0 bg-[#00000000] left-0 z-10 hover:bg-[#0000007a]"
+          onClick={() => seFullScreen(true)}
+        ></div>
         <img
           src={change?.img}
           alt={change?.alt}
-          className={`w-full h-full object-cover ${
-            fullScreen ? "fixed top-0 left-0" : ""
+          className={`w-full h-full object-cover  ${
+            fullScreen
+              ? "fixed top-0 left-0 object-contain bg-[#121212] z-[99]"
+              : ""
           }`}
         />
       </div>
@@ -43,7 +57,7 @@ const Image: React.FC<{
                 onClick={() => setChange({ img: f.image, alt: f.path })}
                 className="relative cursor-pointer"
               >
-                <div className="w-full h-full bg-white absolute top-0 bg-[#00000000] left-0 z-10 hover:bg-#0000007a"></div>
+                <div className="w-full h-full  absolute top-0 bg-[#00000000] left-0 z-10 hover:bg-[#0000007a]"></div>
                 <img
                   src={f.image}
                   alt={f.path}

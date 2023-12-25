@@ -1,17 +1,24 @@
+"use client";
 import http from "@/utils/http";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import RoutListing from "./Items/RoutListing";
-const getData = async () => {
-  try {
-    const resT = await http.get("CategoryType/GetAll");
-    const res = await http.get(`Category/GetAll/${resT.data[1]?.name}`);
-    return res.data;
-  } catch (error) {
-    console.log(error);
-  }
-};
-const RoutFull = async ({}) => {
-  const data: { categoryName: string; categoryId: number }[] = await getData();
+
+const RoutFull = () => {
+  const [data, setData] = useState<
+    { categoryName: string; categoryId: number }[]
+  >([]);
+  useEffect(() => {
+    const getData = async () => {
+      try {
+        const resT = await http.get("CategoryType/GetAll");
+        const res = await http.get(`Category/GetAll/${resT.data[1]?.name}`);
+        setData(res.data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    getData();
+  }, []);
   return (
     <RoutListing
       currentPath="Tin tức"
