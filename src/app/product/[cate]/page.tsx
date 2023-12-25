@@ -1,12 +1,9 @@
 "use client";
 import InputSearch from "@/components/Items/InputSearch";
 import React, { useEffect, useState } from "react";
-import styles from "../../styleHomePage.module.scss";
-import Link from "next/link";
 import http from "@/utils/http";
 import { BiSkipNext } from "react-icons/bi";
 import { MdSkipPrevious } from "react-icons/md";
-import { SiShopee } from "react-icons/si";
 import dynamic from "next/dynamic";
 const Product = dynamic(() => import("@/components/RenderingData/Product"), {
   loading: () => <p className="text-red">Loading...</p>,

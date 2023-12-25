@@ -19,10 +19,10 @@ const Image: React.FC<{
   const [fullScreen, seFullScreen] = useState<boolean>(false);
   return (
     <>
-      <div className="w-full h-[350px] min-[600px]:w-[500px]  relative">
+      <div className="w-full h-[350px] min-[600px]:w-[500px] cursor-pointer relative">
         {fullScreen && (
           <div
-            className="fixed top-2 right-3  z-[99]"
+            className="fixed top-2 right-3  z-[100] text-[30px] bg-white rounded-[50%] cursor-pointer p-1"
             onClick={() => seFullScreen(false)}
           >
             <IoArrowUndoCircleOutline />
@@ -35,10 +35,10 @@ const Image: React.FC<{
         <img
           src={change?.img}
           alt={change?.alt}
-          className={`w-full h-full object-cover  ${
+          className={`w-full h-full  ${
             fullScreen
               ? "fixed top-0 left-0 object-contain bg-[#121212] z-[99]"
-              : ""
+              : " object-cover"
           }`}
         />
       </div>
