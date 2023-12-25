@@ -6,7 +6,6 @@ import { FaPhone } from "react-icons/fa6";
 import http from "@/utils/http";
 import dynamic from "next/dynamic";
 import RoutFull from "@/components/RoutFull";
-const RoutListing = dynamic(() => import("@/components/Items/RoutListing"));
 
 export const metadata: Metadata = {
   title: "Tin tức",
