@@ -54,14 +54,7 @@ const page = async (props: { params: { detailed: string[] | string } }) => {
                   data.urlImage?.length > 1 ? "h-[470px] " : "h-[350px] "
                 } min-[600px]:w-[500px]`}
               >
-                <div className="w-full h-[350px] min-[600px]:w-[500px]  ">
-                  <img
-                    src={data.urlImage[0]?.image}
-                    alt={data.urlImage[0]?.path}
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-                {data.urlImage?.length > 1 && <Image data={data.urlImage} />}
+                <Image data={data.urlImage} />
               </div>
               <div
                 className={`mt-1 min-[1000px]:ml-3 ${styles.containerProductTag}`}
