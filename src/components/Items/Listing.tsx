@@ -59,7 +59,7 @@ const Listing: React.FC<{
                       <Tag
                         href={`/[slug]`}
                         as={`/${defaultR}/${r.categoryName
-                          .replace(/\s+/g, "-")
+                          ?.replace(/\s+/g, "-")
                           .replace(/&/g, "-and-")}`}
                         className={`w-full  text-sm md:text-base cursor-pointer  ${
                           choice === r.categoryName ? "text-[#0087ff]" : ""
@@ -141,7 +141,7 @@ const Listing: React.FC<{
                 <Tag
                   href={`/[slug]`}
                   as={`${r.categoryName
-                    .replace(/\s+/g, "-")
+                    ?.replace(/\s+/g, "-")
                     .replace(/&/g, "-and-")}`}
                   className={`w-full  text-sm md:text-base cursor-pointer hover:text-[#0087ff] ${
                     choice === r.categoryName ? "text-[#0087ff]" : ""

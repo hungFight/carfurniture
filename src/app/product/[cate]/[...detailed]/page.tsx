@@ -16,7 +16,7 @@ const getProduct = async (detailed: string[]) => {
         pageIndex: 1,
         pageSize: 1,
         search_CategoryName: "aaa",
-        search_Name: decodeURIComponent(detailed[0]).replace(/-/g, " "),
+        search_Name: decodeURIComponent(detailed[0])?.replace(/-/g, " "),
       });
 
       const resD = await http.get(`Product/GetByID/${res.data.data[0]?.id}`);
@@ -74,14 +74,14 @@ const page = async (props: { params: { detailed: string[] | string } }) => {
                 <div className="w-full mt-1 md:mt-2 flex  items-center border-b border-solid">
                   <p className="text-[13px] md:text-[14px] font-medium text-[crimson]">
                     {data.product.price
-                      .toLocaleString("en-US")
+                      ?.toLocaleString("en-US")
                       .replace(/,/g, ".")}
                     đ
                   </p>
                   {data.product.price_After && (
                     <p className="text-[10px] md:text-[11px] mt-[5px] ml-2 line-through">
                       {data.product.price_After
-                        .toLocaleString("en-US")
+                        ?.toLocaleString("en-US")
                         .replace(/,/g, ".")}
                       đ
                     </p>

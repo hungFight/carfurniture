@@ -32,7 +32,7 @@ const page = (props: { params: { cate: string } }) => {
   >();
 
   const getProduct = async (cate: string, index = 1, name?: string) => {
-    if (decodeURIComponent(cate).replace(/-/g, " ") === "Đã xem") {
+    if (decodeURIComponent(cate)?.replace(/-/g, " ") === "Đã xem") {
       if (typeof localStorage !== "undefined") {
         const hasSeen: number[] =
           JSON.parse(localStorage.getItem("product") ?? JSON.stringify([])) ??
@@ -107,13 +107,13 @@ const page = (props: { params: { cate: string } }) => {
   };
   const handleAdd = () => {
     getProduct(
-      decodeURIComponent(props.params.cate).replace(/-/g, " "),
+      decodeURIComponent(props.params.cate)?.replace(/-/g, " "),
       1,
       search
     );
   };
   useEffect(() => {
-    getProduct(decodeURIComponent(props.params.cate).replace(/-/g, " "));
+    getProduct(decodeURIComponent(props.params.cate)?.replace(/-/g, " "));
   }, []);
   let managerIndex = false;
   let isIndex = false;
@@ -123,7 +123,7 @@ const page = (props: { params: { cate: string } }) => {
         {decodeURIComponent(props.params.cate) !== "Đã xem" && (
           <div className="w-full mb-4">
             <InputSearch
-              placeholder={decodeURIComponent(props.params.cate).replace(
+              placeholder={decodeURIComponent(props.params.cate)?.replace(
                 /-/g,
                 " "
               )}

@@ -54,14 +54,14 @@ const page = (props: { params: { cate: string } }) => {
   };
 
   useEffect(() => {
-    getNews(decodeURIComponent(props.params.cate).replace(/-/g, " "));
+    getNews(decodeURIComponent(props.params.cate)?.replace(/-/g, " "));
   }, []);
   const handleSearch = (e: any) => {
     setSearch(e.target.value);
   };
   const handleClick = () => {
     getNews(
-      decodeURIComponent(props.params.cate).replace(/-/g, " "),
+      decodeURIComponent(props.params.cate)?.replace(/-/g, " "),
       1,
       search
     );
@@ -73,7 +73,10 @@ const page = (props: { params: { cate: string } }) => {
     <div className="w-full md:w-[60%] p-3">
       <div className="w-full mb-4">
         <InputSearch
-          placeholder={decodeURIComponent(props.params.cate).replace(/-/g, " ")}
+          placeholder={decodeURIComponent(props.params.cate)?.replace(
+            /-/g,
+            " "
+          )}
           onChange={handleSearch}
           onClick={handleClick}
           loading={loadingSearch}

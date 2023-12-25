@@ -136,7 +136,7 @@ const page = (props: { params: { cate: string } }) => {
               key={d.id}
               href={`/[slug]`}
               as={`${props.params.cate
-                .replace(/\s+/g, "-")
+                ?.replace(/\s+/g, "-")
                 .replace(/&/g, "-and-")}/${d.name
                 .replace(/\s+/g, "-")
                 .replace(/&/g, "-and-")}/${d.id}`}

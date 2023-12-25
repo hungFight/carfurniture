@@ -261,7 +261,7 @@ export default function Home() {
                         <Link
                           href="/[slug]"
                           as={`product/${caseChose.product?.categoryName
-                            .replace(/\s+/g, "-")
+                            ?.replace(/\s+/g, "-")
                             .replace(/&/g, "-and-")}/${r.name
                             .replace(/\s+/g, "-")
                             .replace(/&/g, "-and-")}/${r.id}`}
@@ -348,7 +348,7 @@ export default function Home() {
                   {dataNews.map((n) => (
                     <Link
                       href={`news/${caseChose.news?.categoryName
-                        .replace(/\s+/g, "-")
+                        ?.replace(/\s+/g, "-")
                         .replace(/&/g, "-and-")}/${n.name
                         .replace(/\s+/g, "-")
                         .replace(/&/g, "-and-")}/${n.id}`}
@@ -396,7 +396,7 @@ export default function Home() {
                   {dataGuid.map((n) => (
                     <Link
                       href={`guide/${caseChose.product?.categoryName
-                        .replace(/\s+/g, "-")
+                        ?.replace(/\s+/g, "-")
                         .replace(/&/g, "-and-")}/${n.name
                         .replace(/\s+/g, "-")
                         .replace(/&/g, "-and-")}/${n.id}`}

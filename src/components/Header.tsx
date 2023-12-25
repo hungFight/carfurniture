@@ -32,7 +32,7 @@ const Header = () => {
     setActive(pathname);
     if (!token || !refreshToken) setAuth(true);
     if (typeof document !== "undefined") {
-      const hear = document?.querySelectorAll(".header_home");
+      const hear = document.querySelectorAll(".header_home");
 
       Array.from(hear).map((h) => {
         h.addEventListener("click", (e: any) => {
@@ -103,7 +103,7 @@ const Header = () => {
               </Link>
               <Link
                 href={`/news/${firstCate.news
-                  .replace(/\s+/g, "-")
+                  ?.replace(/\s+/g, "-")
                   .replace(/&/g, "-and-")}`}
                 className={`header_home w-full  ${
                   active.indexOf("news") > 0
@@ -115,7 +115,7 @@ const Header = () => {
               </Link>
               <Link
                 href={`/product/${firstCate.product
-                  .replace(/\s+/g, "-")
+                  ?.replace(/\s+/g, "-")
                   .replace(/&/g, "-and-")}`}
                 className={`header_home w-full  ${
                   active.indexOf("product") > 0
@@ -127,7 +127,7 @@ const Header = () => {
               </Link>
               <Link
                 href={`/guide/${firstCate.guide
-                  .replace(/\s+/g, "-")
+                  ?.replace(/\s+/g, "-")
                   .replace(/&/g, "-and-")}`}
                 className={`header_home w-full  ${
                   active.indexOf("guides") > 0
@@ -211,7 +211,7 @@ const Header = () => {
             Trang chủ
           </Link>
           <Link
-            href={`/news/${firstCate.news.replace(/\s+/g, "-")}`}
+            href={`/news/${firstCate.news?.replace(/\s+/g, "-")}`}
             className={`header_home  ${
               active.indexOf("news") > 0 ? "text-[#42aaea]" : "text-[#3a3b3b]"
             } text-sm sm:text-base mx-4 max-sm:my-1 w-max whitespace-pre-wrap font-medium cursor-pointer hover:text-[#42aaea]`}
@@ -219,7 +219,7 @@ const Header = () => {
             Tin tức
           </Link>
           <Link
-            href={`/product/${firstCate.product.replace(/\s+/g, "-")}`}
+            href={`/product/${firstCate.product?.replace(/\s+/g, "-")}`}
             className={`header_home  ${
               active.indexOf("product") > 0
                 ? "text-[#42aaea]"
@@ -229,7 +229,7 @@ const Header = () => {
             Danh sách sản phẩm
           </Link>
           <Link
-            href={`/guide/${firstCate.guide.replace(/\s+/g, "-")}`}
+            href={`/guide/${firstCate.guide?.replace(/\s+/g, "-")}`}
             className={`header_home ${
               active.indexOf("guide") > 0 ? "text-[#42aaea]" : "text-[#3a3b3b]"
             }  text-sm sm:text-base mx-4 max-sm:my-1 w-max whitespace-pre-wrap font-medium cursor-pointer hover:text-[#42aaea]`}

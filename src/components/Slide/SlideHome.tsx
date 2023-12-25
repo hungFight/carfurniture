@@ -98,7 +98,7 @@ export default function SlideHome() {
           index !== 0 ? (
             <Link
               href={`/product/${process.env.DEFAULT_PRODUCT}/${text
-                .replace(/\s+/g, "-")
+                ?.replace(/\s+/g, "-")
                 .replace(/&/g, "-and-")}`}
               key={index + text}
               className={`${styles.animationSlideText} flex text-[10px] items-center  w-max md:text-sm  relative top-[-10px] ml-2 mb-1 bg-[aliceblue] xl:bg-inherit  px-[8px] py-[2px] rounded-[5px] `}
@@ -106,7 +106,7 @@ export default function SlideHome() {
               <div className="flex items-center text-[green] mr-1">
                 <FaArrowAltCircleRight />
               </div>
-              <p className="hover:text-[#0065bd]">{text.replace(/-/g, " ")}</p>
+              <p className="hover:text-[#0065bd]">{text?.replace(/-/g, " ")}</p>
             </Link>
           ) : (
             <h3

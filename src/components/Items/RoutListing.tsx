@@ -72,7 +72,7 @@ const RoutListing: React.FC<{
         setRouts((pre) => pre.filter((r, index) => index !== 1));
       if (
         decodeURIComponent(pathname)
-          .replace(/-/g, " ")
+          ?.replace(/-/g, " ")
           .split(routs[1] ?? "")[1]
       ) {
         if (pathname.split(`/`)[2]) {
@@ -80,7 +80,7 @@ const RoutListing: React.FC<{
             /-/g,
             " "
           );
-          routs[2] = decodeURIComponent(pathname.split(`/`)[3]).replace(
+          routs[2] = decodeURIComponent(pathname.split(`/`)[3])?.replace(
             /-/g,
             " "
           );

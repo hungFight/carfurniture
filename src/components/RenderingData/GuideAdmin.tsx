@@ -86,7 +86,7 @@ const GuideAdmin: React.FC<{
     <Link
       href="/[slug]"
       as={`guide/${rout.replace(/\s+/g, "-").replace(/&/g, "-and-")}/${g.name
-        .replace(/\s+/g, "-")
+        ?.replace(/\s+/g, "-")
         .replace(/&/g, "-and-")}/${g.id}`}
       className="w-full flex flex-wrap md:flex-nowrap  mb-4 relative"
       key={g.id}

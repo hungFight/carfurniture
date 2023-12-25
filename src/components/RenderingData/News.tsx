@@ -21,7 +21,7 @@ const News: React.FC<{
     <Link
       key={n.id}
       href={`/[slug]`}
-      as={`${cate.replace(/\s+/g, "-").replace(/&/g, "-and-")}/${n.name
+      as={`${cate?.replace(/\s+/g, "-").replace(/&/g, "-and-")}/${n.name
         .replace(/\s+/g, "-")
         .replace(/&/g, "-and-")}/${n.id}`}
       className="w-full flex flex-wrap min-[420px]:flex-nowrap mb-6"
