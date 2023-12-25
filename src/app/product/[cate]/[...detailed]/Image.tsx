@@ -15,13 +15,17 @@ const Image: React.FC<{
     img: data[0]?.image,
     alt: data[0]?.path,
   });
+  const [fullScreen, seFullScreen] = useState<boolean>(false);
   return (
     <>
       <div className="w-full h-[350px] min-[600px]:w-[500px]  ">
+        <div className="w-full h-full bg-white absolute top-0 bg-[#00000000] left-0 z-10 hover:bg-#0000007a"></div>
         <img
           src={change?.img}
           alt={change?.alt}
-          className="w-full h-full object-cover"
+          className={`w-full h-full object-cover ${
+            fullScreen ? "fixed top-0 left-0" : ""
+          }`}
         />
       </div>
       {data.length > 1 && (
@@ -37,7 +41,9 @@ const Image: React.FC<{
               <SwiperSlide
                 key={f.path}
                 onClick={() => setChange({ img: f.image, alt: f.path })}
+                className="relative cursor-pointer"
               >
+                <div className="w-full h-full bg-white absolute top-0 bg-[#00000000] left-0 z-10 hover:bg-#0000007a"></div>
                 <img
                   src={f.image}
                   alt={f.path}
