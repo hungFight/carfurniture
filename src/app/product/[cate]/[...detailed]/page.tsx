@@ -1,4 +1,5 @@
-import React from "react";
+"use client";
+import React, { useEffect, useState } from "react";
 import http from "@/utils/http";
 import { CiPhone } from "react-icons/ci";
 import { PiMessengerLogoLight } from "react-icons/pi";
@@ -6,27 +7,8 @@ import { SiShopee } from "react-icons/si";
 import styles from "@/components/styleComponent.module.scss";
 import Image from "./Image";
 
-const getProduct = async (detailed: string[]) => {
-  if (detailed.length > 1) {
-    const res = await http.get(`Product/GetByID/${detailed[1]}`);
-    return res.data;
-  } else {
-    if (detailed.length) {
-      const res = await http.post("Product/GetPaginationProduct", {
-        pageIndex: 1,
-        pageSize: 1,
-        search_CategoryName: "aaa",
-        search_Name: decodeURIComponent(detailed[0])?.replace(/-/g, " "),
-      });
-
-      const resD = await http.get(`Product/GetByID/${res.data.data[0]?.id}`);
-      return resD.data;
-    }
-  }
-  return undefined;
-};
-const page = async (props: { params: { detailed: string[] | string } }) => {
-  const data:
+const page = (props: { params: { detailed: string[] | string } }) => {
+  const [data, setData] = useState<
     | {
         product: {
           name: string;
@@ -39,10 +21,16 @@ const page = async (props: { params: { detailed: string[] | string } }) => {
         urlImage: { image: string; path: string }[];
         info_in_AboutUs: [{ url_Mess: string; phone: string }];
       }
-    | undefined =
-    typeof props.params.detailed === "string"
-      ? undefined
-      : await getProduct(props.params.detailed);
+    | undefined
+  >();
+  useEffect(() => {
+    const getProduct = async (detailed: string) => {
+      const res = await http.get(`Product/GetByID/${detailed}`);
+      setData(res.data);
+    };
+    getProduct(props.params.detailed[1]);
+  }, []);
+
   return (
     <div className="w-full min-[1000px]:flex justify-center">
       {data && (

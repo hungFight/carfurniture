@@ -1,13 +1,8 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import { FaPhone } from "react-icons/fa6";
-import Link from "next/link";
 import dynamic from "next/dynamic";
 import { CookiesProvider } from "next-client-cookies/server";
-import Head from "next/head";
-import { Images } from "@/asset/image";
-import Image from "next/image";
 const Header = dynamic(() => import("@/components/Header"));
 const Footer = dynamic(() => import("@/components/Footer"));
 const inter = Inter({ subsets: ["latin"] });
