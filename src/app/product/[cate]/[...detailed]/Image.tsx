@@ -37,7 +37,9 @@ const Image: React.FC<{
               <SwiperSlide
                 key={f.path}
                 onClick={() => setChange({ img: f.image, alt: f.path })}
+                className="relative cursor-pointer"
               >
+                <div className="w-full h-full bg-white absolute top-0 left-0"></div>
                 <img
                   src={f.image}
                   alt={f.path}
