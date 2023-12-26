@@ -16,6 +16,7 @@ import { BiSkipNext } from "react-icons/bi";
 import { MdSkipPrevious } from "react-icons/md";
 import { useCookies } from "next-client-cookies";
 import { useRouter } from "next/navigation";
+import Software from "@/components/Software";
 const GuideAdmin = dynamic(
   () => import("@/components/RenderingData/GuideAdmin")
 );
@@ -122,6 +123,7 @@ const page = () => {
   const [login, setLogin] = useState<boolean>(false);
   const [addCate, setAddCate] = useState<boolean>(false);
   const [aboutUs, setAboutUs] = useState<boolean>(false);
+  const [sysTem, setSysTem] = useState<boolean>(false);
   const [categoryType, setCategory] = useState<number>(product ?? 0); // Directory
   const [cate, setCate] = useState<{
     categoryId: number;
@@ -227,16 +229,12 @@ const page = () => {
           if (categoryType === product) {
             const accs = cookies.get("token");
             if (accs) {
-              const res = await axio.post(
-                "Product/GetPaginationProduct",
-                {
-                  pageIndex: index,
-                  pageSize: 4,
-                  search_CategoryName: name,
-                  search_Name: search,
-                },
-                { headers: { Authorization: "Bearer " + acc } }
-              );
+              const res = await axio.post("Product/GetPaginationProduct", {
+                pageIndex: index,
+                pageSize: 4,
+                search_CategoryName: name,
+                search_Name: search,
+              });
               setPageIndex(res.data.totalPageIndex);
               setDataProducts(res.data.data);
             }
@@ -246,16 +244,12 @@ const page = () => {
           if (categoryType === news) {
             const accsb = cookies.get("token");
             if (accsb) {
-              const res = await axio.post(
-                "Blog/GetPaginationProduct",
-                {
-                  pageIndex: index,
-                  pageSize: 6,
-                  search_Name: search,
-                  search_CategoryName: name,
-                },
-                { headers: { Authorization: "Bearer " + acc } }
-              );
+              const res = await axio.post("Blog/GetPaginationProduct", {
+                pageIndex: index,
+                pageSize: 6,
+                search_Name: search,
+                search_CategoryName: name,
+              });
               setPageIndex(res.data.totalPageIndex);
               setDataNews(res.data.data);
             }
@@ -265,16 +259,12 @@ const page = () => {
           if (categoryType === guide) {
             const accsbc = cookies.get("token");
             if (accsbc) {
-              const res = await axio.post(
-                "Guide/GetPaginationProduct",
-                {
-                  pageIndex: index,
-                  pageSize: 6,
-                  search_Name: search,
-                  search_CategoryName: name,
-                },
-                { headers: { Authorization: "Bearer " + acc } }
-              );
+              const res = await axio.post("Guide/GetPaginationProduct", {
+                pageIndex: index,
+                pageSize: 6,
+                search_Name: search,
+                search_CategoryName: name,
+              });
               setPageIndex(res.data.totalPageIndex);
               setDataGuid(res.data.data);
             }
@@ -338,14 +328,10 @@ const page = () => {
         });
 
         if (nameCate && acces) {
-          const res = await axio.post<typeof dataCate>(
-            "Category/Create",
-            {
-              Name: nameCate,
-              categoryTypeId: categoryType,
-            },
-            { headers: { Authorization: "Bearer " + acces } }
-          );
+          const res = await axio.post<typeof dataCate>("Category/Create", {
+            Name: nameCate,
+            categoryTypeId: categoryType,
+          });
           setAddCate(false);
           setNameCate("");
           if (res.data) fetS();
@@ -1012,12 +998,25 @@ const page = () => {
           onClick={() => setAboutUs(false)}
           setLogin={setLogin}
         />
+      )}{" "}
+      {sysTem && (
+        <Software
+          title="About us"
+          onClick={() => setSysTem(false)}
+          setLogin={setLogin}
+        />
       )}
       <div
         className="w-fit fixed bg-[#0099e6] bottom-[88px] z-10 right-5 rounded-[5px] cursor-pointer font-medium px-3 py-1 text-white"
         onClick={() => setAboutUs(true)}
       >
         About us
+      </div>{" "}
+      <div
+        className="w-fit fixed bg-[#0099e6] bottom-[120px] z-10 right-5 rounded-[5px] cursor-pointer font-medium px-3 py-1 text-white"
+        onClick={() => setSysTem(true)}
+      >
+        Phần mềm
       </div>
       {(productUp || newsUp) && pre && (
         <PreviousAdmin setPre={setPre} product={productUp} news={newsUp} />

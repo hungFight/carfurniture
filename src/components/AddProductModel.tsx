@@ -14,6 +14,7 @@ import "react-quill/dist/quill.snow.css";
 import { IoCloseCircleOutline } from "react-icons/io5";
 import { useEffect, useRef, useState } from "react";
 import styles from "./styleComponent.module.scss";
+import { IoIosCloseCircle } from "react-icons/io";
 import { PiMessengerLogoLight } from "react-icons/pi";
 import { CiPhone } from "react-icons/ci";
 import { SiShopee } from "react-icons/si";
@@ -98,7 +99,7 @@ const AddProductModel: React.FC<{
     UrlShoppe: string;
     categoryId: number;
     categoryName: string;
-    FormCollection: any;
+    FormCollection?: { id: number; file: any }[];
   }>({
     Name: upCate?.Name ?? "",
     Price: upCate?.Price ?? "",
@@ -107,25 +108,52 @@ const AddProductModel: React.FC<{
     UrlShoppe: upCate?.UrlShoppe ?? "",
     categoryId: upCate?.categoryId ?? cateId,
     categoryName: upCate?.categoryName ?? cateName,
-    FormCollection: null,
   });
-  const [image, setImage] = useState<string[]>(
-    upCate?.urlImage.map((f) => f.image) ?? []
+  const [image, setImage] = useState<
+    { id: number; file: string; path?: string }[]
+  >(
+    upCate?.urlImage.map((f, index) => ({
+      id: index,
+      file: f.image,
+      path: f.path,
+    })) ?? []
   );
+  const [delPath, setDelPath] = useState<string[]>([]);
   const tokeRef = useRef<string>("");
 
   const handleUploadFIle = (e: any) => {
     const files = e.target.files;
-    const fils = [];
+    const fils: any = [];
     for (let i = 0; i < files.length; i++) {
-      fils.push(files[i]);
+      fils.push({ id: i, file: files[i] });
     }
-    if (fils.length) {
-      checkRef.current = true;
-      setImage(fils.map((f: any) => URL.createObjectURL(f)));
-      setProduct({ ...product, FormCollection: fils });
+    if (!upCate) {
+      if (fils.length) {
+        checkRef.current = true;
+        setImage(
+          fils.map((f: any) => ({
+            id: f.id,
+            file: URL.createObjectURL(f.file),
+          }))
+        );
+        setProduct({ ...product, FormCollection: fils });
+      }
+    } else {
+      if (fils.length) {
+        checkRef.current = true;
+        const dd = fils.map((f: any) => ({
+          id: image[image.length - 1].id + f.id + 1,
+          file: URL.createObjectURL(f.file),
+        }));
+        setImage((pre) => [...pre, ...dd]);
+        console.log(image, fils, "dd", dd);
+
+        setProduct({ ...product, FormCollection: fils });
+      }
     }
   };
+  console.log(image, "image");
+
   const handleSubmit = async (e: any) => {
     e.preventDefault();
     try {
@@ -144,18 +172,18 @@ const AddProductModel: React.FC<{
         formData.append("categoryId", String(product.categoryId));
         formData.append("categoryName", cateName);
         product.FormCollection?.map((f: any) => {
-          formData.append("FormCollection", f);
+          formData.append("FormCollection", f.file);
         });
         if (!upCate) {
           formData.append("Price_After", product.Discount);
           const res = await axio.post("Product/Create", formData);
         } else {
+          console.log(checkRef, "delPath", delPath);
+
           formData.append("Price_After", product.Discount);
-          if (checkRef.current) {
-            upCate.urlImage.map((f) => {
-              formData.append("Paths", f.path);
-            });
-          }
+          delPath.map((f, index) => {
+            formData.append("Paths", f);
+          });
           formData.append("Id", String(upCate.Id));
           const res = await axio.put("Product/Update", formData);
           checkRef.current = false;
@@ -273,11 +301,44 @@ const AddProductModel: React.FC<{
             {image && (
               <div className="w-full  flex flex-wrap">
                 {image.map((url) => (
-                  <img
-                    src={url}
-                    key={url}
-                    className="w-[150px] h-[150px] mr-2 mt-2"
-                  />
+                  <div key={url.id} className="relative">
+                    <div
+                      className="absolute top-[10px] right-2 bg-white rounded-[50%] z-10 text-[23px] p-[3px] cursor-pointer"
+                      onClick={() => {
+                        console.log(url);
+
+                        product.FormCollection?.filter((f) => f.id !== url.id);
+                        setProduct((pre) => {
+                          pre.FormCollection = pre.FormCollection?.filter(
+                            (f) => f.id !== url.id
+                          );
+                          return pre;
+                        });
+                        setImage((pre) => pre.filter((f) => f.id !== url.id));
+                        if (upCate && url.path) {
+                          setDelPath((pre) => {
+                            if (url.path) {
+                              return [...pre, url.path];
+                            }
+                            return pre;
+                          });
+                          setUpCate((pre) => {
+                            if (pre && pre?.urlImage)
+                              pre.urlImage = pre.urlImage.filter(
+                                (f, index) => index !== url.id
+                              );
+                            return pre;
+                          });
+                        }
+                      }}
+                    >
+                      <IoIosCloseCircle />
+                    </div>
+                    <img
+                      src={url.file}
+                      className="w-[150px] h-[150px] mr-2 mt-2"
+                    />
+                  </div>
                 ))}
               </div>
             )}
@@ -374,8 +435,8 @@ const AddProductModel: React.FC<{
                 >
                   <div className="w-full h-[350px] min-[600px]:w-[500px]  ">
                     <img
-                      src={image[0]}
-                      alt={image[0]}
+                      src={image[0].file}
+                      alt={image[0].file}
                       className="w-full h-full object-cover"
                     />
                   </div>
@@ -389,10 +450,10 @@ const AddProductModel: React.FC<{
                         slidesPerView={5}
                       >
                         {image.map((f) => (
-                          <SwiperSlide key={f}>
+                          <SwiperSlide key={f.id}>
                             <img
-                              src={f}
-                              alt={f}
+                              src={f.file}
+                              alt={f.file}
                               className="w-full h-full object-cover"
                             />
                           </SwiperSlide>

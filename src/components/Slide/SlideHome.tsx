@@ -29,6 +29,7 @@ export default function SlideHome() {
         "Định vị chính xác vị trí của xe khi di chuyển, kiểm soát tốc độ và xác định đúng điểm dừng đỗ.",
         "Cảnh báo giới hạn tốc độ, cảnh báo khi xe đi vào những cung đường nguy hiểm.",
         "Có thể chạy offline bằng định vị vệ tinh, k phụ thuộc vào kết nối mạng",
+        "Click để xem chi tiết sản phẩm",
       ],
     },
     {
@@ -40,6 +41,7 @@ export default function SlideHome() {
         "Kích hoạt xem Video qua usb (mp4, Avi,...)",
         "Cài đặt hình nền, ảnh gia đình lên giao diện màn hình xe",
         "Kích hoạt sử dụng cảm ứng khi xe di chuyển",
+        "Click để xem chi tiết sản phẩm",
       ],
     },
     {
@@ -51,6 +53,7 @@ export default function SlideHome() {
         "Kết nối với mọi loại Android box đang có trên thị trường",
         "Sử dụng bản đồ google map và vietmap live dẫn đường thông minh",
         "Xem youtube với ios đã jailbreak hoặc android cài femata",
+        "Click để xem chi tiết sản phẩm",
       ],
     },
     {
@@ -62,6 +65,7 @@ export default function SlideHome() {
         "Tặng vietmap S2 dẫn đường có cảnh báo giao thông",
         "Tặng Youtube premium xem youtube ko quảng cáo",
         "Tùy chọn sử dụng wifi hoặc sim mạng tiện lợi",
+        "Click để xem chi tiết sản phẩm",
       ],
     },
     {
@@ -73,6 +77,7 @@ export default function SlideHome() {
         "Tích hợp hiển thị camera trước khi vào số D ",
         "ích hợp tự động hiển thị cam gương theo xinhan",
         "Chỉ hiện thị camera khi xe di chuyển với tốc độ dưới 15km/h",
+        "Click để xem chi tiết sản phẩm",
       ],
     },
   ];
@@ -92,22 +97,35 @@ export default function SlideHome() {
     const delay = 300; // Adjust the delay time (in milliseconds) between each text
     const texts: any = [];
 
-    textV[change.current].val.forEach((text, index) => {
+    textV[change.current].val.forEach((text, index, arr) => {
       const R = setTimeout(() => {
         texts.push(
           index !== 0 ? (
-            <Link
-              href={`/product/${process.env.DEFAULT_PRODUCT}/${text
-                ?.replace(/\s+/g, "-")
-                .replace(/&/g, "-and-")}`}
-              key={index + text}
-              className={`${styles.animationSlideText} flex text-[10px] items-center  w-max md:text-sm  relative top-[-10px] ml-2 mb-1 bg-[aliceblue] xl:bg-inherit  px-[8px] py-[2px] rounded-[5px] `}
-            >
-              <div className="flex items-center text-[green] mr-1">
-                <FaArrowAltCircleRight />
+            index + 1 === arr.length ? (
+              <Link
+                href={`/product/${process.env.DEFAULT_PRODUCT}/${arr[0]
+                  ?.replace(/\s+/g, "-")
+                  .replace(/&/g, "-and-")}`}
+                key={index + text}
+                className={`${styles.animationSlideText} flex text-[10px] text-white bg-[#00a5b6] items-center  w-max md:text-sm  relative top-[-10px] ml-2 mb-1  xl:bg-inherit  px-[10px] py-[3px] rounded-[5px] `}
+              >
+                <p className="hover:text-[#0065bd]">
+                  {text?.replace(/-/g, " ")}
+                </p>
+              </Link>
+            ) : (
+              <div
+                key={index + text}
+                className={`${styles.animationSlideText} flex text-[10px] items-center  w-max md:text-sm  relative top-[-10px] ml-2 mb-1 bg-[aliceblue] xl:bg-inherit  px-[8px] py-[2px] rounded-[5px] `}
+              >
+                <div className="flex items-center text-[green] mr-1">
+                  <FaArrowAltCircleRight />
+                </div>
+                <p className="hover:text-[#0065bd]">
+                  {text?.replace(/-/g, " ")}
+                </p>
               </div>
-              <p className="hover:text-[#0065bd]">{text?.replace(/-/g, " ")}</p>
-            </Link>
+            )
           ) : (
             <h3
               key={index + text}

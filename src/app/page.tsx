@@ -164,14 +164,15 @@ export default function Home() {
             </span>
           </div>
           <div className="w-full sm:w-[60%] h-fit sm:h-full flex items-center justify-center">
-            <div>
+            {/* <div>
               <div className="w-[150px] md:w-[190px] h-[40px] bg-[#d8ab6e] m-2 rounded-md"></div>
               <div className="w-[150px] md:w-[190px] h-[40px] bg-[crimson] m-2 rounded-md"></div>
             </div>
             <div>
               <div className="w-[150px] md:w-[190px] h-[40px] bg-[#4ce5ea] m-2 rounded-md"></div>
               <div className="w-[150px] md:w-[190px] h-[40px] bg-white m-2 rounded-md"></div>
-            </div>
+            </div> */}
+            <p>S</p>
           </div>
         </div>
         <div className=" w-full mb-[100px] flex justify-center">
