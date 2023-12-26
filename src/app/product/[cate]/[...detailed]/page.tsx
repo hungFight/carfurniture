@@ -22,6 +22,7 @@ const page = (props: { params: { detailed: string[]; cate: string } }) => {
         categoryName: string;
         urlImage: { image: string; path: string }[];
         info_in_AboutUs: [{ url_Mess: string; phone: string }];
+        avatar: { image: string; path: string }[];
       }
     | undefined
   >();
@@ -39,9 +40,11 @@ const page = (props: { params: { detailed: string[]; cate: string } }) => {
         });
 
         const resD = await http.get(`Product/GetByID/${res.data.data[0]?.id}`);
+        resD.data.urlImage = [...resD.data.avatar, ...resD.data.urlImage];
         setData(resD.data);
       } else {
         const res = await http.get(`Product/GetByID/${detailed[1]}`);
+        res.data.urlImage = [...res.data.avatar, ...res.data.urlImage];
         setData(res.data);
       }
     };

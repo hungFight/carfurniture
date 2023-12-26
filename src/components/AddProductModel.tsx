@@ -45,6 +45,7 @@ const AddProductModel: React.FC<{
     Discount: string;
     Description: string;
     UrlShoppe: string;
+    FormCollectionAvatar: any;
     categoryId: number;
     categoryName: string;
     path: string;
@@ -62,6 +63,7 @@ const AddProductModel: React.FC<{
           Price: string;
           Discount: string;
           Description: string;
+          FormCollectionAvatar: any;
           UrlShoppe: string;
           categoryId: number;
           categoryName: string;
@@ -98,6 +100,7 @@ const AddProductModel: React.FC<{
     Description: string;
     UrlShoppe: string;
     categoryId: number;
+    FormCollectionAvatar: any;
     categoryName: string;
     FormCollection?: { id: number; file: any }[];
   }>({
@@ -105,54 +108,104 @@ const AddProductModel: React.FC<{
     Price: upCate?.Price ?? "",
     Discount: upCate && upCate?.Discount !== "null" ? upCate.Discount : "",
     Description: "",
+    FormCollectionAvatar: null,
     UrlShoppe: upCate?.UrlShoppe ?? "",
     categoryId: upCate?.categoryId ?? cateId,
     categoryName: upCate?.categoryName ?? cateName,
   });
   const [image, setImage] = useState<
     { id: number; file: string; path?: string }[]
-  >(
-    upCate?.urlImage.map((f, index) => ({
-      id: index,
-      file: f.image,
-      path: f.path,
-    })) ?? []
-  );
-  const [delPath, setDelPath] = useState<{ id: number; path: string }[]>(
-    upCate?.urlImage.map((f, index) => ({
-      id: index,
-      path: f.path,
-    })) ?? []
-  );
-  const tokeRef = useRef<string>("");
+  >([]);
+  const [delPath, setDelPath] = useState<{ id: number; path: string }[]>([]);
+  const [imageDefault, setImageDefault] = useState<string>();
 
+  useEffect(() => {
+    const getById = async () => {
+      if (upCate && upCate.Id) {
+        const res = await http.get<{
+          product: {
+            name: string;
+            price: number;
+            price_After: number;
+            description: string;
+            urlShoppe: string;
+          };
+          categoryName: string;
+          urlImage: { image: string; path: string }[];
+          avatar: { image: string; path: string }[];
+          info_in_AboutUs: [{ url_Mess: string; phone: string }];
+        }>(`Product/GetByID/${upCate?.Id}`);
+        if (res.data) {
+          setProduct({
+            ...product,
+            Name: res.data.product.name,
+            Price: String(res.data.product.price),
+            Discount: String(res.data.product.price_After),
+            UrlShoppe: res.data.product.urlShoppe,
+            Description: res.data.product.description,
+          });
+          setImage(() =>
+            res.data.urlImage.map((f, index) => ({
+              id: index,
+              file: f.image,
+              path: f.path,
+            }))
+          );
+          setDelPath(() =>
+            res.data?.urlImage.map((f, index) => ({
+              id: index,
+              path: f.path,
+            }))
+          );
+          setImageDefault(res.data.avatar[0].image);
+        }
+      }
+    };
+    getById();
+  }, []);
+
+  const tokeRef = useRef<string>("");
+  const handleUploadFIleDefault = (e: any) => {
+    const files = e.target.files;
+    setImageDefault(URL.createObjectURL(files[0]));
+    setProduct({ ...product, FormCollectionAvatar: files[0] });
+  };
+  const re = useRef<number>(0);
   const handleUploadFIle = (e: any) => {
     const files = e.target.files;
     const fils: any = [];
     for (let i = 0; i < files.length; i++) {
-      fils.push({ id: i, file: files[i] });
+      fils.push({ id: re.current, file: files[i] });
+      re.current += 1;
     }
     if (!upCate) {
       if (fils.length) {
         checkRef.current = true;
-        setImage(
-          fils.map((f: any) => ({
-            id: f.id,
+        setImage([
+          ...image,
+          ...fils.map((f: any) => ({
+            id: image[image.length - 1]?.id
+              ? image[image.length - 1].id + f.id
+              : f.id,
             file: URL.createObjectURL(f.file),
-          }))
-        );
+          })),
+        ]);
         setProduct({ ...product, FormCollection: fils });
       }
     } else {
       if (fils.length) {
         checkRef.current = true;
         const dd = fils.map((f: any) => ({
-          id: image[image.length - 1].id + f.id + 1,
+          id: image[image.length - 1]?.id
+            ? image[image.length - 1].id + f.id + 1
+            : 0 + f.id + 1,
           file: URL.createObjectURL(f.file),
         }));
         console.log(image, fils, "dd", dd);
         const cc = fils.map((f: any) => ({
-          id: image[image.length - 1].id + f.id + 1,
+          id: image[image.length - 1]?.id
+            ? image[image.length - 1].id + f.id + 1
+            : 0 + f.id + 1,
           file: f.file,
         }));
         setImage((pre) => [...pre, ...dd]);
@@ -182,9 +235,13 @@ const AddProductModel: React.FC<{
         product.FormCollection?.map((f: any) => {
           formData.append("FormCollection", f.file);
         });
+
+        formData.append("FormCollectionAvatar", product.FormCollectionAvatar);
         if (!upCate) {
           formData.append("Price_After", product.Discount);
-          const res = await axio.post("Product/Create", formData);
+          if (product.FormCollectionAvatar) {
+            const res = await axio.post("Product/Create", formData);
+          }
         } else {
           console.log(checkRef, "delPath", delPath);
 
@@ -290,6 +347,32 @@ const AddProductModel: React.FC<{
         </h3>
         <div className="w-1/2 min-h-[85%]">
           {" "}
+          <div className="w-full my-2 flex items-center flex-wrap">
+            {" "}
+            <label
+              className="text-base cursor-pointer  w-fit px-5 py-1 rounded-[5px] shadow-[0_0_2px_#4a8cbf] border-[#4a8cbf] border-[1px]"
+              htmlFor="productFileDefault"
+            >
+              Tải ảnh mặc định
+            </label>
+            <input
+              required={upCate ? false : true}
+              className="outline-[#41af6b] mr-1 shadow-[0_0_2px_#4a8cbf] border-[#4a8cbf] border-[1px] p-1 pr-3 rounded-md"
+              id="productFileDefault"
+              type="file"
+              name="file0"
+              hidden
+              onChange={(e) => handleUploadFIleDefault(e)}
+            />
+            {imageDefault && (
+              <div className="w-full  flex flex-wrap">
+                <img
+                  src={imageDefault}
+                  className="w-[150px] h-[150px] mr-2 mt-2"
+                />
+              </div>
+            )}
+          </div>
           <div className="w-full my-2 flex items-center flex-wrap">
             <label
               className="text-base cursor-pointer  w-[127px] px-5 py-1 rounded-[5px] shadow-[0_0_2px_#4a8cbf] border-[#4a8cbf] border-[1px]"

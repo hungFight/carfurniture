@@ -124,10 +124,9 @@ const AddGuideModel: React.FC<{
           // update
           formData.append("Id", String(newsUp.id));
           formData.append("FormCollection", product.FormCollection);
-          if (checkRef.current)
-            if (newsUp.id !== null) {
-              const res = await axio.put("Guide/Update", formData);
-            }
+          if (newsUp.id !== null) {
+            const res = await axio.put("Guide/Update", formData);
+          }
         } else {
           if (cateName && cateId && product.Name && product.Content) {
             //add
