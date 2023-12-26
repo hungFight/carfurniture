@@ -28,17 +28,10 @@ const page = (props: { params: { detailed: string[] | string } }) => {
   }, []);
 
   return (
-    <div className="w-full min-[1000px]:flex justify-start">
+    <div className="w-full min-[1000px]:flex justify-center">
       <div className="w-full min-[1000px]:w-[1000px] relative mt-15 border-t p-5">
         {data && (
           <div>
-            <div className="w-fill min-[520px]:w-[500px] h-[260px] min-[520px]:h-[300px]">
-              <img
-                src={data?.urlImage[0]?.image}
-                alt={data?.urlImage[0]?.path}
-                className="w-full h-full object-cover"
-              />
-            </div>
             <div className="w-[90%] h-[90%]">
               <h3
                 className="text-base md:text-[17px] font-bold"

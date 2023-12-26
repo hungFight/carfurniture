@@ -7,7 +7,7 @@ import { SiShopee } from "react-icons/si";
 import styles from "@/components/styleComponent.module.scss";
 import Image from "./Image";
 
-const page = (props: { params: { detailed: string[] | string } }) => {
+const page = (props: { params: { detailed: string[] } }) => {
   const [data, setData] = useState<
     | {
         product: {
@@ -24,11 +24,23 @@ const page = (props: { params: { detailed: string[] | string } }) => {
     | undefined
   >();
   useEffect(() => {
-    const getProduct = async (detailed: string) => {
-      const res = await http.get(`Product/GetByID/${detailed}`);
-      setData(res.data);
+    const getProduct = async (detailed: string[]) => {
+      if (detailed.length === 1) {
+        const res = await http.post("Product/GetPaginationProduct", {
+          pageIndex: 1,
+          pageSize: 1,
+          search_CategoryName: "Mazda",
+          search_Name: decodeURIComponent(detailed[0]).replace(/-/g, " "),
+        });
+
+        const resD = await http.get(`Product/GetByID/${res.data.data[0]?.id}`);
+        setData(resD.data);
+      } else {
+        const res = await http.get(`Product/GetByID/${detailed}`);
+        setData(res.data);
+      }
     };
-    getProduct(props.params.detailed[1]);
+    getProduct(props.params.detailed);
   }, []);
 
   return (
