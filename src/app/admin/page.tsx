@@ -159,7 +159,7 @@ const page = () => {
       }
     } catch (error) {
       const err = error as AxiosError;
-      if (err.response?.status === 400) {
+      if (err.response?.status === 401) {
         setLogin(true);
       }
     }
@@ -190,7 +190,7 @@ const page = () => {
         }
       } catch (error) {
         const err = error as AxiosError;
-        if (err.response?.status === 400) {
+        if (err.response?.status === 401) {
           setLogin(true);
         }
       }
@@ -276,7 +276,7 @@ const page = () => {
       setLoadingSearch(false);
     } catch (error) {
       const err = error as AxiosError;
-      if (err.response?.status === 400) {
+      if (err.response?.status === 401) {
         setLogin(true);
       }
     }
@@ -339,7 +339,7 @@ const page = () => {
       }
     } catch (error) {
       const err = error as AxiosError;
-      if (err.response?.status === 400) {
+      if (err.response?.status === 401) {
         cookies.remove("token");
         cookies.remove("refreshToken");
         setLogin(true);
@@ -366,7 +366,7 @@ const page = () => {
       }
     } catch (error) {
       const err = error as AxiosError;
-      if (err.response?.status === 400) {
+      if (err.response?.status === 401) {
         setLogin(true);
       }
     }
@@ -409,7 +409,7 @@ const page = () => {
       }
     } catch (error) {
       const err = error as AxiosError;
-      if (err.response?.status === 400) {
+      if (err.response?.status === 401) {
         setLogin(true);
       }
     }

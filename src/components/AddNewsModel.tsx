@@ -107,10 +107,10 @@ const AddNewsModel: React.FC<{
 
           formData.append("FormCollection", news.FormCollection);
           if (checkRef.current)
-            formData.append("Paths", newsUp.urlImage[0]?.path);
-          if (newsUp.id !== null) {
-            const res = await axio.put("Blog/Update", formData);
-          }
+            if (newsUp.id !== null) {
+              // formData.append("Paths", newsUp.urlImage[0]?.path);
+              const res = await axio.put("Blog/Update", formData);
+            }
         } else {
           if (cateName && cateId && news.Name && news.Content) {
             //add
@@ -130,7 +130,7 @@ const AddNewsModel: React.FC<{
       }
     } catch (error) {
       const err = error as AxiosError;
-      if (err.response?.status === 400) {
+      if (err.response?.status === 401) {
         setLogin(true);
       }
     }

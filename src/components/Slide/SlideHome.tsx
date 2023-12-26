@@ -107,7 +107,7 @@ export default function SlideHome() {
                   ?.replace(/\s+/g, "-")
                   .replace(/&/g, "-and-")}`}
                 key={index + text}
-                className={`${styles.animationSlideText} flex text-[10px] text-white bg-[#00a5b6] items-center  w-max md:text-sm  relative top-[-10px] ml-2 mb-1  xl:bg-inherit  px-[10px] py-[3px] rounded-[5px] `}
+                className={`${styles.animationSlideText} flex text-[10px] text-white bg-[#00a5b6] items-center  w-max md:text-sm  relative top-[-10px] ml-2 mb-1   px-[10px] py-[3px] rounded-[5px] `}
               >
                 <p className="hover:text-[#0065bd]">
                   {text?.replace(/-/g, " ")}
@@ -116,7 +116,7 @@ export default function SlideHome() {
             ) : (
               <div
                 key={index + text}
-                className={`${styles.animationSlideText} flex text-[10px] items-center  w-max md:text-sm  relative top-[-10px] ml-2 mb-1 bg-[aliceblue] xl:bg-inherit  px-[8px] py-[2px] rounded-[5px] `}
+                className={`${styles.animationSlideText} flex text-[10px] items-center  w-max md:text-sm  relative top-[-10px] ml-2 mb-1 bg-[aliceblue]  px-[8px] py-[2px] rounded-[5px] `}
               >
                 <div className="flex items-center text-[green] mr-1">
                   <FaArrowAltCircleRight />
@@ -311,10 +311,10 @@ export default function SlideHome() {
         modules={[Autoplay, Pagination, Navigation]}
         className="mySwiper"
         navigation={true}
-        autoplay={{
-          delay: 5500,
-          disableOnInteraction: false,
-        }}
+        // autoplay={{
+        //   delay: 5500,
+        //   disableOnInteraction: false,
+        // }}
         onSlideChange={(e: any) =>
           setChange({ ...change, current: e.activeIndex })
         }
