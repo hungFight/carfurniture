@@ -150,10 +150,13 @@ const AddProductModel: React.FC<{
           id: image[image.length - 1].id + f.id + 1,
           file: URL.createObjectURL(f.file),
         }));
-        setImage((pre) => [...pre, ...dd]);
         console.log(image, fils, "dd", dd);
-
-        setProduct({ ...product, FormCollection: fils });
+        const cc = fils.map((f: any) => ({
+          id: image[image.length - 1].id + f.id + 1,
+          file: f.file,
+        }));
+        setImage((pre) => [...pre, ...dd]);
+        setProduct({ ...product, FormCollection: cc });
       }
     }
   };
@@ -200,7 +203,7 @@ const AddProductModel: React.FC<{
       }
     } catch (error) {
       const err = error as AxiosError;
-      if (err.response?.status === 400) {
+      if (err.response?.status === 401) {
         setLogin(true);
       }
     }
@@ -263,6 +266,7 @@ const AddProductModel: React.FC<{
     },
     // Add more modules as needed
   };
+  console.log(product.FormCollection, "product.FormCollection");
 
   return (
     <>
@@ -363,9 +367,14 @@ const AddProductModel: React.FC<{
               className="w-[350px] outline-[#41af6b] mr-1 shadow-[0_0_2px_#4a8cbf] border-[#4a8cbf] border-[1px] p-1 pr-3 rounded-md"
               id="productPrice"
               type="text"
-              onChange={(e) =>
-                setProduct({ ...product, Price: e.target.value })
-              }
+              onChange={(e) => {
+                if (/^[0-9]+$/.test(e.target.value)) {
+                  setProduct({
+                    ...product,
+                    Price: e.target.value,
+                  });
+                }
+              }}
               placeholder="Giá sản phẩm"
             />
           </div>{" "}
@@ -374,9 +383,11 @@ const AddProductModel: React.FC<{
               id="productDiscount"
               type="text"
               value={product.Discount}
-              onChange={(e) =>
-                setProduct({ ...product, Discount: e.target.value })
-              }
+              onChange={(e) => {
+                if (/^[0-9]+$/.test(e.target.value)) {
+                  setProduct({ ...product, Discount: e.target.value });
+                }
+              }}
               placeholder="Giá gốc sản phẩm"
               className="w-[350px] outline-[#41af6b] mr-1 shadow-[0_0_2px_#4a8cbf] border-[#4a8cbf] border-[1px] p-1 pr-3 rounded-md"
             />

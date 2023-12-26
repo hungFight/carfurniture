@@ -94,7 +94,7 @@ const FormAboutUs: React.FC<{
       }
     } catch (error) {
       const err = error as AxiosError;
-      if (err.response?.status === 400) {
+      if (err.response?.status === 401) {
         setLogin(true);
       }
     }

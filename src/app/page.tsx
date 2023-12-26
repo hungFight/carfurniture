@@ -183,6 +183,7 @@ export default function Home() {
                 >
                   <a
                     href={f.link}
+                    target="_blank"
                     className="w-fit  h-[40px] flex items-center p-[15px] "
                   >
                     <p>{f.name}</p>
@@ -190,7 +191,7 @@ export default function Home() {
                 </div>
               ))
             ) : (
-              <p>Hiện tại chưa có phần mềm nào</p>
+              <p className="text-white">Hiện tại chưa có phần mềm nào</p>
             )}
           </div>
         </div>
