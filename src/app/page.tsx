@@ -51,6 +51,13 @@ export default function Home() {
       urlImage: { image: string; path: string }[];
     }[]
   >([]);
+  const [dataSoft, setDataSoft] = useState<
+    {
+      id: number;
+      name: string;
+      link: string;
+    }[]
+  >([]);
   const [dataList, setDataList] = useState<{ id: number; name: string }[]>([]);
   const [caseChose, setCaseChose] = useState<{
     product: { categoryId: number; categoryName: string };
@@ -95,6 +102,8 @@ export default function Home() {
       search_CategoryName: caseChose.guide?.categoryName,
     });
     setDataGuid(resGuide.data.data);
+    const res = await http.get("Button/GetAll");
+    setDataSoft(res.data);
   };
   const fetSDataProduct = async (index: number = 1, name?: string) => {
     if (name) {
@@ -141,10 +150,12 @@ export default function Home() {
   const [additionalPage, setAdditionalPage] = useState<number>(1);
   let managerIndex = false;
   let isIndex = false;
+
   return (
     <>
       <div className="w-full  ">
         <SlideHome />
+
         <div className="w-full h-fit min-[600px]:h-40 bg-[#212322] flex flex-wrap items-center">
           <div
             style={{ fontFamily: '"Mazda robo",sans-serif' }}
@@ -163,16 +174,24 @@ export default function Home() {
               Liên tục cập nhật phần mềm mới
             </span>
           </div>
-          <div className="w-full sm:w-[60%] h-fit sm:h-full flex items-center justify-center">
-            {/* <div>
-              <div className="w-[150px] md:w-[190px] h-[40px] bg-[#d8ab6e] m-2 rounded-md"></div>
-              <div className="w-[150px] md:w-[190px] h-[40px] bg-[crimson] m-2 rounded-md"></div>
-            </div>
-            <div>
-              <div className="w-[150px] md:w-[190px] h-[40px] bg-[#4ce5ea] m-2 rounded-md"></div>
-              <div className="w-[150px] md:w-[190px] h-[40px] bg-white m-2 rounded-md"></div>
-            </div> */}
-            <p>S</p>
+          <div className="w-full sm:w-[60%] flex-wrap h-fit flex items-center justify-center">
+            {dataSoft.length > 0 ? (
+              dataSoft.map((f) => (
+                <div
+                  key={f.id}
+                  className="bg-[#0487b9] text-white hover:bg-[#257bc6] m-2 rounded-md"
+                >
+                  <a
+                    href={f.link}
+                    className="w-fit  h-[40px] flex items-center p-[15px] "
+                  >
+                    <p>{f.name}</p>
+                  </a>
+                </div>
+              ))
+            ) : (
+              <p>Hiện tại chưa có phần mềm nào</p>
+            )}
           </div>
         </div>
         <div className=" w-full mb-[100px] flex justify-center">

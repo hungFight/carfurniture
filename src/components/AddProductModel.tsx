@@ -118,7 +118,12 @@ const AddProductModel: React.FC<{
       path: f.path,
     })) ?? []
   );
-  const [delPath, setDelPath] = useState<string[]>([]);
+  const [delPath, setDelPath] = useState<{ id: number; path: string }[]>(
+    upCate?.urlImage.map((f, index) => ({
+      id: index,
+      path: f.path,
+    })) ?? []
+  );
   const tokeRef = useRef<string>("");
 
   const handleUploadFIle = (e: any) => {
@@ -182,7 +187,7 @@ const AddProductModel: React.FC<{
 
           formData.append("Price_After", product.Discount);
           delPath.map((f, index) => {
-            formData.append("Paths", f);
+            formData.append("Paths", f.path);
           });
           formData.append("Id", String(upCate.Id));
           const res = await axio.put("Product/Update", formData);
@@ -316,12 +321,9 @@ const AddProductModel: React.FC<{
                         });
                         setImage((pre) => pre.filter((f) => f.id !== url.id));
                         if (upCate && url.path) {
-                          setDelPath((pre) => {
-                            if (url.path) {
-                              return [...pre, url.path];
-                            }
-                            return pre;
-                          });
+                          setDelPath((pre) =>
+                            pre.filter((f) => f.id !== url.id && f.path)
+                          );
                           setUpCate((pre) => {
                             if (pre && pre?.urlImage)
                               pre.urlImage = pre.urlImage.filter(

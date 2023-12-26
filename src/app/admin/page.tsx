@@ -1001,7 +1001,7 @@ const page = () => {
       )}{" "}
       {sysTem && (
         <Software
-          title="About us"
+          title="Phần mềm"
           onClick={() => setSysTem(false)}
           setLogin={setLogin}
         />
@@ -1013,7 +1013,7 @@ const page = () => {
         About us
       </div>{" "}
       <div
-        className="w-fit fixed bg-[#0099e6] bottom-[120px] z-10 right-5 rounded-[5px] cursor-pointer font-medium px-3 py-1 text-white"
+        className="w-fit fixed bg-[#0099e6] bottom-[133px] z-10 right-5 rounded-[5px] cursor-pointer font-medium px-3 py-1 text-white"
         onClick={() => setSysTem(true)}
       >
         Phần mềm
