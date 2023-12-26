@@ -125,7 +125,6 @@ const AddGuideModel: React.FC<{
           formData.append("Id", String(newsUp.id));
           formData.append("FormCollection", product.FormCollection);
           if (checkRef.current)
-            formData.append("Paths", newsUp.urlImage[0]?.path);
           if (newsUp.id !== null) {
             const res = await axio.put("Guide/Update", formData);
           }
@@ -148,7 +147,7 @@ const AddGuideModel: React.FC<{
       }
     } catch (error) {
       const err = error as AxiosError;
-      if (err.response?.status === 400) {
+      if (err.response?.status === 401) {
         setLogin(true);
       }
     }

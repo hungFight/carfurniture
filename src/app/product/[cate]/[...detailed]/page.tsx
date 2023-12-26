@@ -36,7 +36,7 @@ const page = (props: { params: { detailed: string[] } }) => {
         const resD = await http.get(`Product/GetByID/${res.data.data[0]?.id}`);
         setData(resD.data);
       } else {
-        const res = await http.get(`Product/GetByID/${detailed}`);
+        const res = await http.get(`Product/GetByID/${detailed[1]}`);
         setData(res.data);
       }
     };

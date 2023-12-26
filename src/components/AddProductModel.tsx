@@ -200,7 +200,7 @@ const AddProductModel: React.FC<{
       }
     } catch (error) {
       const err = error as AxiosError;
-      if (err.response?.status === 400) {
+      if (err.response?.status === 401) {
         setLogin(true);
       }
     }
@@ -362,9 +362,13 @@ const AddProductModel: React.FC<{
               required
               className="w-[350px] outline-[#41af6b] mr-1 shadow-[0_0_2px_#4a8cbf] border-[#4a8cbf] border-[1px] p-1 pr-3 rounded-md"
               id="productPrice"
-              type="text"
+              type="number"
               onChange={(e) =>
-                setProduct({ ...product, Price: e.target.value })
+                {
+                  if (/^[0-9]+$/.test( e.target.value)) {
+                    setProduct({ ...product, Price: e.target.value })
+                  }
+                }
               }
               placeholder="Giá sản phẩm"
             />
@@ -372,10 +376,14 @@ const AddProductModel: React.FC<{
           <div className="w-full my-2 flex items-center">
             <input
               id="productDiscount"
-              type="text"
+              type="number"
+              required
               value={product.Discount}
-              onChange={(e) =>
-                setProduct({ ...product, Discount: e.target.value })
+              onChange={(e) =>{
+                if (/^[0-9]+$/.test( e.target.value)) {
+                  setProduct({ ...product, Discount: e.target.value })
+                }
+              }
               }
               placeholder="Giá gốc sản phẩm"
               className="w-[350px] outline-[#41af6b] mr-1 shadow-[0_0_2px_#4a8cbf] border-[#4a8cbf] border-[1px] p-1 pr-3 rounded-md"

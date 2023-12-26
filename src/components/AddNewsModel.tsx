@@ -107,7 +107,6 @@ const AddNewsModel: React.FC<{
 
           formData.append("FormCollection", news.FormCollection);
           if (checkRef.current)
-            formData.append("Paths", newsUp.urlImage[0]?.path);
           if (newsUp.id !== null) {
             const res = await axio.put("Blog/Update", formData);
           }
@@ -130,7 +129,7 @@ const AddNewsModel: React.FC<{
       }
     } catch (error) {
       const err = error as AxiosError;
-      if (err.response?.status === 400) {
+      if (err.response?.status === 401) {
         setLogin(true);
       }
     }
