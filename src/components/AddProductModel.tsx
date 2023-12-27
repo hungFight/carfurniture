@@ -190,7 +190,10 @@ const AddProductModel: React.FC<{
             file: URL.createObjectURL(f.file),
           })),
         ]);
-        setProduct({ ...product, FormCollection: fils });
+        setProduct({
+          ...product,
+          FormCollection: [...(product.FormCollection ?? []), ...fils],
+        });
       }
     } else {
       if (fils.length) {

@@ -57,8 +57,7 @@ const Listing: React.FC<{
                   <div key={r.categoryId} className="w-full relative mb-3">
                     {!(update === r.categoryId) ? (
                       <Tag
-                        href={`/[slug]`}
-                        as={`/${defaultR}/${r.categoryName
+                        href={`/${category}/${r.categoryName
                           ?.replace(/\s+/g, "-")
                           .replace(/&/g, "-and-")}`}
                         className={`w-full  text-sm md:text-base cursor-pointer  ${
@@ -139,8 +138,7 @@ const Listing: React.FC<{
             >
               {!(update === r.categoryId) ? (
                 <Tag
-                  href={`/[slug]`}
-                  as={`${r.categoryName
+                  href={`/${category}/${r.categoryName
                     ?.replace(/\s+/g, "-")
                     .replace(/&/g, "-and-")}`}
                   className={`w-full  text-sm md:text-base cursor-pointer hover:text-[#0087ff] ${

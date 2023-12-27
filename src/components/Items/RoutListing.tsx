@@ -34,6 +34,7 @@ const RoutListing: React.FC<{
         };
         categoryName: string;
         urlImage: { image: string; path: string }[];
+        avatar: { image: string; path: string }[];
         info_in_AboutUs: [{ url_Mess: string; phone: string }];
       }[]
   >([]);
@@ -148,8 +149,8 @@ const RoutListing: React.FC<{
                 <Link href="/[slug]" as={`${p.categoryName}/${p.product.id}`}>
                   <div className="w-full h-[200px] md:h-[230px]">
                     <img
-                      src={p.urlImage[0]?.image}
-                      alt={p.urlImage[0]?.path}
+                      src={p.avatar[0]?.image}
+                      alt={p.avatar[0]?.path}
                       className="w-full h-full object-cover"
                     />
                   </div>

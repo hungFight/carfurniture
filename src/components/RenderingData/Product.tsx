@@ -12,6 +12,10 @@ const Product: React.FC<{
     price_After: number;
     description: string;
     urlShoppe: string;
+    avatar: {
+      image: string;
+      path: string;
+    }[];
     urlImage: {
       image: string;
       path: string;
@@ -42,10 +46,10 @@ const Product: React.FC<{
       }}
     >
       <div className="w-full h-[200px] md:h-[230px]">
-        {p.urlImage && (
+        {p.avatar && (
           <img
-            src={p.urlImage[0]?.image}
-            alt={p.urlImage[0]?.path}
+            src={p.avatar[0]?.image}
+            alt={p.avatar[0]?.path}
             className="w-full h-full object-cover"
           />
         )}
