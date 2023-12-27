@@ -81,6 +81,7 @@ const page = () => {
     categoryName: string;
     path: string;
     FormCollection: any;
+    FormCollectionAvatar: any;
     urlImage: { image: string; path: string }[];
   }>();
 

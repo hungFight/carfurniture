@@ -138,7 +138,11 @@ const page = (props: { params: { cate: string } }) => {
             )}
         </div>
         {!loading ? (
-          data.map((n) => <News key={n.id} n={n} cate={props.params.cate} />)
+          data.length > 0 ? (
+            data.map((n) => <News key={n.id} n={n} cate={props.params.cate} />)
+          ) : (
+            <p>không có dữ liệu</p>
+          )
         ) : (
           <p>Loading...</p>
         )}

@@ -37,6 +37,7 @@ const ProductAdmin: React.FC<{
           categoryName: string;
           path: string;
           FormCollection: any;
+          FormCollectionAvatar: any;
           urlImage: {
             image: string;
             path: string;
@@ -50,6 +51,7 @@ const ProductAdmin: React.FC<{
         Id: number;
         Name: string;
         Price: string;
+        FormCollectionAvatar: any;
         Discount: string;
         Description: string;
         UrlShoppe: string;
@@ -109,6 +111,7 @@ const ProductAdmin: React.FC<{
             categoryId: cate.categoryId,
             categoryName: cate.categoryName,
             FormCollection: p.urlImage[0]?.image,
+            FormCollectionAvatar: null,
             path: p.urlImage[0]?.path,
             urlImage: p.urlImage,
             UrlShoppe: p.urlShoppe,
@@ -118,7 +121,7 @@ const ProductAdmin: React.FC<{
       >
         Update
       </div>
-      <div className="w-full h-[240px]">
+      <div className="w-full h-[180px]">
         <img
           src={p.urlImage[0]?.image}
           alt={p.urlImage[0]?.path}

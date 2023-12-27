@@ -106,11 +106,10 @@ const AddNewsModel: React.FC<{
           formData.append("Id", String(newsUp.id));
 
           formData.append("FormCollection", news.FormCollection);
-          if (checkRef.current)
-            if (newsUp.id !== null) {
-              // formData.append("Paths", newsUp.urlImage[0]?.path);
-              const res = await axio.put("Blog/Update", formData);
-            }
+          if (newsUp.id !== null) {
+            // formData.append("Paths", newsUp.urlImage[0]?.path);
+            const res = await axio.put("Blog/Update", formData);
+          }
         } else {
           if (cateName && cateId && news.Name && news.Content) {
             //add
