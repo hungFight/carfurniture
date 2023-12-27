@@ -102,18 +102,6 @@ const Header = () => {
                 Trang chủ
               </Link>
               <Link
-                href={`/news/${firstCate.news
-                  ?.replace(/\s+/g, "-")
-                  .replace(/&/g, "-and-")}`}
-                className={`header_home w-full  ${
-                  active.indexOf("news") > 0
-                    ? "text-[#42aaea]"
-                    : "text-[#3a3b3b]"
-                } text-sm sm:text-base mx-4 max-sm:my-1 whitespace-pre-wrap my-[2px] font-medium cursor-pointer hover:text-[#42aaea]`}
-              >
-                Tin tức
-              </Link>
-              <Link
                 href={`/product/${firstCate.product
                   ?.replace(/\s+/g, "-")
                   .replace(/&/g, "-and-")}`}
@@ -126,6 +114,19 @@ const Header = () => {
                 Danh sách sản phẩm
               </Link>
               <Link
+                href={`/news/${firstCate.news
+                  ?.replace(/\s+/g, "-")
+                  .replace(/&/g, "-and-")}`}
+                className={`header_home w-full  ${
+                  active.indexOf("news") > 0
+                    ? "text-[#42aaea]"
+                    : "text-[#3a3b3b]"
+                } text-sm sm:text-base mx-4 max-sm:my-1 whitespace-pre-wrap my-[2px] font-medium cursor-pointer hover:text-[#42aaea]`}
+              >
+                Tin tức
+              </Link>
+
+              <Link
                 href={`/guide/${firstCate.guide
                   ?.replace(/\s+/g, "-")
                   .replace(/&/g, "-and-")}`}
@@ -135,7 +136,7 @@ const Header = () => {
                     : "text-[#3a3b3b]"
                 }  text-sm sm:text-base mx-4 max-sm:my-1 my-[2px] whitespace-pre-wrap font-medium cursor-pointer hover:text-[#42aaea]`}
               >
-                Hưỡng dẫn sử dụng
+                Hướng dẫn
               </Link>
               <div
                 onClick={() => setOnTab(false)}
@@ -211,14 +212,6 @@ const Header = () => {
             Trang chủ
           </Link>
           <Link
-            href={`/news/${firstCate.news?.replace(/\s+/g, "-")}`}
-            className={`header_home  ${
-              active.indexOf("news") > 0 ? "text-[#42aaea]" : "text-[#3a3b3b]"
-            } text-sm sm:text-base mx-4 max-sm:my-1 w-max whitespace-pre-wrap font-medium cursor-pointer hover:text-[#42aaea]`}
-          >
-            Tin tức
-          </Link>
-          <Link
             href={`/product/${firstCate.product?.replace(/\s+/g, "-")}`}
             className={`header_home  ${
               active.indexOf("product") > 0
@@ -229,12 +222,21 @@ const Header = () => {
             Danh sách sản phẩm
           </Link>
           <Link
+            href={`/news/${firstCate.news?.replace(/\s+/g, "-")}`}
+            className={`header_home  ${
+              active.indexOf("news") > 0 ? "text-[#42aaea]" : "text-[#3a3b3b]"
+            } text-sm sm:text-base mx-4 max-sm:my-1 w-max whitespace-pre-wrap font-medium cursor-pointer hover:text-[#42aaea]`}
+          >
+            Tin tức
+          </Link>
+
+          <Link
             href={`/guide/${firstCate.guide?.replace(/\s+/g, "-")}`}
             className={`header_home ${
               active.indexOf("guide") > 0 ? "text-[#42aaea]" : "text-[#3a3b3b]"
             }  text-sm sm:text-base mx-4 max-sm:my-1 w-max whitespace-pre-wrap font-medium cursor-pointer hover:text-[#42aaea]`}
           >
-            Hưỡng dẫn sử dụng
+            Hướng dẫn
           </Link>
         </div>
 

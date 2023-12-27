@@ -36,6 +36,7 @@ export default function Home() {
       id: number;
       name: string;
       create_Date: string;
+      categoryName: string;
       content: string;
       urlImage: { image: string; path: string }[];
     }[]
@@ -48,6 +49,7 @@ export default function Home() {
       name: string;
       create_Date: string;
       content: string;
+      categoryName: string;
       urlImage: { image: string; path: string }[];
     }[]
   >([]);
@@ -93,18 +95,18 @@ export default function Home() {
     const resNews = await http.post("Blog/GetPaginationProduct", {
       pageIndex: 1,
       pageSize: 4,
-      search_CategoryName: caseChose.news?.categoryName,
     });
     setDataNews(resNews.data.data);
     const resGuide = await http.post("Guide/GetPaginationProduct", {
       pageIndex: 1,
       pageSize: 4,
-      search_CategoryName: caseChose.guide?.categoryName,
     });
     setDataGuid(resGuide.data.data);
     const res = await http.get("Button/GetAll");
     setDataSoft(res.data);
   };
+  const rrr = useRef<boolean>(false);
+  const rrrd = useRef<boolean>(false);
   const fetSDataProduct = async (index: number = 1, name?: string) => {
     if (name) {
       setLoading(true);
@@ -117,16 +119,27 @@ export default function Home() {
       setLoading(false);
     } else {
       setLoadingType(true);
-      const res = await http.post("Product/GetPaginationProduct", {
-        pageIndex: index,
-        pageSize: 8,
-        search_CategoryName: caseChose.product?.categoryName,
-      });
-      setPageIndex(res.data.totalPageIndex);
-      setDataProducts(res.data.data);
-      setLoadingType(false);
+      if (rrr.current && dataList[0].name !== caseChose.product.categoryName) {
+        const res = await http.post("Product/GetPaginationProduct", {
+          pageIndex: index,
+          pageSize: 8,
+          search_CategoryName: caseChose.product?.categoryName,
+        });
+        setPageIndex(res.data.totalPageIndex);
+        setDataProducts(res.data.data);
+        setLoadingType(false);
+      } else {
+        const res = await http.post("Product/GetPaginationProduct", {
+          pageIndex: index,
+          pageSize: 8,
+        });
+        setPageIndex(res.data.totalPageIndex);
+        setDataProducts(res.data.data);
+        setLoadingType(false);
+      }
     }
   };
+
   useEffect(() => {
     fetS();
   }, []);
@@ -137,7 +150,7 @@ export default function Home() {
     const cases = dataList
       .filter((r) => r.id === v)
       .map((r) => ({ categoryId: r.id, categoryName: r.name }))[0];
-
+    rrr.current = true;
     setCaseChose({ ...caseChose, product: cases });
   };
 
@@ -150,6 +163,7 @@ export default function Home() {
   const [additionalPage, setAdditionalPage] = useState<number>(1);
   let managerIndex = false;
   let isIndex = false;
+  console.log(dataProducts, "dataProducts");
 
   return (
     <>
@@ -368,7 +382,7 @@ export default function Home() {
                 <div className="flex flex-wrap justify-around">
                   {dataNews.map((n) => (
                     <Link
-                      href={`news/${caseChose.news?.categoryName
+                      href={`news/${n.categoryName
                         ?.replace(/\s+/g, "-")
                         .replace(/&/g, "-and-")}/${n.name
                         .replace(/\s+/g, "-")
@@ -416,7 +430,7 @@ export default function Home() {
                 <div className="flex flex-wrap justify-around">
                   {dataGuid.map((n) => (
                     <Link
-                      href={`guide/${caseChose.product?.categoryName
+                      href={`guide/${n.categoryName
                         ?.replace(/\s+/g, "-")
                         .replace(/&/g, "-and-")}/${n.name
                         .replace(/\s+/g, "-")

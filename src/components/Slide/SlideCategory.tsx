@@ -20,10 +20,13 @@ const SlideSwiper: React.FC<{
     <div
       className={`w-full flex rounded-[5px] px-1 py-2 relative ${styles.pagination}`}
     >
-      <div className="w-full bg-[aliceblue] ">
+      <div className="w-full relative px-[41px]  abc">
         <Swiper
           slidesPerView={3}
-          pagination={true}
+          navigation={true}
+          pagination={{
+            clickable: true,
+          }}
           breakpoints={{
             0: {
               slidesPerView: 3,
@@ -42,16 +45,16 @@ const SlideSwiper: React.FC<{
               spaceBetween: 40,
             },
           }}
-          modules={[Pagination]}
-          className={`${styles.mySwiper} `}
+          modules={[Pagination, Navigation]}
+          className={`${styles.mySwiper} bg-[aliceblue]`}
         >
           {loading ? (
             <p>Loading...</p>
           ) : data && data.length > 0 ? (
             data?.map((d) => (
-              <SwiperSlide key={d.id}>
+              <SwiperSlide key={d.id} className="w-fit">
                 <h3
-                  className={`text-xs   md:text-sm xl:text-base cursor-pointer ${
+                  className={`text-xs  w-max md:text-sm xl:text-base cursor-pointer hover:text-blue-500 ${
                     active === d.id ? "text-blue-500" : ""
                   }`}
                   onClick={() => onClick(d.id)}

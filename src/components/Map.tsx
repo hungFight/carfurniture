@@ -105,13 +105,16 @@ const Map = () => {
         </h3>
       </a>
       <a
-        href={data?.url_Mess}
+        href={"/" + data?.url_Mess}
         target="_blank"
         className={`fixed bottom-[50px] md:bottom-[78px] left-2 flex items-center cursor-pointer ${styles.hover}`}
       >
         <div className="w-[35px] h-[35px] md:w-[50px] md:h-[50px] text-[20px] md:text-[30px] rounded-full bg-[#1c8ff3] flex items-center justify-center z-10 text-white">
           <PiMessengerLogoLight />
         </div>
+        <h3 className="text-[13px] md:text-[15px]  bg-[#0099e6] rounded-[20px] font-semibold py-1 px-[11px] pl-[34px] relative right-[29px] text-white">
+          Mazdashop.vn
+        </h3>
       </a>
       {cc && (
         <Link
