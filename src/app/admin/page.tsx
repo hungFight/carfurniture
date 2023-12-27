@@ -236,7 +236,7 @@ const page = () => {
               if (accs) {
                 const res = await axio.post("Product/GetPaginationProduct", {
                   pageIndex: index,
-                  pageSize: 4,
+                  pageSize: 6,
                   search_Name: search,
                 });
                 setPageIndex(res.data.totalPageIndex);
@@ -247,7 +247,7 @@ const page = () => {
               if (accs) {
                 const res = await axio.post("Product/GetPaginationProduct", {
                   pageIndex: index,
-                  pageSize: 4,
+                  pageSize: 6,
                   search_CategoryName: name,
                   search_Name: search,
                 });

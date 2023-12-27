@@ -17,10 +17,6 @@ const RoutFullProduct = () => {
         categoryId: r.categoryId,
         categoryName: r.categoryName,
       }));
-      newData.push({
-        categoryId: 9999,
-        categoryName: "Đã xem",
-      });
       setData(newData);
     };
     getData();

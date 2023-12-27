@@ -49,10 +49,10 @@ const Product: React.FC<{
       }}
     >
       <div className="w-full h-[200px] md:h-[230px]">
-        {p.avatar && (
+        {p.urlImage && (
           <img
-            src={p.avatar[0]?.image}
-            alt={p.avatar[0]?.path}
+            src={p.urlImage[0]?.image}
+            alt={p.urlImage[0]?.path}
             className="w-full h-full object-cover"
           />
         )}

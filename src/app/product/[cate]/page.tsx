@@ -56,7 +56,7 @@ const page = (props: { params: { cate: string } }) => {
             setData([
               {
                 ...res1.data.product,
-                avatar: res1.data.avatar,
+                avatar: res1.data.urlImage,
                 urlImage: res1.data.urlImage,
                 categoryName: res1.data.categoryName,
               },
@@ -76,12 +76,30 @@ const page = (props: { params: { cate: string } }) => {
               urlImage: { image: string; path: string }[];
               info_in_AboutUs: [{ url_Mess: string; phone: string }];
             }>(`Product/GetByID/${hasSeen[0]}`);
+            setData([
+              {
+                ...res1.data.product,
+                urlImage: res1.data.avatar,
+                categoryName: res1.data.categoryName,
+                avatar: res1.data.avatar,
+              },
+            ]);
             const res2 = await http.get(`Product/GetByID/${hasSeen[1]}`);
 
             setPageIndex(0);
             setData([
-              { ...res1.data.product, avatar: res1.data.avatar },
-              { ...res2.data.product, avatar: res2.data.avatar },
+              {
+                ...res1.data.product,
+                urlImage: res1.data.avatar,
+                avatar: res1.data.avatar,
+                categoryName: res1.data.categoryName,
+              },
+              {
+                ...res2.data.product,
+                urlImage: res2.data.avatar,
+                avatar: res2.data.avatar,
+                categoryName: res2.data.categoryName,
+              },
             ]);
           }
         }
@@ -92,7 +110,7 @@ const page = (props: { params: { cate: string } }) => {
           setLoading(true);
           const res = await http.post("Product/GetPaginationProduct", {
             pageIndex: index,
-            pageSize: 4,
+            pageSize: 6,
             search_Name: name,
             search_CategoryName: decodeURIComponent(cate),
           });

@@ -25,7 +25,7 @@
 }
 
 .abc .swiper-pagination {
-  bottom: -9px !important;
+  bottom: -20px !important;
 }
 
 @font-face {
@@ -57,16 +57,14 @@
 
 
 
-.swiper-pagination {
-  bottom: -19px !important;
-}
+
 
 .swiper-wrapper {
   position: unset !important
 }
 
 .swiper-button-prev::after {
-  content: '';
+  content: '' !important;
   width: 50px;
   height: 27px;
   background-image: url(../asset/image/images.png);
@@ -76,7 +74,7 @@
 }
 
 .swiper-button-next::after {
-  content: '';
+  content: '' !important;
   width: 50px;
   height: 27px;
   background-image: url(../asset/image/images.png);

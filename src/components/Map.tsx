@@ -95,7 +95,7 @@ const Map = () => {
       </div>
       <a
         href={`tel:${data?.phone}`}
-        className={`fixed bottom-[10px] z-[9999] md:bottom-5 left-2 flex items-center cursor-pointer ${styles.hover}`}
+        className={`fixed bottom-[10px] z-[20] md:bottom-5 left-2 flex items-center cursor-pointer ${styles.hover}`}
       >
         <div className="w-[35px] h-[35px] md:w-[50px] md:h-[50px] rounded-full bg-[#5BB006] flex items-center justify-center z-10 text-white">
           <FaPhone />
@@ -107,7 +107,7 @@ const Map = () => {
       <a
         href={data?.url_Mess}
         target="_blank"
-        className={`fixed bottom-[50px] md:bottom-[78px] z-[9999] left-2 flex items-center cursor-pointer ${styles.hover}`}
+        className={`fixed bottom-[50px] md:bottom-[78px] z-[20] left-2 flex items-center cursor-pointer ${styles.hover}`}
       >
         <div className="w-[35px] h-[35px] md:w-[50px] md:h-[50px] text-[20px] md:text-[30px] rounded-full bg-[#1c8ff3] flex items-center justify-center z-10 text-white">
           <PiMessengerLogoLight />

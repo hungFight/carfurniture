@@ -52,7 +52,16 @@ const SlideSwiper: React.FC<{
             <p>Loading...</p>
           ) : data && data.length > 0 ? (
             data?.map((d) => (
-              <SwiperSlide key={d.id} className="w-fit">
+              <SwiperSlide
+                key={d.id}
+                className="w-fit"
+                style={{
+                  display: "-webkit-box",
+                  WebkitLineClamp: 1,
+                  WebkitBoxOrient: "vertical",
+                  overflow: "hidden",
+                }}
+              >
                 <h3
                   className={`text-xs  w-max md:text-sm xl:text-base cursor-pointer hover:text-blue-500 ${
                     active === d.id ? "text-blue-500" : ""

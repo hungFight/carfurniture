@@ -60,12 +60,15 @@ const RoutListing: React.FC<{
       }
       if (hasSeen.length === 2) {
         const re1 = await http.get(`Product/GetByID/${hasSeen[0]}`);
+        setDataHasSeen([re1.data]);
         const re2 = await http.get(`Product/GetByID/${hasSeen[1]}`);
         setDataHasSeen([re1.data, re2.data]);
       }
     };
     getProduct();
   }, []);
+  console.log(dataHasSeen, "ataHasSeen");
+
   useEffect(() => {
     routs[0] = title;
     if (routs.length > 1 || rr.current) {

@@ -36,7 +36,7 @@ const Listing: React.FC<{
   const [updateText, setUpdateText] = useState<string>("");
   return (
     <div className="w-full">
-      <div className="w-full md:w-[80%] max-[768px]:flex ">
+      <div className="w-full md:w-[80%] max-[768px]:flex max-[768px]:flex-wrap">
         <div className="w-full p-2 relative mb-10 font-medium rounded-[30px] whitespace-nowrap text-base border border-black text-center">
           Danh mục {menu}
           <div
@@ -126,11 +126,26 @@ const Listing: React.FC<{
                   </div>
                 ))
               )}
+              {category === "product" && (
+                <div className="w-full border-b relative border-[#303131]  mb-3">
+                  <Link
+                    href={`/${category}/${"Đã xem"
+                      ?.replace(/\s+/g, "-")
+                      .replace(/&/g, "-and-")}`}
+                    className={`w-full  text-sm md:text-base cursor-pointer hover:text-[#0087ff] ${
+                      choice === "Đã xem" ? "text-[#0087ff]" : ""
+                    }`}
+                    onClick={() => onClick("Đã xem")}
+                  >
+                    Đã xem
+                  </Link>
+                </div>
+              )}
             </div>
           )}
         </div>
 
-        <div className="hidden min-[768px]:block max-[350px]:h-[350px] overflow-auto">
+        <div className="hidden min-[768px]:block max-h-[400px] overflow-auto">
           {data?.map((r) => (
             <div
               key={r.categoryId}
@@ -206,6 +221,7 @@ const Listing: React.FC<{
               )}
             </div>
           ))}
+
           {/* {category === "product" && (
             <div
               className={`w-full  text-sm md:text-base cursor-pointer  ${
@@ -217,6 +233,21 @@ const Listing: React.FC<{
             </div>
           )} */}
         </div>
+        {category === "product" && (
+          <div className="w-full border-b relative border-[#303131]  mb-3">
+            <Link
+              href={`/${category}/${"Đã xem"
+                ?.replace(/\s+/g, "-")
+                .replace(/&/g, "-and-")}`}
+              className={`w-full  text-sm md:text-base cursor-pointer hover:text-[#0087ff] ${
+                choice === "Đã xem" ? "text-[#0087ff]" : ""
+              }`}
+              onClick={() => onClick("Đã xem")}
+            >
+              Đã xem
+            </Link>
+          </div>
+        )}
       </div>
     </div>
   );

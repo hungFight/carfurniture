@@ -26,6 +26,7 @@ export default function Home() {
       name: string;
       price: number;
       price_After: number;
+      categoryName: string;
       description: string;
       urlShoppe: string;
       urlImage: { image: string; path: string }[];
@@ -125,7 +126,7 @@ export default function Home() {
         setLoadingType(true);
         if (
           rrr.current &&
-          dataList[0].name !== caseChose.product.categoryName
+          caseChose.product.categoryName !== "Tất Cả Sản Phẩm"
         ) {
           const res = await http.post("Product/GetPaginationProduct", {
             pageIndex: index,
@@ -179,7 +180,7 @@ export default function Home() {
       <div className="w-full  ">
         <SlideHome />
 
-        <div className="w-full h-fit min-[600px]:h-40 bg-[#212322] flex flex-wrap items-center">
+        <div className="w-full h-fit min-[700px]:h-40 bg-[#212322] flex flex-wrap items-center">
           <div
             style={{ fontFamily: '"Mazda robo",sans-serif' }}
             className="w-full flex-wrap h-fit  pt-1 sm:w-[40%] sm:p-3 justify-start max-[600px]:pl-[10%]  flex items-center md:pl-[70px]"
@@ -304,7 +305,7 @@ export default function Home() {
                       dataProducts.map((r, index) => (
                         <Link
                           href="/[slug]"
-                          as={`product/${caseChose.product?.categoryName
+                          as={`product/${r.categoryName
                             ?.replace(/\s+/g, "-")
                             .replace(/&/g, "-and-")}/${r.name
                             .replace(/\s+/g, "-")
