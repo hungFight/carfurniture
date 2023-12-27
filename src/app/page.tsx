@@ -464,7 +464,7 @@ export default function Home() {
                 <h3
                   className={`text-base w-full font-semibold text-center my-5 ${styles.hh4}`}
                 >
-                  Hưỡng dẫn sử dụng
+                  Hướng dẫn
                 </h3>
                 <div className="flex flex-wrap justify-around">
                   {dataGuid.map((n) => (
