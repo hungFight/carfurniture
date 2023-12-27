@@ -75,6 +75,7 @@ export default function Home() {
 
   const [loadingType, setLoadingType] = useState<boolean>(false);
   const fetS = async () => {
+    setLoadingType(true);
     setDataList([]);
     const resT = await http.get("CategoryType/GetAll");
     rrrd.current = true;
@@ -107,24 +108,25 @@ export default function Home() {
     setDataGuid(resGuide.data.data);
     const res = await http.get("Button/GetAll");
     setDataSoft(res.data);
+    setLoadingType(false);
   };
   const rrr = useRef<boolean>(false);
   const fetSDataProduct = async (index: number = 1, name?: string) => {
     if (rrrd.current) {
-      if (name) {
-        setLoading(true);
-        const res = await http.post("Product/GetPaginationProduct", {
-          search_Name: name,
-          search_CategoryName: caseChose.product?.categoryName,
-        });
-        setPageIndex(res.data.totalPageIndex);
-        setDataProducts(res.data.data);
-        setLoading(false);
-      } else {
-        console.log("1111111111111111");
-        rrrd.current = false;
-        setLoadingType(true);
-        if (caseChose.product.categoryName !== "Tất Cả Sản Phẩm") {
+      if (caseChose.product.categoryName !== "Tất Cả Sản Phẩm") {
+        if (name) {
+          setLoading(true);
+          const res = await http.post("Product/GetPaginationProduct", {
+            search_Name: name,
+            search_CategoryName: caseChose.product?.categoryName,
+          });
+          setPageIndex(res.data.totalPageIndex);
+          setDataProducts(res.data.data);
+          setLoading(false);
+        } else {
+          console.log("1111111111111111");
+          rrrd.current = false;
+
           const res = await http.post("Product/GetPaginationProduct", {
             pageIndex: index,
             pageSize: 8,
@@ -132,15 +134,44 @@ export default function Home() {
           });
           setPageIndex(res.data.totalPageIndex);
           setDataProducts(res.data.data);
-          setLoadingType(false);
+          // } else {
+          //   const res = await http.post("Product/GetPaginationProduct", {
+          //     pageIndex: index,
+          //     pageSize: 8,
+          //   });
+          //   setPageIndex(res.data.totalPageIndex);
+          //   setDataProducts(res.data.data);
+          //   setLoadingType(false);
+          // }
+        }
+      } else {
+        if (name) {
+          setLoading(true);
+          const res = await http.post("Product/GetPaginationProduct", {
+            search_Name: name,
+          });
+          setPageIndex(res.data.totalPageIndex);
+          setDataProducts(res.data.data);
+          setLoading(false);
         } else {
+          console.log("1111111111111111");
+          rrrd.current = false;
+
           const res = await http.post("Product/GetPaginationProduct", {
             pageIndex: index,
             pageSize: 8,
           });
           setPageIndex(res.data.totalPageIndex);
           setDataProducts(res.data.data);
-          setLoadingType(false);
+          // } else {
+          //   const res = await http.post("Product/GetPaginationProduct", {
+          //     pageIndex: index,
+          //     pageSize: 8,
+          //   });
+          //   setPageIndex(res.data.totalPageIndex);
+          //   setDataProducts(res.data.data);
+          //   setLoadingType(false);
+          // }
         }
       }
     }
@@ -165,6 +196,7 @@ export default function Home() {
     setSearch(e.target.value);
   };
   const handleClick = () => {
+    rrrd.current = true;
     fetSDataProduct(1, search);
   };
   const [additionalPage, setAdditionalPage] = useState<number>(1);
@@ -223,7 +255,7 @@ export default function Home() {
                 Danh sách sản phẩm
               </h3>
               <SlideCategory
-                loading={loading}
+                loading={loadingType}
                 data={dataList}
                 onClick={handle}
                 active={caseChose.product?.categoryId}

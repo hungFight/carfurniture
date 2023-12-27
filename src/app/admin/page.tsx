@@ -218,6 +218,8 @@ const page = () => {
     }
   }, [dataCate, categoryType]);
   async function fetCateName(name: string, index = 1, search?: string) {
+    console.log(name, "name");
+
     const accessToken = cookies.get("token");
     const refreshToken = cookies.get("refreshToken");
     try {
@@ -412,7 +414,7 @@ const page = () => {
     setSearch(e.target.value);
   };
   const handleClick = () => {
-    fetCateName(cate.categoryName, 1, search);
+    fetCateName(nameRout, 1, search);
   };
   const handleUpdateDirectory = async (id: number, name: string) => {
     try {
