@@ -119,7 +119,7 @@ const AddGuideModel: React.FC<{
         formData.append("categoryName", cateName);
         formData.append("Name", product.Name);
         formData.append("Content", product.Content);
-        formData.append("categoryId", String(product.categoryId));
+        formData.append("categoryId", String(newsUp?.id));
         if (newsUp) {
           // update
           formData.append("Id", String(newsUp.id));

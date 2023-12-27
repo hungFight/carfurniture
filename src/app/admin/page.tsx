@@ -47,6 +47,7 @@ const page = () => {
       price: number;
       price_After: number;
       description: string;
+      categoryName: string;
       urlShoppe: string;
       urlImage: { image: string; path: string }[];
     }[]
@@ -54,6 +55,7 @@ const page = () => {
   const [dataNews, setDataNews] = useState<
     {
       id: number;
+      categoryName: string;
       name: string;
       create_Date: string;
       content: string;
@@ -63,6 +65,7 @@ const page = () => {
   const [dataGuid, setDataGuid] = useState<
     {
       id: number;
+      categoryName: string;
       name: string;
       create_Date: string;
       content: string;
@@ -228,16 +231,29 @@ const page = () => {
 
         if (acc) {
           if (categoryType === product) {
-            const accs = cookies.get("token");
-            if (accs) {
-              const res = await axio.post("Product/GetPaginationProduct", {
-                pageIndex: index,
-                pageSize: 4,
-                search_CategoryName: name,
-                search_Name: search,
-              });
-              setPageIndex(res.data.totalPageIndex);
-              setDataProducts(res.data.data);
+            if (name === "Tất Cả Sản Phẩm") {
+              const accs = cookies.get("token");
+              if (accs) {
+                const res = await axio.post("Product/GetPaginationProduct", {
+                  pageIndex: index,
+                  pageSize: 4,
+                  search_Name: search,
+                });
+                setPageIndex(res.data.totalPageIndex);
+                setDataProducts(res.data.data);
+              }
+            } else {
+              const accs = cookies.get("token");
+              if (accs) {
+                const res = await axio.post("Product/GetPaginationProduct", {
+                  pageIndex: index,
+                  pageSize: 4,
+                  search_CategoryName: name,
+                  search_Name: search,
+                });
+                setPageIndex(res.data.totalPageIndex);
+                setDataProducts(res.data.data);
+              }
             }
           } else {
             setDataProducts([]);
@@ -245,14 +261,24 @@ const page = () => {
           if (categoryType === news) {
             const accsb = cookies.get("token");
             if (accsb) {
-              const res = await axio.post("Blog/GetPaginationProduct", {
-                pageIndex: index,
-                pageSize: 6,
-                search_Name: search,
-                search_CategoryName: name,
-              });
-              setPageIndex(res.data.totalPageIndex);
-              setDataNews(res.data.data);
+              if (name === "Tất Cả Tin Tức") {
+                const res = await axio.post("Blog/GetPaginationProduct", {
+                  pageIndex: index,
+                  pageSize: 6,
+                  search_Name: search,
+                });
+                setPageIndex(res.data.totalPageIndex);
+                setDataNews(res.data.data);
+              } else {
+                const res = await axio.post("Blog/GetPaginationProduct", {
+                  pageIndex: index,
+                  pageSize: 6,
+                  search_Name: search,
+                  search_CategoryName: name,
+                });
+                setPageIndex(res.data.totalPageIndex);
+                setDataNews(res.data.data);
+              }
             }
           } else {
             setDataNews([]);
@@ -260,14 +286,24 @@ const page = () => {
           if (categoryType === guide) {
             const accsbc = cookies.get("token");
             if (accsbc) {
-              const res = await axio.post("Guide/GetPaginationProduct", {
-                pageIndex: index,
-                pageSize: 6,
-                search_Name: search,
-                search_CategoryName: name,
-              });
-              setPageIndex(res.data.totalPageIndex);
-              setDataGuid(res.data.data);
+              if (name === "Tất Cả Hướng Dẫn") {
+                const res = await axio.post("Guide/GetPaginationProduct", {
+                  pageIndex: index,
+                  pageSize: 6,
+                  search_Name: search,
+                });
+                setPageIndex(res.data.totalPageIndex);
+                setDataGuid(res.data.data);
+              } else {
+                const res = await axio.post("Guide/GetPaginationProduct", {
+                  pageIndex: index,
+                  pageSize: 6,
+                  search_Name: search,
+                  search_CategoryName: name,
+                });
+                setPageIndex(res.data.totalPageIndex);
+                setDataGuid(res.data.data);
+              }
             }
           }
         }

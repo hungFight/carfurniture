@@ -9,6 +9,7 @@ const Product: React.FC<{
     id: number;
     name: string;
     price: number;
+    categoryName: string;
     price_After: number;
     description: string;
     urlShoppe: string;
@@ -27,7 +28,9 @@ const Product: React.FC<{
     <Link
       key={p.id}
       href="/[slug]"
-      as={`${cate?.replace(/\s+/g, "-").replace(/&/g, "-and-")}/${p.name
+      as={`${p.categoryName
+        ?.replace(/\s+/g, "-")
+        .replace(/&/g, "-and-")}/${p.name
         .replace(/\s+/g, "-")
         .replace(/&/g, "-and-")}/${p.id}`}
       className="w-[200px] m-3 md:w-[250px] p-1 border shadow-[0_0_3px_#7a7a7a] hover:shadow-[0_0_10px] mb-4 cursor-pointer"

@@ -130,7 +130,7 @@ const Listing: React.FC<{
           )}
         </div>
 
-        <div className="hidden min-[768px]:block">
+        <div className="hidden min-[768px]:block max-[350px]:h-[350px] overflow-auto">
           {data?.map((r) => (
             <div
               key={r.categoryId}

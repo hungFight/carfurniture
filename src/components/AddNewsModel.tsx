@@ -98,7 +98,7 @@ const AddNewsModel: React.FC<{
         const formData = new FormData();
         news.Content = value;
         formData.append("categoryName", cateName);
-        formData.append("CategoryId", String(cateId));
+        formData.append("CategoryId", String(newsUp?.id));
         formData.append("Name", news.Name);
         formData.append("Content", news.Content);
         if (newsUp) {

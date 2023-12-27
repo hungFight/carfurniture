@@ -18,6 +18,7 @@ const page = (props: { params: { cate: string } }) => {
   const [data, setData] = useState<
     {
       id: number;
+      categoryName: string;
       name: string;
       create_Date: string;
       content: string;
@@ -26,26 +27,48 @@ const page = (props: { params: { cate: string } }) => {
   >([]);
   const getNews = async (cate: string, index = 1, name?: string) => {
     setLoading(true);
-    if (name) {
-      setLoadingSearch(true);
-      const res = await http.post("Guide/GetPaginationProduct", {
-        pageIndex: index,
-        pageSize: 6,
-        search_CategoryName: cate,
-        search_Name: name,
-      });
-      setPageIndex(res.data.totalPageIndex);
-      setData(res.data.data);
-      setLoadingSearch(false);
+    if (decodeURIComponent(cate) !== "Tất Cả Hướng Dẫn") {
+      if (name) {
+        setLoadingSearch(true);
+        const res = await http.post("Guide/GetPaginationProduct", {
+          pageIndex: index,
+          pageSize: 6,
+          search_CategoryName: cate,
+          search_Name: name,
+        });
+        setPageIndex(res.data.totalPageIndex);
+        setData(res.data.data);
+        setLoadingSearch(false);
+      } else {
+        const res = await http.post("Guide/GetPaginationProduct", {
+          pageIndex: index,
+          pageSize: 6,
+          search_CategoryName: cate,
+        });
+        setPageIndex(res.data.totalPageIndex);
+        setData(res.data.data);
+      }
     } else {
-      const res = await http.post("Guide/GetPaginationProduct", {
-        pageIndex: index,
-        pageSize: 6,
-        search_CategoryName: cate,
-      });
-      setPageIndex(res.data.totalPageIndex);
-      setData(res.data.data);
+      if (name) {
+        setLoadingSearch(true);
+        const res = await http.post("Guide/GetPaginationProduct", {
+          pageIndex: index,
+          pageSize: 6,
+          search_Name: name,
+        });
+        setPageIndex(res.data.totalPageIndex);
+        setData(res.data.data);
+        setLoadingSearch(false);
+      } else {
+        const res = await http.post("Guide/GetPaginationProduct", {
+          pageIndex: index,
+          pageSize: 6,
+        });
+        setPageIndex(res.data.totalPageIndex);
+        setData(res.data.data);
+      }
     }
+
     setLoading(false);
   };
 
@@ -136,7 +159,7 @@ const page = (props: { params: { cate: string } }) => {
               <Link
                 key={d.id}
                 href={`/[slug]`}
-                as={`${props.params.cate
+                as={`${d.categoryName
                   ?.replace(/\s+/g, "-")
                   .replace(/&/g, "-and-")}/${d.name
                   .replace(/\s+/g, "-")

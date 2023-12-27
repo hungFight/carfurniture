@@ -70,11 +70,13 @@ export default function Home() {
     news: { categoryId: 0, categoryName: "" },
     guide: { categoryId: 0, categoryName: "" },
   });
+  const rrrd = useRef<boolean>(false);
+
   const [loadingType, setLoadingType] = useState<boolean>(false);
   const fetS = async () => {
     setDataList([]);
     const resT = await http.get("CategoryType/GetAll");
-
+    rrrd.current = true;
     const resCatePr = await http.get<
       { categoryName: string; categoryId: number }[]
     >(`Category/GetAll/${resT.data[0].name}`);
@@ -106,36 +108,42 @@ export default function Home() {
     setDataSoft(res.data);
   };
   const rrr = useRef<boolean>(false);
-  const rrrd = useRef<boolean>(false);
   const fetSDataProduct = async (index: number = 1, name?: string) => {
-    if (name) {
-      setLoading(true);
-      const res = await http.post("Product/GetPaginationProduct", {
-        search_Name: name,
-        search_CategoryName: caseChose.product?.categoryName,
-      });
-      setPageIndex(res.data.totalPageIndex);
-      setDataProducts(res.data.data);
-      setLoading(false);
-    } else {
-      setLoadingType(true);
-      if (rrr.current && dataList[0].name !== caseChose.product.categoryName) {
+    if (rrrd.current) {
+      if (name) {
+        setLoading(true);
         const res = await http.post("Product/GetPaginationProduct", {
-          pageIndex: index,
-          pageSize: 8,
+          search_Name: name,
           search_CategoryName: caseChose.product?.categoryName,
         });
         setPageIndex(res.data.totalPageIndex);
         setDataProducts(res.data.data);
-        setLoadingType(false);
+        setLoading(false);
       } else {
-        const res = await http.post("Product/GetPaginationProduct", {
-          pageIndex: index,
-          pageSize: 8,
-        });
-        setPageIndex(res.data.totalPageIndex);
-        setDataProducts(res.data.data);
-        setLoadingType(false);
+        console.log("1111111111111111");
+        rrrd.current = false;
+        setLoadingType(true);
+        if (
+          rrr.current &&
+          dataList[0].name !== caseChose.product.categoryName
+        ) {
+          const res = await http.post("Product/GetPaginationProduct", {
+            pageIndex: index,
+            pageSize: 8,
+            search_CategoryName: caseChose.product?.categoryName,
+          });
+          setPageIndex(res.data.totalPageIndex);
+          setDataProducts(res.data.data);
+          setLoadingType(false);
+        } else {
+          const res = await http.post("Product/GetPaginationProduct", {
+            pageIndex: index,
+            pageSize: 8,
+          });
+          setPageIndex(res.data.totalPageIndex);
+          setDataProducts(res.data.data);
+          setLoadingType(false);
+        }
       }
     }
   };
@@ -144,13 +152,14 @@ export default function Home() {
     fetS();
   }, []);
   useEffect(() => {
-    fetSDataProduct();
+    if (caseChose) fetSDataProduct();
   }, [caseChose]);
   const handle = (v: number) => {
     const cases = dataList
       .filter((r) => r.id === v)
       .map((r) => ({ categoryId: r.id, categoryName: r.name }))[0];
     rrr.current = true;
+    rrrd.current = true;
     setCaseChose({ ...caseChose, product: cases });
   };
 

@@ -22,6 +22,7 @@ const page = (props: { params: { cate: string } }) => {
       name: string;
       price: number;
       price_After: number;
+      categoryName: string;
       description: string;
       urlShoppe: string;
       urlImage: { image: string; path: string }[];
@@ -57,6 +58,7 @@ const page = (props: { params: { cate: string } }) => {
                 ...res1.data.product,
                 avatar: res1.data.avatar,
                 urlImage: res1.data.urlImage,
+                categoryName: res1.data.categoryName,
               },
             ]);
           } else if (hasSeen.length === 2) {
@@ -85,27 +87,50 @@ const page = (props: { params: { cate: string } }) => {
         }
       }
     } else {
-      if (name) {
-        setLoading(true);
-        const res = await http.post("Product/GetPaginationProduct", {
-          pageIndex: index,
-          pageSize: 4,
-          search_Name: name,
-          search_CategoryName: decodeURIComponent(cate),
-        });
-        setLoading(false);
-        setPageIndex(res.data.totalPageIndex);
-        setData(res.data.data);
+      if (decodeURIComponent(cate) !== "Tất Cả Sản Phẩm") {
+        if (name) {
+          setLoading(true);
+          const res = await http.post("Product/GetPaginationProduct", {
+            pageIndex: index,
+            pageSize: 4,
+            search_Name: name,
+            search_CategoryName: decodeURIComponent(cate),
+          });
+          setLoading(false);
+          setPageIndex(res.data.totalPageIndex);
+          setData(res.data.data);
+        } else {
+          setLoadingSearch(true);
+          const res = await http.post("Product/GetPaginationProduct", {
+            pageIndex: index,
+            pageSize: 6,
+            search_CategoryName: decodeURIComponent(cate),
+          });
+          setPageIndex(res.data.totalPageIndex);
+          setLoadingSearch(false);
+          setData(res.data.data);
+        }
       } else {
-        setLoadingSearch(true);
-        const res = await http.post("Product/GetPaginationProduct", {
-          pageIndex: index,
-          pageSize: 4,
-          search_CategoryName: decodeURIComponent(cate),
-        });
-        setPageIndex(res.data.totalPageIndex);
-        setLoadingSearch(false);
-        setData(res.data.data);
+        if (name) {
+          setLoading(true);
+          const res = await http.post("Product/GetPaginationProduct", {
+            pageIndex: index,
+            pageSize: 4,
+            search_Name: name,
+          });
+          setLoading(false);
+          setPageIndex(res.data.totalPageIndex);
+          setData(res.data.data);
+        } else {
+          setLoadingSearch(true);
+          const res = await http.post("Product/GetPaginationProduct", {
+            pageIndex: index,
+            pageSize: 6,
+          });
+          setPageIndex(res.data.totalPageIndex);
+          setLoadingSearch(false);
+          setData(res.data.data);
+        }
       }
     }
   };
