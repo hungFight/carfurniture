@@ -124,10 +124,7 @@ export default function Home() {
         console.log("1111111111111111");
         rrrd.current = false;
         setLoadingType(true);
-        if (
-          rrr.current &&
-          caseChose.product.categoryName !== "Tất Cả Sản Phẩm"
-        ) {
+        if (caseChose.product.categoryName !== "Tất Cả Sản Phẩm") {
           const res = await http.post("Product/GetPaginationProduct", {
             pageIndex: index,
             pageSize: 8,
