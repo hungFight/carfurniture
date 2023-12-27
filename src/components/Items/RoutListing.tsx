@@ -34,6 +34,7 @@ const RoutListing: React.FC<{
         };
         categoryName: string;
         urlImage: { image: string; path: string }[];
+        avatar: { image: string; path: string }[];
         info_in_AboutUs: [{ url_Mess: string; phone: string }];
       }[]
   >([]);
@@ -59,12 +60,15 @@ const RoutListing: React.FC<{
       }
       if (hasSeen.length === 2) {
         const re1 = await http.get(`Product/GetByID/${hasSeen[0]}`);
+        setDataHasSeen([re1.data]);
         const re2 = await http.get(`Product/GetByID/${hasSeen[1]}`);
         setDataHasSeen([re1.data, re2.data]);
       }
     };
     getProduct();
   }, []);
+  console.log(dataHasSeen, "ataHasSeen");
+
   useEffect(() => {
     routs[0] = title;
     if (routs.length > 1 || rr.current) {
@@ -148,8 +152,8 @@ const RoutListing: React.FC<{
                 <Link href="/[slug]" as={`${p.categoryName}/${p.product.id}`}>
                   <div className="w-full h-[200px] md:h-[230px]">
                     <img
-                      src={p.urlImage[0]?.image}
-                      alt={p.urlImage[0]?.path}
+                      src={p.avatar[0]?.image}
+                      alt={p.avatar[0]?.path}
                       className="w-full h-full object-cover"
                     />
                   </div>

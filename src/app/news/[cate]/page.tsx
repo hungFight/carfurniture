@@ -22,6 +22,7 @@ const page = (props: { params: { cate: string } }) => {
     {
       id: number;
       name: string;
+      categoryName: string;
       create_Date: string;
       content: string;
       urlImage: { image: string; path: string }[];
@@ -29,26 +30,48 @@ const page = (props: { params: { cate: string } }) => {
   >([]);
   const getNews = async (cate: string, index = 1, name?: string) => {
     setLoading(true);
-    if (name) {
-      setLoadingSearch(true);
+    if (decodeURIComponent(cate) !== "Tất Cả Tin Tức") {
+      if (name) {
+        setLoadingSearch(true);
 
-      const res = await http.post("Blog/GetPaginationProduct", {
-        pageIndex: index,
-        pageSize: 6,
-        search_CategoryName: cate,
-        search_Name: name,
-      });
-      setPageIndex(res.data.totalPageIndex);
-      setData(res.data.data);
-      setLoadingSearch(false);
+        const res = await http.post("Blog/GetPaginationProduct", {
+          pageIndex: index,
+          pageSize: 6,
+          search_CategoryName: cate,
+          search_Name: name,
+        });
+        setPageIndex(res.data.totalPageIndex);
+        setData(res.data.data);
+        setLoadingSearch(false);
+      } else {
+        const res = await http.post("Blog/GetPaginationProduct", {
+          pageIndex: index,
+          pageSize: 6,
+          search_CategoryName: cate,
+        });
+        setPageIndex(res.data.totalPageIndex);
+        setData(res.data.data);
+      }
     } else {
-      const res = await http.post("Blog/GetPaginationProduct", {
-        pageIndex: index,
-        pageSize: 6,
-        search_CategoryName: cate,
-      });
-      setPageIndex(res.data.totalPageIndex);
-      setData(res.data.data);
+      if (name) {
+        setLoadingSearch(true);
+
+        const res = await http.post("Blog/GetPaginationProduct", {
+          pageIndex: index,
+          pageSize: 6,
+          search_Name: name,
+        });
+        setPageIndex(res.data.totalPageIndex);
+        setData(res.data.data);
+        setLoadingSearch(false);
+      } else {
+        const res = await http.post("Blog/GetPaginationProduct", {
+          pageIndex: index,
+          pageSize: 6,
+        });
+        setPageIndex(res.data.totalPageIndex);
+        setData(res.data.data);
+      }
     }
     setLoading(false);
   };

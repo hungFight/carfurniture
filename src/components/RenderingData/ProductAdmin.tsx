@@ -12,6 +12,7 @@ const ProductAdmin: React.FC<{
   p: {
     id: number;
     name: string;
+    categoryName: string;
     price: number;
     price_After: number;
     description: string;
@@ -92,7 +93,9 @@ const ProductAdmin: React.FC<{
     <Link
       key={p.id}
       href="/[slug]"
-      as={`product/${rout?.replace(/\s+/g, "-").replace(/&/g, "-and-")}/${p.name
+      as={`product/${p.categoryName
+        ?.replace(/\s+/g, "-")
+        .replace(/&/g, "-and-")}/${p.name
         .replace(/\s+/g, "-")
         .replace(/&/g, "-and-")}/${p.id}`}
       className=" relative w-[250px] p-1 border shadow-[0_0_3px_#7a7a7a] hover:shadow-[0_0_10px] mb-4 mx-3 cursor-pointer"

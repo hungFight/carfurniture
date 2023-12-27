@@ -23,7 +23,7 @@ export default function SlideHome() {
     {
       id: 1,
       val: [
-        "THẺ BẢN ĐỒ CHÍNH HÃNG XE MAZDA (MAZDA NAVIGATION)",
+        "THẺ BẢN ĐỒ CHÍNH HÃNG XE MAZDA ",
         "Thẻ chính hãng có license bản quyền, không mất bảo hành xe",
         "Hiển thị Cảnh báo tốc độ và Điều hướng trên Hắt kính (HUD)",
         "Định vị chính xác vị trí của xe khi di chuyển, kiểm soát tốc độ và xác định đúng điểm dừng đỗ.",
@@ -307,14 +307,16 @@ export default function SlideHome() {
   return (
     <div className={`w-[100%] ${styles.bk}`}>
       <Swiper
-        pagination={true}
         modules={[Autoplay, Pagination, Navigation]}
         className="mySwiper"
+        pagination={{
+          clickable: true,
+        }}
         navigation={true}
-        // autoplay={{
-        //   delay: 5500,
-        //   disableOnInteraction: false,
-        // }}
+        autoplay={{
+          delay: 5500,
+          disableOnInteraction: false,
+        }}
         onSlideChange={(e: any) =>
           setChange({ ...change, current: e.activeIndex })
         }

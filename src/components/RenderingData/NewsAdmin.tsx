@@ -12,6 +12,7 @@ const NewsAdmin: React.FC<{
     id: number;
     name: string;
     create_Date: string;
+    categoryName: string;
     content: string;
     urlImage: {
       image: string;
@@ -71,7 +72,9 @@ const NewsAdmin: React.FC<{
   return (
     <Link
       href="/[slug]"
-      as={`news/${rout?.replace(/\s+/g, "-").replace(/&/g, "-and-")}/${bl.name
+      as={`news/${bl.categoryName
+        ?.replace(/\s+/g, "-")
+        .replace(/&/g, "-and-")}/${bl.name
         .replace(/\s+/g, "-")
         .replace(/&/g, "-and-")}/${bl.id}`}
       className="w-full flex flex-wrap md:flex-nowrap  mb-4 relative"

@@ -26,6 +26,7 @@ export default function Home() {
       name: string;
       price: number;
       price_After: number;
+      categoryName: string;
       description: string;
       urlShoppe: string;
       urlImage: { image: string; path: string }[];
@@ -36,6 +37,7 @@ export default function Home() {
       id: number;
       name: string;
       create_Date: string;
+      categoryName: string;
       content: string;
       urlImage: { image: string; path: string }[];
     }[]
@@ -48,6 +50,7 @@ export default function Home() {
       name: string;
       create_Date: string;
       content: string;
+      categoryName: string;
       urlImage: { image: string; path: string }[];
     }[]
   >([]);
@@ -68,11 +71,14 @@ export default function Home() {
     news: { categoryId: 0, categoryName: "" },
     guide: { categoryId: 0, categoryName: "" },
   });
+  const rrrd = useRef<boolean>(false);
+
   const [loadingType, setLoadingType] = useState<boolean>(false);
   const fetS = async () => {
+    setLoadingType(true);
     setDataList([]);
     const resT = await http.get("CategoryType/GetAll");
-
+    rrrd.current = true;
     const resCatePr = await http.get<
       { categoryName: string; categoryId: number }[]
     >(`Category/GetAll/${resT.data[0].name}`);
@@ -93,51 +99,96 @@ export default function Home() {
     const resNews = await http.post("Blog/GetPaginationProduct", {
       pageIndex: 1,
       pageSize: 4,
-      search_CategoryName: caseChose.news?.categoryName,
     });
     setDataNews(resNews.data.data);
     const resGuide = await http.post("Guide/GetPaginationProduct", {
       pageIndex: 1,
       pageSize: 4,
-      search_CategoryName: caseChose.guide?.categoryName,
     });
     setDataGuid(resGuide.data.data);
     const res = await http.get("Button/GetAll");
     setDataSoft(res.data);
+    setLoadingType(false);
   };
+  const rrr = useRef<boolean>(false);
   const fetSDataProduct = async (index: number = 1, name?: string) => {
-    if (name) {
-      setLoading(true);
-      const res = await http.post("Product/GetPaginationProduct", {
-        search_Name: name,
-        search_CategoryName: caseChose.product?.categoryName,
-      });
-      setPageIndex(res.data.totalPageIndex);
-      setDataProducts(res.data.data);
-      setLoading(false);
-    } else {
-      setLoadingType(true);
-      const res = await http.post("Product/GetPaginationProduct", {
-        pageIndex: index,
-        pageSize: 8,
-        search_CategoryName: caseChose.product?.categoryName,
-      });
-      setPageIndex(res.data.totalPageIndex);
-      setDataProducts(res.data.data);
-      setLoadingType(false);
+    if (rrrd.current) {
+      if (caseChose.product.categoryName !== "Tất Cả Sản Phẩm") {
+        if (name) {
+          setLoading(true);
+          const res = await http.post("Product/GetPaginationProduct", {
+            search_Name: name,
+            search_CategoryName: caseChose.product?.categoryName,
+          });
+          setPageIndex(res.data.totalPageIndex);
+          setDataProducts(res.data.data);
+          setLoading(false);
+        } else {
+          console.log("1111111111111111");
+          rrrd.current = false;
+
+          const res = await http.post("Product/GetPaginationProduct", {
+            pageIndex: index,
+            pageSize: 8,
+            search_CategoryName: caseChose.product?.categoryName,
+          });
+          setPageIndex(res.data.totalPageIndex);
+          setDataProducts(res.data.data);
+          // } else {
+          //   const res = await http.post("Product/GetPaginationProduct", {
+          //     pageIndex: index,
+          //     pageSize: 8,
+          //   });
+          //   setPageIndex(res.data.totalPageIndex);
+          //   setDataProducts(res.data.data);
+          //   setLoadingType(false);
+          // }
+        }
+      } else {
+        if (name) {
+          setLoading(true);
+          const res = await http.post("Product/GetPaginationProduct", {
+            search_Name: name,
+          });
+          setPageIndex(res.data.totalPageIndex);
+          setDataProducts(res.data.data);
+          setLoading(false);
+        } else {
+          console.log("1111111111111111");
+          rrrd.current = false;
+
+          const res = await http.post("Product/GetPaginationProduct", {
+            pageIndex: index,
+            pageSize: 8,
+          });
+          setPageIndex(res.data.totalPageIndex);
+          setDataProducts(res.data.data);
+          // } else {
+          //   const res = await http.post("Product/GetPaginationProduct", {
+          //     pageIndex: index,
+          //     pageSize: 8,
+          //   });
+          //   setPageIndex(res.data.totalPageIndex);
+          //   setDataProducts(res.data.data);
+          //   setLoadingType(false);
+          // }
+        }
+      }
     }
   };
+
   useEffect(() => {
     fetS();
   }, []);
   useEffect(() => {
-    fetSDataProduct();
+    if (caseChose) fetSDataProduct();
   }, [caseChose]);
   const handle = (v: number) => {
     const cases = dataList
       .filter((r) => r.id === v)
       .map((r) => ({ categoryId: r.id, categoryName: r.name }))[0];
-
+    rrr.current = true;
+    rrrd.current = true;
     setCaseChose({ ...caseChose, product: cases });
   };
 
@@ -145,18 +196,20 @@ export default function Home() {
     setSearch(e.target.value);
   };
   const handleClick = () => {
+    rrrd.current = true;
     fetSDataProduct(1, search);
   };
   const [additionalPage, setAdditionalPage] = useState<number>(1);
   let managerIndex = false;
   let isIndex = false;
+  console.log(dataProducts, "dataProducts");
 
   return (
     <>
       <div className="w-full  ">
         <SlideHome />
 
-        <div className="w-full h-fit min-[600px]:h-40 bg-[#212322] flex flex-wrap items-center">
+        <div className="w-full h-fit min-[700px]:h-40 bg-[#212322] flex flex-wrap items-center">
           <div
             style={{ fontFamily: '"Mazda robo",sans-serif' }}
             className="w-full flex-wrap h-fit  pt-1 sm:w-[40%] sm:p-3 justify-start max-[600px]:pl-[10%]  flex items-center md:pl-[70px]"
@@ -202,7 +255,7 @@ export default function Home() {
                 Danh sách sản phẩm
               </h3>
               <SlideCategory
-                loading={loading}
+                loading={loadingType}
                 data={dataList}
                 onClick={handle}
                 active={caseChose.product?.categoryId}
@@ -281,7 +334,7 @@ export default function Home() {
                       dataProducts.map((r, index) => (
                         <Link
                           href="/[slug]"
-                          as={`product/${caseChose.product?.categoryName
+                          as={`product/${r.categoryName
                             ?.replace(/\s+/g, "-")
                             .replace(/&/g, "-and-")}/${r.name
                             .replace(/\s+/g, "-")
@@ -368,7 +421,7 @@ export default function Home() {
                 <div className="flex flex-wrap justify-around">
                   {dataNews.map((n) => (
                     <Link
-                      href={`news/${caseChose.news?.categoryName
+                      href={`news/${n.categoryName
                         ?.replace(/\s+/g, "-")
                         .replace(/&/g, "-and-")}/${n.name
                         .replace(/\s+/g, "-")
@@ -416,7 +469,7 @@ export default function Home() {
                 <div className="flex flex-wrap justify-around">
                   {dataGuid.map((n) => (
                     <Link
-                      href={`guide/${caseChose.product?.categoryName
+                      href={`guide/${n.categoryName
                         ?.replace(/\s+/g, "-")
                         .replace(/&/g, "-and-")}/${n.name
                         .replace(/\s+/g, "-")

@@ -22,9 +22,11 @@ const page = (props: { params: { cate: string } }) => {
       name: string;
       price: number;
       price_After: number;
+      categoryName: string;
       description: string;
       urlShoppe: string;
       urlImage: { image: string; path: string }[];
+      avatar: { image: string; path: string }[];
     }[]
   >();
 
@@ -45,12 +47,20 @@ const page = (props: { params: { cate: string } }) => {
                 description: string;
                 urlShoppe: string;
               };
+              avatar: { image: string; path: string }[];
               categoryName: string;
               urlImage: { image: string; path: string }[];
               info_in_AboutUs: [{ url_Mess: string; phone: string }];
             }>(`Product/GetByID/${hasSeen[0]}`);
             setPageIndex(0);
-            setData([{ ...res1.data.product, urlImage: res1.data.urlImage }]);
+            setData([
+              {
+                ...res1.data.product,
+                avatar: res1.data.urlImage,
+                urlImage: res1.data.urlImage,
+                categoryName: res1.data.categoryName,
+              },
+            ]);
           } else if (hasSeen.length === 2) {
             const res1 = await http.get<{
               product: {
@@ -61,42 +71,85 @@ const page = (props: { params: { cate: string } }) => {
                 description: string;
                 urlShoppe: string;
               };
+              avatar: { image: string; path: string }[];
               categoryName: string;
               urlImage: { image: string; path: string }[];
               info_in_AboutUs: [{ url_Mess: string; phone: string }];
             }>(`Product/GetByID/${hasSeen[0]}`);
+            setData([
+              {
+                ...res1.data.product,
+                urlImage: res1.data.avatar,
+                categoryName: res1.data.categoryName,
+                avatar: res1.data.avatar,
+              },
+            ]);
             const res2 = await http.get(`Product/GetByID/${hasSeen[1]}`);
 
             setPageIndex(0);
             setData([
-              { ...res1.data.product, urlImage: res1.data.urlImage },
-              { ...res2.data.product, urlImage: res2.data.urlImage },
+              {
+                ...res1.data.product,
+                urlImage: res1.data.avatar,
+                avatar: res1.data.avatar,
+                categoryName: res1.data.categoryName,
+              },
+              {
+                ...res2.data.product,
+                urlImage: res2.data.avatar,
+                avatar: res2.data.avatar,
+                categoryName: res2.data.categoryName,
+              },
             ]);
           }
         }
       }
-    }
-    if (name) {
-      setLoading(true);
-      const res = await http.post("Product/GetPaginationProduct", {
-        pageIndex: index,
-        pageSize: 4,
-        search_Name: name,
-        search_CategoryName: decodeURIComponent(cate),
-      });
-      setLoading(false);
-      setPageIndex(res.data.totalPageIndex);
-      setData(res.data.data);
     } else {
-      setLoadingSearch(true);
-      const res = await http.post("Product/GetPaginationProduct", {
-        pageIndex: index,
-        pageSize: 4,
-        search_CategoryName: decodeURIComponent(cate),
-      });
-      setPageIndex(res.data.totalPageIndex);
-      setLoadingSearch(false);
-      setData(res.data.data);
+      if (decodeURIComponent(cate) !== "Tất Cả Sản Phẩm") {
+        if (name) {
+          setLoading(true);
+          const res = await http.post("Product/GetPaginationProduct", {
+            pageIndex: index,
+            pageSize: 6,
+            search_Name: name,
+            search_CategoryName: decodeURIComponent(cate),
+          });
+          setLoading(false);
+          setPageIndex(res.data.totalPageIndex);
+          setData(res.data.data);
+        } else {
+          setLoadingSearch(true);
+          const res = await http.post("Product/GetPaginationProduct", {
+            pageIndex: index,
+            pageSize: 6,
+            search_CategoryName: decodeURIComponent(cate),
+          });
+          setPageIndex(res.data.totalPageIndex);
+          setLoadingSearch(false);
+          setData(res.data.data);
+        }
+      } else {
+        if (name) {
+          setLoading(true);
+          const res = await http.post("Product/GetPaginationProduct", {
+            pageIndex: index,
+            pageSize: 4,
+            search_Name: name,
+          });
+          setLoading(false);
+          setPageIndex(res.data.totalPageIndex);
+          setData(res.data.data);
+        } else {
+          setLoadingSearch(true);
+          const res = await http.post("Product/GetPaginationProduct", {
+            pageIndex: index,
+            pageSize: 6,
+          });
+          setPageIndex(res.data.totalPageIndex);
+          setLoadingSearch(false);
+          setData(res.data.data);
+        }
+      }
     }
   };
   const handleSearch = (e: any) => {

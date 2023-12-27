@@ -12,6 +12,7 @@ const GuideAdmin: React.FC<{
   g: {
     id: number;
     name: string;
+    categoryName: string;
     create_Date: string;
     content: string;
     urlImage: {
@@ -85,7 +86,9 @@ const GuideAdmin: React.FC<{
   return (
     <Link
       href="/[slug]"
-      as={`guide/${rout.replace(/\s+/g, "-").replace(/&/g, "-and-")}/${g.name
+      as={`guide/${g.categoryName
+        .replace(/\s+/g, "-")
+        .replace(/&/g, "-and-")}/${g.name
         ?.replace(/\s+/g, "-")
         .replace(/&/g, "-and-")}/${g.id}`}
       className="w-full flex flex-wrap md:flex-nowrap  mb-4 relative"

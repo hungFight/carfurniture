@@ -24,6 +24,10 @@
   bottom: 0px !important;
 }
 
+.abc .swiper-pagination {
+  bottom: -20px !important;
+}
+
 @font-face {
   font-family: Mazda type;
   src: url(../asset/font/mazda-type-regular.woff2);
@@ -49,4 +53,31 @@
 
 .ql-align-left {
   text-align: left;
+}
+
+
+
+
+
+.swiper-wrapper {
+  position: unset !important
+}
+
+.swiper-button-prev::after {
+  content: '' !important;
+  width: 50px;
+  height: 27px;
+  background-image: url(../asset/image/images.png);
+  background-size: cover;
+  transform: rotate(180deg);
+  cursor: pointer;
+}
+
+.swiper-button-next::after {
+  content: '' !important;
+  width: 50px;
+  height: 27px;
+  background-image: url(../asset/image/images.png);
+  background-size: cover;
+  cursor: pointer;
 }

@@ -5,7 +5,16 @@
     bottom: -4px !important;
   }
 }
-
+.pagination {
+  .abc {
+    .swiper-slide {
+      width: fit-content !important;
+    }
+  }
+  .swiper-pagination {
+    bottom: -20px !important;
+  }
+}
 .containerProductTag {
   .nameTag,
   .desTag {
