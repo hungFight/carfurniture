@@ -63,7 +63,7 @@
   position: unset !important
 }
 
-.swiper-button-prev::after {
+.abc .swiper-button-prev::after {
   content: '' !important;
   width: 50px;
   height: 27px;
@@ -73,7 +73,7 @@
   cursor: pointer;
 }
 
-.swiper-button-next::after {
+.abc .swiper-button-next::after {
   content: '' !important;
   width: 50px;
   height: 27px;

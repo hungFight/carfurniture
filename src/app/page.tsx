@@ -209,7 +209,7 @@ export default function Home() {
       <div className="w-full  ">
         <SlideHome />
 
-        <div className="w-full h-fit min-[700px]:h-40 bg-[#212322] flex flex-wrap items-center">
+        <div className="w-full h-fit min-[800px]:h-40 bg-[#212322] flex flex-wrap items-center">
           <div
             style={{ fontFamily: '"Mazda robo",sans-serif' }}
             className="w-full flex-wrap h-fit  pt-1 sm:w-[40%] sm:p-3 justify-start max-[600px]:pl-[10%]  flex items-center md:pl-[70px]"
@@ -464,7 +464,7 @@ export default function Home() {
                 <h3
                   className={`text-base w-full font-semibold text-center my-5 ${styles.hh4}`}
                 >
-                  Hưỡng dẫn sử dụng
+                  Hướng dẫn
                 </h3>
                 <div className="flex flex-wrap justify-around">
                   {dataGuid.map((n) => (
